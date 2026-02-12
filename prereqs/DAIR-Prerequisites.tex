@@ -1,0 +1,26 @@
+\documentclass[letterpaper,12pt]{report}
+\newcommand{\TheTitle}{DAIR$^3$}
+\newcommand{\TheSubtitle}{\sc{Prerequisites \& \\ Environment Setup}}
+\newcommand{\TheAuthor}{Juan B. Guti\'errez}
+\newcommand{\ThePageCount}{TBD}
+\newcommand{\TheDate}{2026}
+\newcommand{\TheObsolescenceDate}{December 31, 2026}
+
+% Configure instance type
+\newcommand{\CLASSROOM}{1}
+\newcommand{\DATATHON}{2}
+\newcommand{\DocVersion}{\DATATHON}
+
+% Include common configuration (adjust path)
+\include{../common/DAIR3Config}
+
+\begin{document}
+    \input{../common/DAIR3FrontMatter} 
+    \setcounter{page}{1}
+    \tableofcontents
+    \newpage
+
+    \input{Environment_Setup}
+    \input{ChapterIntroProg.tex}
+
+\end{document}

@@ -43,6 +43,7 @@
 % ********* Graphics definition *******
 \usepackage{xcolor}
 \usepackage[pdftex]{graphicx} % required to import graphic files
+\graphicspath{{../common/}{../images/}}
 \usepackage{color} %allows to mark some entries in the tables with color
 \usepackage{eso-pic} % these two are required to add the little picture on top of every page
 \usepackage{everyshi} % these two are required to add the little picture on top of every page
@@ -142,8 +143,8 @@
 \setlength{\headheight}{16.8pt}
 \pagestyle{fancyplain}
 \fancyhf{}
-\lhead{\includegraphics[width=1.7cm]{UTSAVectorOrange.pdf}} % \sc{UTSA}
-\rhead{\footnotesize \sc{\TheTitle}} 
+\lhead{\includegraphics[width=0.9cm]{DAIR3-290x300.png}} % \sc{UTSA}
+\rhead{\footnotesize \sc{Prerequisites \& Environment Setup}} 
 \setcounter{page}{1} 
 %\lfoot{\today}
 \cfoot{\sc{\scriptsize Planned Obsolescence: Discard after \TheObsolescenceDate}}
@@ -215,10 +216,10 @@
 \newenvironment{EQA}[1][]{\refstepcounter{QaA} \color{HW} Record your explanation as answer \#\theQaA. #1 }{\medskip}
 \newcommand\QA{\begin{EQA} \end{EQA}} 
 
-\input{lstsetC}
-\input{lstsetMATLAB}
-\input{lstsetR}
-\input{lstsetPython}
+\input{../common/lstsetC}
+\input{../common/lstsetMATLAB}
+\input{../common/lstsetR}
+\input{../common/lstsetPython}
 
 % \usepackage{draftwatermark}
 % \SetWatermarkText{DRAFT}

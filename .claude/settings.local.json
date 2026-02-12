@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git mv:*)",
+      "Bash(git rm:*)",
+      "Bash(copy:*)",
+      "Bash(python -c:*)",
+      "Bash(pip install:*)",
+      "Bash(pdflatex:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
