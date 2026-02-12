@@ -1,0 +1,699 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introduction to Programming Environments}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%======================================
+\section{Introduction}
+%======================================
+
+There is a large number of programming languages. For the purpose of data analytics, we will distinguish two main families of languages: complied vs. scripting languages. They  represent two different paradigms of programming language design, each with its own advantages and trade-offs. The key difference lies in when and how the source code you write is translated into machine code that the computer can understand and execute.
+
+In the realm of data analytics, the choice between using a compiled language like C++ and a scripting language like Python often comes down to the specifics of the project at hand, including its complexity, required execution speed, and the need for direct hardware access.
+
+%======================================
+\subsection{Compiled Languages}
+%======================================
+
+Compiled languages are those where the source code is entirely translated into machine code before execution. This translation is done by a compiler, a program that takes the entire source code as an input and generates an executable file. Examples of compiled languages include C++, Java, Rust, Go, and Swift.
+
+Compiled languages offer several important benefits including:
+
+\begin{itemize}
+	\item Performance: Since the code is precompiled into machine code, compiled programs usually run faster and more efficiently than interpreted ones.
+	\item Type checking: Many compiled languages have strict type systems, which catch many type-related errors at compile time, before the code is run.
+	\item Security: The source code is not distributed with the software, which makes it harder for others to reverse engineer the software.
+\end{itemize}
+
+However, compiled languages also have some drawbacks:
+
+\begin{itemize}
+	\item Development speed: The edit-compile-run cycle can be time consuming, particularly for larg software projects.
+	\item Portability: The generated executable is usually specific to a type of processor and operating system. Availability for different operating systems or processors might require specific source code alterations and independent compilations. 
+\end{itemize}
+
+Compiled languages like C++ are translated into machine code before execution, making them very fast because they're executed directly by the computer's hardware. This can be a significant advantage when dealing with huge datasets or when computation speed is a critical factor. 
+
+However, the syntax of languages like C++ is more complex and it may require more lines of code to achieve the same result as a scripting language. Moreover, C++ lacks many of the built-in data analysis functionalities found in languages such as Python, MATLAB or R, so it's necessary to use external libraries like Eigen or Armadillo for matrix operations and other complex computations.
+
+%======================================
+\subsection{Scripting Languages}
+%======================================
+
+Scripting languages, on the other hand, are typically interpreted from text into machine instructions, line-by-line of code just in time for execution. While this can make scripting languages slower than compiled languages, they're often easier to write and read because of their high-level syntax.  Examples of scripting languages include Python, MATLAB, R, JavaScript, Ruby, and PHP.
+
+Scripting languages offer several advantages:
+
+\begin{itemize}
+	\item Ease of use: Scripting languages are usually easier to learn and use. They have less verbose syntax and more built-in functionality.
+	\item Flexibility: Since they are interpreted line-by-line, it's easier to make changes to your code and see their effect immediately without having to recompile.
+	\item Portability: The same script can be run on any system that has the correct interpreter installed, without needing to change the code.
+\end{itemize}
+
+Among the drawbacks of scripting languages there ar issues related to:
+
+\begin{itemize}
+	\item Performance: Interpreted languages are generally slower than compiled languages because of the overhead of interpreting code line-by-line during execution.
+	\item Dependency on the interpreter: The code can only be run on systems that have the correct interpreter installed.
+\end{itemize}
+
+Python is particularly well-suited for data analytics because it has numerous powerful libraries for data analysis (like Pandas, NumPy, and SciPy) and visualization (like Matplotlib and Seaborn). In addition, Python's simple, straightforward syntax makes it an excellent choice for quick prototyping and exploratory data analysis. 
+
+It must be noted that even with all the benefits of Python, the simplified MATLAB syntax for matrix operations facilitates  algorithm development since the source code closely resembles mathematical notation.   
+
+%======================================
+\subsection{Comparative Examples}
+%======================================
+
+Let us consider a simple example where we want to multiply two matrices A and B. The language examples are listed below in alphabetical oder by the name of the language.  
+
+In C++:
+\lstinputlisting[language=C]{../source/IntroProgMatMul.c} 
+
+In MATLAB:
+
+\lstinputlisting[language=MATLAB]{../source/IntroProgMatMul.m}
+
+In R: 
+\lstinputlisting[language=R]{../source/IntroProgMatMul.r}
+
+In Python:
+\lstinputlisting[language=Python]{../source/IntroProgMatMul.py}
+
+From the above example, it's clear that MATLAB code is much more concise and easier to understand than C++. However, if we were dealing with very large matrices or needed to perform this operation many times in a loop, the C++ code might run faster due to being a compiled language.
+
+%In summary, while C++ can offer performance advantages in some circumstances, Python's simplicity, readability, and extensive data-centric libraries make it the language of choice for many data analytics tasks. However, it's worth noting that the right tool should always be chosen based on the specifics of the project and the requirements of the task.
+
+%======================================
+\subsection{What is Python?}
+%======================================
+
+Python is an \textit{interpreted} \textit{high-level} programming language for general-purpose computing. 
+
+\begin{itemize}
+	\item{} \textit{Interpreted} means that a program in Python has to be decoded line by line by another program called the Python interpreter and translated into something a computer can understand. 
+	\item{} \textit{High-level} means that there is a strong abstraction of the elements of the hardware of the computer; for instance, memory does not need to be pre-allocated in Python to create a matrix, whereas the C language (a low-level language) requires it. You can think of the level of the language as how close the instructions are to the metal of the machine. 
+	\item{} The process of language interpretation is called \textit{compilation}, that is, the translation of one computer language into another language. This could happen multiple times until the instructions are reduced to a language called \textit{assembler} or \textit{assembly}; this code matches closely the architecture of the computer executing the program. For instance, Java programs are compiled into a language called Java bytecode, which the Java Virtual Machine translates into assembler. 
+\end{itemize}
+
+
+%======================================
+\subsection{Python Installation}
+%======================================
+
+Refer now to the software installation guide provided in a separate document. %You need to install Anaconda and Visual Studio Code. 
+
+Being an interpreted language, it means that Python requires an \textit{interpreter}. This is what you install when you ``\textit{install Python}''. A Python program is simply a text file that contains instructions the interpreter can understand one line (or block of lines) at a time. Since Python is open source, it has many contributors; this results in a robust ecosystem, but the drawback is that there are numerous software libraries that have to be installed while tracking a complex web of co-dependencies. Hence, there is some difficulty in installing a working Python environment to conduct quantitative analysis. 
+
+%Anaconda is a Python \textit{distribution}. This means that there is a program with a command line interface and a Graphic User Interface (GUI) that simplifies installation and maintenance of the Python environment. The Anaconda navigator allows users to find and install multiple components, while ensuring that all libraries can still interoperate.  
+
+An easy way to use the Python language is through  an \textit{Integrated Development Environment}. There are many IDEs that can execute Python code. Being familiar with more than one environment is important as each has strengths and weaknesses. Furthermore, it is a common occurrence that Python programs appear to fail in one environment but work properly in another; this, of course, is a matter of configuration, but it can be a source of frustration in absence of awareness of the potential sources of conflicts in software. Particularly, you want to know how to use tools frequently used in software development, and you need exposure to the multiple options you will find in academia, government and industry. 
+
+
+%======================================
+\subsection{Executing Python Commands}
+%======================================
+
+Commands in Python are case-sensitive, that is, you must respect the capitalization of instructions as they appear in the documentation. The Python interpreter offers multiple mechanisms to interact with the environment. The most commonly used is the Python command line. You can start it form a command shell. Simply type {\s python}. The command line promt will change to {\s >>> }   
+
+You can enter Python commands in the command line prompt. Press \textit{Enter} or \textit{return} to execute commands.  Like most other programming languages, Python provides mathematical expressions. The building blocks of expressions are variables, numbers, operators, scripts and functions
+
+The basic operations are listed below. \vs
+
+\begin{tabular}{r|l}
+\hline
+Symbol 			& Operation \\
+\hline
+$+$       	&    Addition \\
+$-$       	&    Subtraction \\
+$\star$   	&    Multiplication \\
+$/$       	&    Division \\
+$\star\star$&      Power \\
+\hline
+\end{tabular}
+
+\vs
+
+Some commands are just like you would type things in a calculator. If you want to refer the result of the command, you need to give it a name, or in other words, assign the result to a variable. The following command assigns the result to the variable s. (Note that Python didn't save the true answer 7/12 but rather a decimal approximation.)
+
+\BeginCode	
+>>> s = 1/3 + 1/4
+\end{verbatim}
+\EndCode 
+
+If you want to know what the variable $s$ contains, simply type its name in the command prompt: 
+
+\BeginCode
+>>> s
+0.5833333333333333 
+\end{verbatim}
+\EndCode
+
+If a command does not fit on one line, use a backslash (\textbackslash) followed by Return/Enter to indicate that the statement continues on the next line. For example,
+
+\BeginCode
+>>> s = 1 - 1/2 + 1/3 -1/4 + 1/5 - 1/6 + 1/7 \
+... :- 1/8 + 1/9 - 1/10 + 1/11 - 1/12  
+\end{verbatim}
+\EndCode
+
+Type $s$ and Enter to see the new value of $s$. 
+
+\BeginCode
+>>> s
+0.6532106782106782
+\end{verbatim}
+\EndCode
+
+Use the double star($**$) to raise something to an exponent.
+
+\BeginCode
+>>> 89**2
+7921 
+\end{verbatim}
+\EndCode
+
+Imaginary numbers can be used with the constant $j$, which stands for $\sqrt{-1}$ by default. 
+
+\BeginCode
+>>> (1j)**2
+(-1+0j)
+\end{verbatim}
+\EndCode
+
+Hence, you must be careful in using the variable $j$ when dealing with complex numbers. What do you expect from the following operation? Can you explain what you observe? You might need to complete the entire  chapter before you can answer this question. \QA
+
+\BeginCode
+>>> j = 10
+>>> j = j*(-1)**(0.5)
+>>> j
+\end{verbatim}
+\EndCode
+
+Does the result stored in the variable {\s j} match your expectation? Explain. \QA
+
+Python uses conventional decimal notation, with an optional decimal point and leading plus or minus sign, for numbers. Scientific notation uses the letter e or E to specify a power-of-ten scale factor. Imaginary numbers use i as a suffix. (This course does not use complex numbers, but you might generate errors with one.)
+
+Some examples of legal numbers are: 1, -1, 0.0001, 9.87654321, 1.2345e10, 1.2345*10**10, 1j, -2j, 3e5j.  
+
+When assigning names to variables or expressions, it is good practice
+to make the names useful. For example, in the second command above,
+we gave the result the name rhoSq to imply ``rho squared". Observe
+that you {\bf CAN NOT} have spaces in variable names (i.e. no spaces in
+names on the left hand side of the equals sign). Giving useful names
+to your variables or output will help you keep track
+of what you are doing.
+
+%We will have another lab in which we will address programming standards and source control, an area technically known as \textit{configuration management}. 
+
+You can use the up and down arrow keys to easily recall and then edit a command with the left and right arrows. Try it. This is the fastest way to repeat Python commands you might have used in the past.
+
+%======================================
+\subsection{The VSC Python Editor: Executing A Simple Program}
+%======================================
+
+Download the file {\s lab1SimpleInstruction.py}.  Open the file in VSC.  The following instructions will appear in the editor: 
+
+
+\begin{lstlisting}[language=Python]
+k=0;
+for i in range(1,11):
+    k=k+1/10;
+    print(k)
+print(k==1)
+\end{lstlisting}
+
+You can click the \textit{Run file} button on the toolbar (as shwon in Figure \ref{fig:VSCFileInst}), or press F5. We call all these actions \textit{to execute a program}. The program {\s lab1SimpleInstruction.py} adds ten times the number 0.1. The comparison of the number 1 against the sum returns a value of \textit{false}, whereas elementary arithmetic tells us that adding the number 0.1 ten times should result in 1, and the returned value should be \textit{true}. Why is this result false? \QA Once the program is executed, the bottom portion of VSC shows a panel labeled TERMINAL, as well as other tabs labeled  PROBLEMS, OUTPUT, and DEBUG CONSOLE, as shown in Figure \ref{fig:VSCFileInstExec}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.7\textwidth]{../images/ChapterIntroProg/VSCFileInst.png}
+	\caption{To execute a Python file in VSC, simply click on the Run button, represented by a triangle pointing to the right. It has been highlighted with a circle.}
+	\label{fig:VSCFileInst}
+\end{figure}
+
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.7\textwidth]{../images/ChapterIntroProg/VSCFileInstExec.png}
+	\caption{Executing a python program activates the command line. Results are printed in that panel. The command line is highlighted by the round box.}
+	\label{fig:VSCFileInstExec}
+\end{figure}
+
+Note that you can enter commands in the terminal. For example, type {\s 1+1} and hit enter. Try mathematical operations such as square root, or trigonometric functions. What challenges do you encouter? \QA
+
+In the program {\s lab1SimpleInstruction.py} all lines of code were executed sequentially, one at a time. This is what we call a \textbf{script file}. That is, when you execute a script file, you expect soemthing tangible to happen, whether it is a message on the screen, a file altereed, communication taking place, etc. 
+
+There is a way to use source code files to hold code that will be executed later, without necessarily executing any instruction. At this pointm, open the file {\s lab1Function.py}. You will see the following instructions: 
+
+\begin{lstlisting}[language=Python]
+def sum1(n):
+    # sum1(n) computes the sum of 1 + 2 + ... + n
+    total = 0;
+    for i in range(1,n):
+        total = total + i
+    return total
+\end{lstlisting}
+
+This file defines a function named {\s sum1(n)}. The command {\s sum(3)} returns 6 since
+$1 + 2 + 3 = 6$. It is instructive to see how this code does its work.
+\begin{itemize}
+	\item The instruction {\s def} indicates the beginning of a \textit{function}. Note that all instructions that are executed inside that function have a vertical alignment shifted to the right to indicate that all these commands are subordinate to {\s def}. This shift in vertical alignment is called indentation. It is part of the syntax of the Python programming language, therefore you must always treat indentations strictly. 
+	\item The instruction {\s \# sum1(n)...} is a \textit{comment}. Lines of code that start with the symbol {\s \#} are not executed. The semicolon at the end is optional. 
+	\item The instruction {\s total = 0;} is an \textit{assignment}. This line of code creates the variable {\s total} and assigns to it the value zero. 
+	\item The instruction {\s for i in range(1,n):} starts a \textit{loop}. The subordinate instructions, identified by indentation, will be repeated  $n$ times. Particularly, the instruction {\s range(1,n)} creates a sequence of integers starting in 1 and ending in $n$. What is the outcome of {\s range(10,13)} ?
+	\item The instruction {\s total = total + i} is an assignment. It is very important to emphasize that this is not an equation; if it were, {\s total} would cancel and  {\s i} would be zero. What takes place is that for every repetition of the loop, the variable {\s total} is redefined to contain its previous value plus the value of {\s i}. 
+	\item The instruction {\s return total} is the output of the function. That is, if somehow we could execute this function like {\s x = sum1(3)}, the variable {\s x} would contain the value 6, because {\s sum1(3)} $= 1 + 2  + 3 = 6$.  
+\end{itemize}
+
+Now, we will modify this file. Append at the end a program called {\s sum2} in which we sum integers squared.  The next question has to be: How do we execute these functions? 
+
+The command {\s python [filename]} can be used to execute a Python program from the terminal, or any command line prompt. But if we run the following in the command prompt, nothing happens:
+
+\BeginCode
+	python lab1Function.py
+\end{verbatim}
+\EndCode 
+
+Why? \QA 
+
+Now, add the following line of code to the end of the file, \textbf{without indentation}: 
+
+\BeginCode
+print(sum1(2))
+\end{verbatim}
+\EndCode 
+
+Execute the program. What was the result of {\s sum1(2)}? Is this what you expected? Why? \QA Compute by hand what the output of {\s sum1(3)} should be. Now change the last line in the program to read {\s print(sum1(2))} 
+
+What we did was simply to define a function and then use it. Note that if you place the previous line of code at the beginning of the file, the Python interpreter would raise an exception because the function {\s sum1} is not known to the interpreter yet... keep in mind that the Python interpreter executes one line of code at a time in sequential order (perhaps with branching and repetition, as we will explore later). Therefore, functions must be defined before they can be invoked within a file. 
+
+Did the progeam {\s } prodice the result you were expecting? In case it did not, enter the following instruction in the terminal: {\s man range}. This command shows the manual ({\s man}) for the function {\s range}.  The fact that {\s range} behaves in certain ways does not force you to abide by that particular design. In fact, you can modify {\s sum1} so that the outcome corresponds to what a naive user would expect. To achieve this, you will need to change the limit of range inside the function. Implement it and explain. \QA
+
+%======================================
+\subsection{Executing Functions}
+%======================================
+
+In the previous section, we added a single line of code at the end of the program to compute the function we programmed. However, there is a more interesting use case: Create a function that other programs can reuse. In order to use an existing function from a file, we must import that function into the Python environment. We already did something like this when we imported NumPy. 
+
+We will now import the function {\s sum1} from the file {\s lab1Function.py}. To do this,  execute the following command: 
+
+\BeginCode
+	import lab1function as LAB1
+\end{verbatim}
+\EndCode 
+
+This instruction loads into memory a directory of all functions present in that file. Now you can invoke the functions you created. For example, 
+
+\BeginCode
+	LAB1.sum2(3)
+\end{verbatim}
+\EndCode 
+ 
+It is also possible to load into memory a single function from a file. We can accomplish this by executing
+
+\BeginCode
+	from lab1function import sum1
+\end{verbatim}
+\EndCode 
+
+In this case, there is no alias associated with the function. To use, you can simply call the function with a parameter, as in {\s sum2(3)}
+
+Do some research on how to load multiple functions with a single instruction. Explain. \QA
+
+%-----------------------------------------
+\section{Introduction to NumPy}
+%-----------------------------------------
+Numerical operations can be programmed in Python. A library called {\s NumPy} encapsulates much needed functionality and has become the \textit{de facto} standard. The basic data element in {\s NumPy} is a multidimensional array. This allows you to solve many technical computing problems, especially those with matrix and vector formulations, in a fraction of the time it would take to write a program in a low-level language such as C. 
+
+For example, at the Python prompt type in the following command and press Enter.
+
+\BeginCode
+	import numpy as np  
+\end{verbatim}
+\EndCode 
+
+This command loads into memory a reference to the NumPy library. Now you can access all functions in this library by using the prefix {\s np}; this is an \textit{alias}. You can pick any alias you want, but it is customary to use {\s np} for NumPy. Now enter the following command: 
+
+\BeginCode
+	np.sqrt(9)  
+\end{verbatim}
+\EndCode 
+
+The function {\s sqrt} computes the square root of a real number. Here is an example, and the resulting values.
+
+\BeginCode
+>>> rho = (1+np.sqrt(5))/2
+>>> rhoSq = rho**2
+>>> a = rhoSq + rho
+>>> a
+4.23606797749979
+\end{verbatim}
+\EndCode
+
+However, you cannot use the function {\s sqrt} with negative numbers. What would you have to do to alloy Python to compute the square root of a negative number and return a complex number? \QA  %So, instead of {\s sqrt(-2)} you will have to use {\s (-2)**0.5}. 
+
+
+The library NumPy offers easy access to commonly used constants, such as:
+
+\vs 
+
+\begin{tabular}{r|l}
+Constant 		& Value\\
+\hline
+{\s np.e} 		& Returns the number $e$ \\
+{\s np.pi} 		& Returns the number $\pi$ \\
+{\s np.inf} 	& Returns the number $\infty$ \\
+{\s np.nan} 	& NaN, not-a-number \\
+\hline
+\end{tabular}
+
+\vs
+
+%MATLAB: Infinity is generated by dividing a nonzero value by zero, or by
+%evaluating well defined mathematical expressions that overflow.
+%(Try $10^{310}$ or $\exp(999)$.)
+
+%MATLAB: Not-a-number is generated by trying to evaluate expressions like
+%0/0 or Inf-Inf that do not have well defined mathematical values.
+
+Expressions use the arithmetic operators and precedence rules you already know by now. There are also functions, such as cosine or sine. You surround the input to the function by parenthesis.  With NumPy, we can now access commonly used mathematical functions. Among others: \vs
+
+\begin{tabular}{r|l}
+Function 			& Operation \\
+\hline
+{\s np.abs(x)} 		& Absolute value $|x|$ \\
+{\s np.sqrt(x)}		&  Square root $\sqrt{x}$ \\
+{\s np.exp(x)} 		& Exponential function $e^x$ \\
+{\s np.log(x)} 		& $\log(x)$ where $x$ is positive real number\\
+{\s np.sin(x)}		&  $\sin(x)$ where $x$ is assumed to be in radians \\
+{\s np.cos(x)}		& $\cos(x)$ where $x$ is assumed to be in radians \\
+\hline
+\end{tabular}
+
+\vs 
+
+The library NumPy has \textit{many} functions. A comprehensive list can be found at \url{https://numpy.org/doc/stable/reference/}.  Now enter the following command: 
+
+\BeginCode
+	x = np.random.standard_normal(3)  
+\end{verbatim}
+\EndCode 
+
+There is no output. Why do you think this is the behavior? \QA On the right-hand side of the Spyder window there is a tab called \textit{Variable Explorer}. It will show the value of $x$. Alternatively, you can enter 
+
+\BeginCode
+	print(x)
+\end{verbatim}
+\EndCode 
+
+Alternatively, you can print the result directly without assigning it to a variable. Try
+
+\BeginCode
+	print(np.random.standard_normal(3))
+\end{verbatim}
+\EndCode 
+
+Why are the results of this last operation different to the values stored in variable $x$? \QA
+
+
+
+%-----------------------------------------
+\subsection{Matrix Operations}
+%-----------------------------------------
+
+The basic data element in NumPy is a multi-dimensional array. 
+Special meaning is sometimes attached to 1-by-1 matrices, which are
+called scalars, and to matrices with only one row or column, which
+are called vectors. Python has other ways of storing both numeric
+and non-numeric data, but in the beginning, it is usually best to
+think of everything as a matrix.
+
+Row vectors are delimited in notation by square brackets. A comma separates individual numbers in a row vector. Multiple row vectors of the same size are separated by commas, and are delimited by square brackets to define a matrix. It is common practice to use a capital letter when naming matrices in order to distinguish them from a single vector, scalar or variable value. 
+
+Now, we will create a vector and a matrix to demonstrate simple matrix operations \vs
+
+{\footnotesize
+\begin{tabular}{r|l}
+Function 						& Operation \\
+\hline
+{\s x = np.array([1,2,3,4])} 	&   Creates the row vector $\x = [1,2,3,4]$\\
+{\s b = np.array([1,2,3])}		&   Creates the row vector $\bb = [1,2,3]$\\
+{\s A = np.array([[1,2,3],[4,5,6],[7,8,9]])}  			&   Creates the matrix $ A = \begin{bmatrix} 1 & 2 & 3\\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} $\\
+{\s B = np.ones([2,3])}   		&   Creates the matrix $ A = \begin{bmatrix} 1 & 1 & 1\\ 1 & 1 & 1 \end{bmatrix} $\\
+{\s C = np.zeros([2,3])}   		&   Creates the matrix $ A = \begin{bmatrix} 0 & 0 & 0\\ 0 & 0 & 0 \end{bmatrix} $\\
+\hline
+\end{tabular}
+}
+
+\vs
+The following commands demonstrate basic vector manipulation cases:
+\vs
+
+\begin{tabular}{r|l}
+Operation 	& Outcome \\
+\hline
+{\s x[-1]} 	&   Returns 4, the last element of $x$\\
+{\s x[1]} 	&   Returns 2, the second element of $x$\\
+{\s x[-2]} 	&  Returns 3, the second to last element of $x$\\
+\hline
+\end{tabular}
+
+\vs
+The colon (:) operator is notable. In vector notation, it indicates a range of rows or columns. In Python, the first element of a vector has index 0; the second element has index 1, and so on. The colon operator $a:b$ starts at the row or column  of index $a$ and covers up to an index less than $b$. Thus,  $A[0:2,0:2]$ returns a matrix composed of rows 1 through 2, and columns 1 through 2 with respect to the matrix $A$. 
+
+The following commands demonstrate basic matrix manipulation cases:
+\vs
+
+\begin{tabular}{r|l}
+Operation 			& Outcome \\
+\hline
+{\s A[1,2]} 				&  Value of $2^{st}$ row and $3^{nd}$ column of $A$\\
+{\s A[0:2,0:2]} 		&  Returns $A = \begin{bmatrix} 1 & 2 \\ 4 & 5\end{bmatrix} $\\
+{\s A[1:3,1:3]} 		&  Returns $A = \begin{bmatrix} 5 & 6 \\ 8 & 9\end{bmatrix} $\\
+%$A[1:100,1:100]$ 		&  Returns $A = \begin{bmatrix} 5 & 6 \\ 8 & 9\end{bmatrix} $\\
+\hline
+\end{tabular}
+
+\vs
+
+The matrix $A$ has three rows and three columns. Then, why does $A[1:100,1:100]$  not produce an error? \QA
+
+The size or dimension of a matrix refers to the number of rows and
+number of columns a matrix has. The {\s shape} command returns the number
+of rows and columns of a matrix. 
+Notice that the result is a vector - a one-dimensional matrix with
+2 values where the first is the number of rows and the second value
+is the number of columns. By accessing each element of this vector,
+we can access each dimension individually. 
+
+Using the matrix $A$ of our previous examples, 
+
+\BeginCode
+>>> y = A.shape()
+>>> y
+(3,3)
+>>> y[0]
+3
+>>> y[1]
+3
+\end{verbatim}
+\EndCode
+
+The following example will illustrate a subtlety in copying matrices:
+
+\BeginCode
+>>> D = A
+
+array([[1, 2, 3],
+       [4, 5, 6],
+       [7, 8, 9]])
+>>> D[0,0] = 9
+>>> A
+
+array([[9, 2, 3],
+       [4, 5, 6],
+       [7, 8, 9]])
+\end{verbatim}
+\EndCode
+
+Note that by updating a value in $D$, the corresponding value in $A$ was changed. Why? What would you need to do to prevent an update in $D$ to change $A$?  \QA 
+
+The basic matrix operations are listed below, using the matrices in the previous examples. 
+\vs
+
+\begin{tabular}{r|l}
+Operation 		& Outcome \\
+\hline
+{\s$A.T$} 	&  Transpose of $A$.\\
+{\s$A.conj().T$} 	&  Conjugate transpose of $A$.\\
+{\s$A@B.T$} 			&  Matrix multiplication $A \cdot B$. \\
+{\s$A\star A$} 		&  Element-wise multiplication\\
+{\s$A/A$} 		&  Element-wise division\\
+{\s$A\star\star 2$} 		&  Element-wise exponentiation\\
+\hline
+\end{tabular}
+
+\vs
+
+NumPy gives an easy way of solving systems of linear equations, Given the matrix $A$ and the vector $\bb$ from the previous examples, the linear system $A\x = \bb$ can be solved by invoking {\s np.linalg.solve} as follows
+
+\BeginCode
+>>> x = np.linalg.solve(A,b)
+array([-0.23333333,  0.46666667,  0.1       ])
+\end{verbatim}
+\EndCode
+
+It is easy to use Matrix multiplication $A\x$ to check the answer
+
+\BeginCode
+>>> A@x
+array([1., 2., 3.])
+\end{verbatim}
+\EndCode
+
+
+% %======================================
+% \section{Specific tasks for this chapter}
+% %======================================
+ 
+% %-----------------------------------------
+% \subsection{Data Challenge Text File}
+% %-----------------------------------------
+% Refer to the Data Challenge volume for specific information. What follows shows general problems and approaches. We will illustrate this problem with three simple questions: (1) How many school districts were there in total?, (2) How many schools districts were there in Virgina? (3) How many school districts were there in Pensylvannia? 
+
+% A common approach to extract information from comma-separated or flat files is by importing it into Excel. The ``\textit{Text Import Wizard}'' would guide you through the process of identifying variables by column. 
+% %However, this results in a problem. Describe it. \QA
+% % \begin{figure}
+% % 	\centering
+% % 		\includegraphics{../figures/ChapterIntroProg/Excel.png}
+% % 	\caption{Excel's Import Wizard}
+% % 	\label{fig:Excel}
+% % \end{figure}
+
+% A simple program in Python to help you explore this file is described below:
+
+% \BeginCode
+% f = open("LEA Characteristics.csv", "r", encoding="cp1252")
+% counter = 0;
+% for x in f:
+%     counter = counter + 1
+% print(counter)
+% \end{verbatim}
+% \EndCode 
+
+% The previous file counts the total number of rows in the file. Does this number coincide with the number produced by Excel? \QA
+
+% The instruction \textit{encoding=``cp1252"} is necessary in non-Windows systems due the presence of single-byte character encoding of the Latin alphabet, used by default in the legacy components of Microsoft Windows for English and many European languages including Spanish, French, and German. If you remove this instruction, the following error might show up in non-Windows operating systems: ``'utf-8' codec can't decode byte...''
+
+% Now, to count the total number of schools in PA, use the following code: 
+
+
+% \BeginCode
+% f = open("EDGE_GEOCODE_PUBLICLEA_1718.TXT", "r", encoding="cp1252")
+% counter = 0;
+% for x in f:
+%     y = x.split(',')
+%     if x[0] == "PA": # Change for Virgina 
+%         counter = counter + 1
+% print(counter)
+% \end{verbatim}
+% \EndCode 
+
+% Can you explain what this code does?  \QA
+
+
+
+
+
+%Using this template, try to answer the questions in the assignment. \QA
+
+%Now, create multiple functions in a single file. Each function will test  a single condition and return a Boolean value. At the end of the file, add the code above and modify it to call each function instead of using the position of $x$. So, instead of the code above, you will have something like
+
+% \BeginCode
+% f = open("US1969.dat", "r")
+% counter = 0;
+% for s in f:
+%     if isLiveBirth(s) and isTexanMother(s):  
+%         counter = counter + 1
+% print(counter)
+% \end{verbatim}
+% \EndCode 
+
+% The advantage of writing your code like in this example is that the program becomes self-explanatory. Writing clear programs is an invaluable skill to guarantee maintainability, to reduce development time, and to facilitate communication. This skill requires substantial practice.  
+
+% %-----------------------------------------
+% \subsection{One year of NCHS data}
+% %-----------------------------------------
+% Since 1969, all births recorded in the US are available as digital records from the National Center for Health Statistics (NCHS) from the Centers for Disease Control and Prevention (CDC). Only between 1969 and 1988 the date and time of birth is publicly available; starting in 1989, only the week of birth is recorded. Why is the date and time of birth no longer recorded? \QA
+
+% Open the file US1969.zip. It contains birth records from 1969, and a data dictionary. The uncompressed data file is about 380 MB in size. The data is contained in a ``flat file''. This means that every line of text in this file is a continuous chain of characters. We must extract information from this type of file with a ``dictionary'' that tells us the beginning and ending columns of a given variable. Why was this format used? \QA
+
+% A common approach to extract information from flat files is by importing it into Excel. The ``\textit{Text Import Wizard}'' would guide you through the process of identifying variables by column. However, this results in a problem. Describe it. \QA
+% \begin{figure}
+% 	\centering
+% 		\includegraphics{../figures/ChapterIntroProg/Excel.png}
+% 	\caption{Excel's Import Wizard}
+% 	\label{fig:Excel}
+% \end{figure}
+
+
+% A simple program that can help you explore this file is 
+
+% \BeginCode
+% f = open("US1969.dat", "r", encoding="cp1252")
+% counter = 0;
+% for x in f:
+%     if x[25] == "7" and x[26] ==  "4": # other conditions? 
+%         counter = counter + 1
+% print(counter)
+% \end{verbatim}
+% \EndCode 
+
+% The instruction \textit{encoding=``cp1252"} is necessary in non-Windows systems due the presence of single-byte character encoding of the Latin alphabet, used by default in the legacy components of Microsoft Windows for English and many European languages including Spanish, French, and German. If you remove this instruction, the following error might show up in non-Windows operating systems: ``'utf-8' codec can't decode byte...''
+
+% %Using this template, try to answer the questions in the assignment. \QA
+
+% Now, create multiple functions in a single file. Each function will test  a single condition and return a Boolean value. At the end of the file, add the code above and modify it to call each function instead of using the position of $x$. So, instead of the code above, you will have something like
+
+% \BeginCode
+% f = open("US1969.dat", "r")
+% counter = 0;
+% for s in f:
+%     if isLiveBirth(s) and isTexanMother(s):  
+%         counter = counter + 1
+% print(counter)
+% \end{verbatim}
+% \EndCode 
+
+% The advantage of writing your code like in this example is that the program becomes self-explanatory. Writing clear programs is an invaluable skill to guarantee maintainability, to reduce development time, and to facilitate communication. This skill requires substantial practice. Address plotting, and additional questions in a similar manner.  Turn in your code. \QA
+
+% %-----------------------------------------
+% \subsection{Questions for this chapter}
+% %-----------------------------------------
+
+% \noindent \textbf{Introductory Level:}
+% \begin{enumerate}
+% 	\item How many live births occurred in Texas in 1969 from mothers residing in Texas?	\QA
+% 	\item How do you know that your answer is correct? \QA
+% 	\item Show graphically how the level of education of the mother is related to the birth order (1st born, second child, third, etc.)	\QA
+% 	\begin{itemize}
+% 		\item Bonus question: Plot births from each state with respect to every other state. \QA
+% 	\end{itemize}
+% 	\begin{itemize}
+% 		\item Bonus question: Plot each variable with respect to every other variable. \QA
+% 	\end{itemize}
+% \end{enumerate}
+
+% \noindent\textbf{Intermediate Level:}
+% \begin{enumerate}
+% 	\item How many live births occurred in every state in 1969 from mothers residing in the state where the baby was born?	\QA
+% 	\item How do you know that your answer is correct? \QA
+% 	\item What variables are \textbf{correlated} with low weight at birth?  \QA  Recall that the {\em Correlation coefficient} between two random
+% variables $X$ and $Y$ is defined as $$\rho(X,Y) = \frac{{\bf
+% Cov}(X,Y)}{\sqrt{{\bf Var}(X){\bf Var}(Y)}}.$$ The {\em sample
+% correlation coefficient} $r$ between two samples $x_i$ and $y_j$ is
+% defined as $r = S_{xy}/\sqrt{S_{xx}S_{yy}}.$
+% 	\item What variables are correlated with stillbirths? \QA
+% \end{enumerate}
+
+
+

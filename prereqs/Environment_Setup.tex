@@ -1,0 +1,526 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Environment Setup} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+These instructions centered on Windows but adaptable for Mac and Linux. We begin with configuring environment variables to securely store API keys for OpenAI, Anthropic, and Groq. The reader is then guided through the installation of Python, emphasizing proper PATH configuration and optional tools like Visual Studio Code (VSC), Git, and Windows Terminal. Additional sections cover the setup of virtual environments both within and outside VSC, the installation of essential Python libraries, and optional tools such as LaTeX and C/C++ compilers. The setup culminates in verifying functionality by cloning a GitHub repository and running a helper script, ensuring the environment supports modular, reproducible project development with minimal dependency conflicts.
+
+%================================================================
+\section{Required: Setting up environment variables for API keys}\label{sec:apikeys}
+%================================================================
+
+You will receive an API key for OpenAI and Anthropic during our first session. You can get your own API for free at \href{https://groq.com}{Groq}. You need to create three API key variables following the procedure described below: \texttt{OPENAI\_API\_KEY}, \texttt{ANTHROPIC\_API\_KEY}, \texttt{GROQ\_API\_KEY}. Test the program \href{https://github.com/DiscursiveNetworks/FOO_QtPy}{agentGroq.py}, \href{https://github.com/DiscursiveNetworks/FOO_QtPy}{agentGPT.py} and/or \href{https://github.com/DiscursiveNetworks/FOO_QtPy}{agentClaude.py} from the Github repository described below in this document.
+
+\vs
+
+On Windows, execute the following three commands one at a time for each API key. The example for \texttt{OPENAI\_API\_KEY} is as follows:
+
+\begin{verbatim}
+setx OPENAI_API_KEY "[sk-... API key]"
+Exit
+echo %OPENAI_API_KEY%
+\end{verbatim}
+
+In the code above, replace \texttt{[sk-... API key]} with your actual API key. The first command sets the environment variable permanently for your user account. The second command closes the Command Prompt to ensure the new environment variable is registered. The third command, run in a new Command Prompt window, prints the stored value to verify it was set correctly.
+
+\vs
+
+On Mac/Linux execute the following three commands one at a time for each API key. The example for \texttt{OPENAI\_API\_KEY} is as follows:
+
+\begin{verbatim}
+echo "export OPENAI_API_KEY='[sk-... API key]'" >> ~/.zshrc
+source ~/.zshrc
+echo $OPENAI_API_KEY
+\end{verbatim}
+
+In the code above, replace \texttt{'[sk-... API key]'} with your actual API key.
+
+\vs
+
+As reported by Bryan Fowler, if you experience errors trying to add your environmental variables in a Mac/Linux, the most likely problem is ownership of the \texttt{\~{}/.zshrc} file. In this case, execute
+
+\begin{verbatim}
+sudo chown $(whoami) ~/.zshrc
+\end{verbatim}
+
+And try to create the environmental variables again.
+
+\vs
+
+As reported by Drew Stephen regarding Mac, ``\textit{apparently it doesn't work on the default c shell but switching to the zsh lets it run}.'' You might need to close and reopen the terminal window from where you started for changes to become effective.
+
+%================================================================
+\section{Required: Install Git}\label{sec:git}
+%================================================================
+
+Install \href{https://gitforwindows.org}{Git for Windows}. For Mac, install \href{https://git-scm.com/download/mac}{Git for Mac}. Linux also has a version available. In the second screen, select Visual Studio Code as your Git editor. Use all other default options.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{../images/envsetup-2-1.png}
+	\caption{Git setup screen showing Visual Studio Code as the default editor.}
+	\label{fig:envsetup-2-1}
+\end{figure}
+
+%================================================================
+\section{Required: Open Git Bash (or any terminal)}\label{sec:gitbash}
+%================================================================
+
+The command line allows you to control your computer by typing instructions, providing precise access to files and system features. For example, typing \texttt{ls} on a Unix-like system such as Linux or macOS lists the files and directories in the current location, such as \texttt{ls /home/user/Documents} to display the contents of the Documents folder. On Windows, the \texttt{dir} command serves the same function, so \texttt{dir C:\textbackslash Users\textbackslash Alice\textbackslash Desktop} shows what is on the Desktop. To move between directories, the \texttt{cd} command is used; \texttt{cd Downloads} changes the working directory to Downloads, while \texttt{cd ..} moves one level up. These commands allow efficient navigation and inspection of the file system through the terminal.
+
+\vs
+
+Now that you installed git, you should \textbf{go to the folder you want to work in} using command line, and run the following command:
+
+\begin{verbatim}
+git clone https://github.com/DiscursiveNetworks/FOO_QtPy.git
+\end{verbatim}
+
+%================================================================
+\section{Required: Install Python}\label{sec:python}
+%================================================================
+
+\href{https://www.python.org/downloads/}{https://www.python.org/downloads/}. Install any recent Python version. Go to your downloads and double click on the install file to start installation. By default the Python installer for Windows places its executables in the user's AppData directory, so that it doesn't require administrative permissions. This works for most scenarios. If you're the only user on the system, you might want to place Python in a higher-level directory (e.g. \texttt{C:\textbackslash Python} or \texttt{/usr/local/bin}) to have a shorter path to the binaries (sometimes you will need that). Depending on your preferences, either select ``\textit{Install Now}'' or ``\textit{Customized installation}'' (my preference). Please make sure you select ``\textit{Add python.exe to path}''; this will save you a few headaches later.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.65\textwidth]{../images/envsetup-3-1.png}
+	\caption{Python installer showing the ``Add python.exe to PATH'' checkbox at the bottom.}
+	\label{fig:envsetup-3-1}
+\end{figure}
+
+For PC: If you did not add \texttt{python.exe} to the PATH during installation, wait until the installation is complete. Then open File Explorer and right-click on ``This PC.'' Select ``Properties'' from the context menu. In the System window that opens, click on ``Advanced system settings'' in the left-hand sidebar. In the new window, ensure the ``Advanced'' tab is selected and click the ``Environment Variables'' button near the bottom. Under the ``System variables'' section, find and double-click on the variable named ``Path.'' This will open a window where you can add the path to the Python executable manually.
+
+\vs
+
+For Mac: If you did not ensure Python was added to your system's PATH during installation, you can manually do so using the following steps on a Mac. After installation is complete, open the Terminal application. Enter the command \texttt{which python3} or \texttt{which python} to find the path to the installed Python binary. Copy that path. Then open your shell configuration file in a text editor---this will typically be \texttt{\~{}/.zshrc} if you are using the Zsh shell (default on newer versions of macOS) or \texttt{\~{}/.bash\_profile} if you are using Bash. Add the line \texttt{export PATH="/path/to/python:\$PATH"}, replacing \texttt{/path/to/python} with the path you copied. Save the file and close the editor. In the Terminal, run \texttt{source \~{}/.zshrc} or \texttt{source \~{}/.bash\_profile} depending on the file you edited, so the new PATH is loaded into your environment.
+
+\vs
+
+In the window ``Optional Features'' select all features
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.65\textwidth]{../images/envsetup-4-1.png}
+	\caption{Python Optional Features screen---select all features.}
+	\label{fig:envsetup-4-1}
+\end{figure}
+
+Select ``\textit{Install Python X.XX for all users}'' if you can and want. This requires administrative privileges. Select the folder of your choice for the install location.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.65\textwidth]{../images/envsetup-4-2.png}
+	\caption{Python Advanced Options screen showing ``Install for all users'' selected.}
+	\label{fig:envsetup-4-2}
+\end{figure}
+
+%================================================================
+\section{Optional: C/C++ compilers}\label{sec:compilers}
+%================================================================
+
+If you'd like to code in C or C++, you have several options, including \href{https://gcc.gnu.org}{GCC, the GNU Compiler Collection}, but it requires some effort to install the prerequisites. From Microsoft there is \href{https://visualstudio.microsoft.com/vs/community/}{Visual Studio Community Edition} (VSCE), which encapsulates the complexity of installing multiple compilers (including the .NET framework SDK). I recommend you install VSCE with all ``Workloads'' in ``Web \& Cloud'' and ``Desktop \& Mobile'' (except Python).
+
+%================================================================
+\section{Optional: LaTeX}\label{sec:latex}
+%================================================================
+
+If you intend to produce PDF documents using LaTeX, install \href{https://miktex.org}{MiKTeX}.
+
+%================================================================
+\section{Strongly recommended: Install Visual Studio Code (VSC)}\label{sec:vsc}
+%================================================================
+
+\textbf{If you are new to Python, install \href{https://code.visualstudio.com}{Visual Studio Code} (VSC)}: There are many options to write Python code, and you could have a favorite one. I must pick one to deliver instruction, and experience has shown me that VSC offers the least amount of friction.
+
+\vs
+
+In VSC, there are two main options: ``\textit{User Installer}'' and ``\textit{System Installer}''. Use the User Installer if you want to install only for the current user. For all users, use System installer; I prefer this choice because it installs VSC in \texttt{C:\textbackslash Program Files\textbackslash Microsoft VS Code}.
+
+\vs
+
+This little giant has become a darling of coders for many good reasons. It is available for Mac, Linux and Windows. There is an open source identical alternative called VSCodium, available at \href{https://vscodium.com/}{https://vscodium.com/} \quad I personally use VSCode.
+
+%================================================================
+\section{If you installed VSC: Required extensions}\label{sec:extensions}
+%================================================================
+
+Select the Extensions icon on the left and install the following Visual Studio Code libraries
+
+\begin{enumerate}
+	\item \textbf{Required}: Python extension for Visual Studio Code.
+
+	\item \textbf{Optional}: Also install Jupyter (this also installs Pylance, Jupyter Keymap, Jupyter Notebook Renderers, Jupyter SlideShow). Pay attention to the publisher of the extension; use the ones by Microsoft.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-5-1.png}
+		\caption{VS Code Extensions marketplace showing the Python and Jupyter extensions by Microsoft.}
+		\label{fig:envsetup-5-1}
+	\end{figure}
+
+	\item \textbf{Optional}: Install C/C++ for Visual Studio Code, C/C++ Themes \& C/C++ Extension Pack.
+
+	\item \textbf{Optional}: Install the extension ``\textbf{LaTeX Workshop}'' by James Yu. You will never use another LaTeX editor :)
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-6-1.png}
+		\caption{LaTeX Workshop extension page in VS Code.}
+		\label{fig:envsetup-6-1}
+	\end{figure}
+\end{enumerate}
+
+%================================================================
+\section{Optional: Windows Terminal}\label{sec:terminal}
+%================================================================
+
+For Windows users, install \href{https://apps.microsoft.com/detail/windows-terminal}{Windows Terminal}. This Microsoft app allows you to use a multi document window with tabs for different command consoles like PowerShell, Ubuntu, DOS, Git, etc. You will need this if you want to complete the steps related to Linux in the next section of this document.
+
+%================================================================
+\section{If you installed VSC: Required}\label{sec:vscstart}
+%================================================================
+
+To start VSC, use the command line tool for your operating system and go to the folder \href{https://github.com/DiscursiveNetworks/FOO_QtPy}{CommandLineLLM}. After Step 9, the command will be
+
+\begin{verbatim}
+cd CommandLineLLM
+\end{verbatim}
+
+Inside this folder, execute the command
+
+\begin{verbatim}
+code .
+\end{verbatim}
+
+Note the period after the command \texttt{code}; it instructs VSC to use the current folder as the working folder.
+
+%================================================================
+\section{Partially Required (this or \ref{sec:venvoutside}): Virtual environments inside VS Code}\label{sec:venvinside}
+%================================================================
+
+Create virtual environments \textit{inside} Visual Studio. We will start by creating a virtual environment; the reason for this is that sometimes specific versions of different libraries might be incompatible. You should create an environment for each project you work on.
+
+\begin{enumerate}
+	\item Open Visual Studio. Select the option \textit{File $>$ Open Folder}\ldots\ Choose the folder you want to use for your project.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-7-1.png}
+		\caption{VS Code File menu showing Open Folder.}
+		\label{fig:envsetup-7-1}
+	\end{figure}
+
+	\item Once you select the folder, you will see the files related to the project you are working on in the Visual Studio File Explorer. Notice that the status bar changes color from purple to blue.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-7-2.png}
+		\caption{VS Code with a project open---notice the blue status bar.}
+		\label{fig:envsetup-7-2}
+	\end{figure}
+
+	\item Now, hit the keys \textit{SHIFT+CTRL+P}. This will allow you to type in the command palette the following instruction:
+
+	\begin{verbatim}
+	Python: Create Environment
+	\end{verbatim}
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-8-1.png}
+		\caption{VS Code Command Palette with ``Python: Create Environment'' selected.}
+		\label{fig:envsetup-8-1}
+	\end{figure}
+
+	\item You will likely see two options: \texttt{venv} and \texttt{conda}. Choose \texttt{venv}.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-8-2.png}
+		\caption{Selecting venv over conda in VS Code.}
+		\label{fig:envsetup-8-2}
+	\end{figure}
+
+	\item Once you choose \texttt{venv}, you will have to pick a Python installation. Pick the one we just installed (this could be the only one you see).
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-9-1.png}
+		\caption{Selecting the Python installation for the virtual environment.}
+		\label{fig:envsetup-9-1}
+	\end{figure}
+
+	\item Now, go to the menu \textit{View $>$ Terminal}.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-9-2.png}
+		\caption{VS Code View menu showing Terminal option.}
+		\label{fig:envsetup-9-2}
+	\end{figure}
+
+	\item You will see that the command prompt now has the word \texttt{(.venv)}. This means that the virtual environment has been installed and is now active. If it has not been activated, you can simply type \texttt{activate}. To inactivate the virtual environment, you simply need to type \texttt{deactivate}.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-10-1.png}
+		\caption{Terminal showing the \texttt{(.venv)} prompt indicating an active virtual environment.}
+		\label{fig:envsetup-10-1}
+	\end{figure}
+\end{enumerate}
+
+%================================================================
+\section{Partially Required (this or \ref{sec:venvinside}): Virtual environments outside VS Code}\label{sec:venvoutside}
+%================================================================
+
+Create virtual environments \textit{outside} Visual Studio. A comprehensive guide is here:
+
+\href{https://biomathematicus.me/working-with-python-virtual-environments-in-visual-studio-code/}{https://biomathematicus.me/working-with-python-virtual-environments-in-visual-studio-code/}
+
+\vs
+
+Open a terminal window. Now you are ready to install Python packages. We will start by creating a virtual environment; the reason for this is that sometimes specific versions of different libraries might be incompatible. You should create an environment for each project you work on.
+
+\begin{enumerate}
+	\item All related instructions about packages and virtual environments are at:
+
+	\href{https://packaging.python.org/en/latest/tutorials/installing-packages/}{https://packaging.python.org/en/latest/tutorials/installing-packages/}
+
+	\item Check your version of pip. It is the most popular tool for installing Python packages, and the one included with modern versions of Python. If the following command returns a version number, you are good to go. Otherwise, reinstall python (or bootstrap it).
+
+	\begin{verbatim}
+	python -m pip --version
+	\end{verbatim}
+
+	\item Update the pip and setuptools
+
+	\begin{verbatim}
+	python -m pip install --upgrade pip setuptools wheel
+	\end{verbatim}
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.85\textwidth]{../images/envsetup-11-1.png}
+		\caption{Terminal output of upgrading pip, setuptools, and wheel.}
+		\label{fig:envsetup-11-1}
+	\end{figure}
+
+	\item I like to have an easy-to-access folder for virtual environments, thus I always create a folder like \texttt{c:\textbackslash penv} for this purpose. To create this folder, run the following command in the terminal: \texttt{mkdir c:\textbackslash penv}. You can name this folder whatever you like. The importance of this will become evident in step 8. Also importantly, the folder in which you create your virtual environments does not need to be the folder in which your code resides.
+
+	\item Now \textbf{create} a virtual environment called venn (this is an example for a program about Venn diagrams; you can call it whatever name you prefer):
+
+	\begin{verbatim}
+	python -m venv c:\penv\venn
+	\end{verbatim}
+
+	\item To \textbf{activate} this environment execute the following command in the terminal in VSC:
+
+	\begin{verbatim}
+	C:\penv\venn\Scripts\activate
+	\end{verbatim}
+
+	Now the command line will show the prompt named as the environment that was activated.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-11-2.png}
+		\caption{Command prompt showing the activated virtual environment.}
+		\label{fig:envsetup-11-2}
+	\end{figure}
+
+	\item To \textbf{deactivate} a virtual environment, simply type \texttt{deactivate} in the command prompt.
+
+	\item The ideal solution is to use the ActivateEnv.bat file described in the appendix (add \texttt{c:\textbackslash venv} to the PATH environment variable). Call it from a .bat or a .sh file as in the following example:
+
+	\begin{verbatim}
+	ActivateEnv DiNet "C:\Dropbox\!JBGResearch\!!!DiNet\FOO_QtPy"
+	\end{verbatim}
+\end{enumerate}
+
+%================================================================
+\section{Troubleshoot}\label{sec:troubleshoot}
+%================================================================
+
+As reported by Lorena Roa de La Cruz, you could see an error when trying to activate a virtual environment. This is due to configuration of permissions. If this happens, run the command:
+
+\begin{verbatim}
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+\end{verbatim}
+
+After that, run the script \texttt{activate}.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.85\textwidth]{../images/envsetup-12-1.png}
+	\caption{PowerShell execution policy error and fix: running \texttt{Set-ExecutionPolicy} followed by \texttt{activate}.}
+	\label{fig:envsetup-12-1}
+\end{figure}
+
+%================================================================
+\section{Required (after \ref{sec:venvinside} or \ref{sec:venvoutside}): Install Python libraries}\label{sec:libraries}
+%================================================================
+
+We will install libraries for the python environment for this project environment. The most important libraries are:
+
+\begin{itemize}
+	\item OpenAI
+	\item Anthropic
+	\item Langchain
+	\item PyQt5
+	\item NumPy
+	\item Matplotlib
+	\item SciPy
+	\item Jupyter
+	\item Pandas
+\end{itemize}
+
+For each one of them type the following command: \texttt{python -m pip install [library name]}. For example:
+
+\begin{verbatim}
+python -m pip install NumPy
+\end{verbatim}
+
+Alternatively, if you are using git bash, you can simply type:
+
+\begin{verbatim}
+pip install NumPy
+\end{verbatim}
+
+Repeat for the libraries listed above. You should see something like this:
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.85\textwidth]{../images/envsetup-13-1.png}
+	\caption{Terminal output showing a successful NumPy installation.}
+	\label{fig:envsetup-13-1}
+\end{figure}
+
+It is possible that the code fails; the source code repository changes over time. In that case the error will be something like:
+
+\begin{verbatim}
+ModuleNotFoundError: No module named 'library_name'
+\end{verbatim}
+
+Where \texttt{'library\_name'} stands for the library name that is causing the error. In that case, simply follow the procedures above to install the missing library.
+
+\vs
+
+An important suggestion that comes from experiencing frustration in the past is this: Keep the base environment clean, that is, with minimal libraries. Conflicts between libraries will arise once you install a number of them. This is why it is a good practice to create an environment for each project.
+
+\vs
+
+\textbf{\textcolor{Input}{You know your environment is fully functional when you can execute the file agentGroq.py, agentGPT.py and/or agentClaude.py}}.
+
+%================================================================
+\section{Optional: Jupyter Notebook}\label{sec:jupyter}
+%================================================================
+
+\textbf{Optional}: Now, create a Jupyter Notebook.
+
+\begin{enumerate}
+	\item Abundant relevant information regarding Jupyter in VSC is available at \href{https://code.visualstudio.com/docs/datascience/jupyter-notebooks}{https://code.visualstudio.com/docs/datascience/jupyter-notebooks}
+
+	\item Activate the environment you want to use according to step \ref{sec:venvoutside}.f
+
+	\item You need to attach the kernel of your virtual environment. For example, if I have a virtual environment called venn:
+
+	\begin{verbatim}
+	python -m ipykernel install --user --name=venn
+	\end{verbatim}
+
+	\item Execute step \ref{sec:venvoutside}.a
+
+	\item In VSC, run the command \texttt{Create:New Jupyter Notebook} from the Command Palette (Ctrl+Shift+P) or by creating a new .ipynb file in your workspace.
+
+	\item You might receive a Security Alert regarding the firewall. Allow access.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.6\textwidth]{../images/envsetup-14-1.png}
+		\caption{Windows Defender Firewall alert---allow access for Visual Studio Code.}
+		\label{fig:envsetup-14-1}
+	\end{figure}
+
+	\item After you enter a command, you might see the following message:
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.55\textwidth]{../images/envsetup-14-2.png}
+		\caption{VS Code prompt to install the ipykernel package---click Install.}
+		\label{fig:envsetup-14-2}
+	\end{figure}
+
+	Install it.
+\end{enumerate}
+
+%================================================================
+\section{Python commands in Terminal}\label{sec:pythonterminal}
+%================================================================
+
+Finally, you can simply enter Python commands in the Terminal. Open a Command Prompt and type the following command:
+
+\begin{verbatim}
+python
+\end{verbatim}
+
+This will allow you to enter python commands, e.g. \texttt{1+1}
+
+%================================================================
+\section*{APPENDIX: ActivateEnv.bat}\label{sec:appendix}
+%================================================================
+\addcontentsline{toc}{section}{APPENDIX: ActivateEnv.bat}
+
+ActivateEnv.bat to be placed in \texttt{c:\textbackslash venv} to activate Python environments
+
+\begin{verbatim}
+@echo off
+setlocal
+
+:: Read parameters
+set "ENV_NAME=%~1"
+set "BASE_DIR=%~2"
+echo Starting activation of the virtual environment '\%ENV_NAME%'...
+
+:: Validate input
+if "%ENV_NAME%"=="" (
+    echo [ERROR] Environment name not specified.
+    goto :eof
+)
+
+if "%BASE_DIR%"=="" (
+    echo [ERROR] Base directory not specified.
+    goto :eof
+)
+
+:: Check if base directory exists
+if not exist "%BASE_DIR%" (
+    echo [ERROR] Directory not found: %BASE_DIR%
+    goto :eof
+)
+
+:: Change to working directory
+cd /d "%BASE_DIR%"
+
+:: Define the path to the venv under C:\penv
+set "VENV_ROOT=C:\penv"
+set "VENV_ACTIVATE=%VENV_ROOT%\%ENV_NAME%\Scripts\activate.bat"
+
+:: Check for the activation script
+if exist "%VENV_ACTIVATE%" (
+    echo calling activation...
+    call "%VENV_ACTIVATE%"
+    echo activation was called...
+) else (
+    echo [ERROR] Virtual environment activation script not found:
+%VENV_ACTIVATE%
+    goto :eof
+)
+
+echo Activation of the virtual environment '\%ENV_NAME%' has ended
+
+echo Launching VSC Starting
+code .
+echo Launching VSC Ended
+
+endlocal
+\end{verbatim}
