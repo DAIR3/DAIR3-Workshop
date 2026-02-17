@@ -2,7 +2,9 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-**DAIR³** is an NIH R25-funded training program that prepares biomedical researchers to conduct rigorous, reproducible, and ethical data science research. The program brings together faculty and trainees from Jackson State University, University of Michigan, and the University of Texas at San Antonio.
+**DAIR³** is an NIH R25-funded training program that prepares biomedical researchers to conduct rigorous, reproducible, and ethical data science research. The program brings together faculty and trainees from Jackson State University, University of Michigan, and the University of Texas at San Antonio. 
+
+DAIR³ includes weeklong bootcamps in the summer that focus on ethical issues in biomedical data science; data management, representation, and sharing; rigorous analytical design; the design and reporting of AI models; generative AI; reproducible workflow; and assessing findings across studies. Additionally, the bootcamp also includes grant writing sessions and research collaboration discussions.
 
 ## Program Goals
 
@@ -40,12 +42,12 @@ The bootcamp comprises seven instructional units totaling approximately 33 hours
 | Unit | Title | Hours | Key Topics |
 |------|-------|-------|------------|
 | 1 | Responsible Conduct of Research | 3.0 | RCR in data science, sociotechnical ethics, anticipatory governance |
-| 2 | Foundations of Data | 7.0 | Jackson Heart Study, metadata, data representation, FAIR principles, data sharing |
+| 2 | Foundations of Data Mgmt.| 5.0 | Jackson Heart Study, metadata, data representation, FAIR principles, data sharing |
 | 3 | Rigorous Statistical Design | 5.5 | Study design, power analysis, bias, causal interpretation |
 | 4 | Interpretable Predictive Models | 5.0 | Supervised learning, feature engineering, model evaluation, TRIPOD reporting |
 | 5 | Reproducible Workflows | 5.5 | Notebooks, version control (Git), containers (Docker), pipeline assembly |
 | 6 | Meta-analysis | 3.5 | Evidence synthesis, heterogeneity, non-independence, network effects |
-| 7 | Transformer-based AI | 3.0 | Ethics of AI agents, LLM consensus methods, building analysis pipelines |
+| 7 | LLMs in Biomedical Research | 4.0 | Ethics of AI agents, LLM consensus methods, building analysis pipelines |
 
 ### Unit 7: Ethics of AI Agents
 
@@ -169,7 +171,7 @@ pdflatex DAIR-Prerequisites.tex
 
 ### Git Workflow
 
-The repository synchronizes with two remotes. Use the provided script:
+We have given you a template to synchronizes with multiple remotes. Use the provided script:
 
 ```bash
 gh.bat "Your commit message"
