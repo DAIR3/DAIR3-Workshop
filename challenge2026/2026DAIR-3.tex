@@ -28,7 +28,7 @@
 %================================================================
 Your team is part of a consultancy supporting a planning commission for the State of Texas.  The commission is planning budgetary requirements for various State services in 2030.  The commission requests the following:
 \begin{itemize}
-	\item Projections of underweight newborns by county in Texas. The CDC offers a data table of infant weight for age, available at: \\ \href{https://www.cdc.gov/growthcharts/html_charts/wtageinf.htm}{https://www.cdc.gov/growthcharts/html\_charts/wtageinf.htm} \\ You can extract from this table the information related to weight at birth.
+	\item Projections of underweight newborns by county in Texas. 
 	\item Projections of newborn mortality by county in Texas. According to the CDC, a stillbirth is classified as either early, late, or term. An early stillbirth is a fetal death occurring between 20 and 27 completed weeks of pregnancy. A late stillbirth occurs between 28 and 36 completed pregnancy weeks. A term stillbirth occurs between 37 or more completed pregnancy weeks. 
 	\item Identification of the socioeconomic factors associated with these two outcomes. 
 	\item Comparison to other states. 
@@ -44,13 +44,104 @@ The commission has approved specific data sources for this analysis. You can onl
 \textbf{National Center for Health Statistics (NCHS)}: Since 1969, all births recorded in the US are available as digital records from the NCHS, from the Centers for Disease Control and Prevention (CDC). The date and time of birth is publicly available only between 1969 and 1988; starting in 1989, only the week of birth is recorded. %Why is the date and time of birth no longer recorded? %\QA
 The NCHS keeps records of place of birth, assistance during delivery (at home, with doctors, with midwives), level of education of the parents, place of residence, weight at birth, number of weeks of gestation, number of siblings, birth order, etc. In total, over 100 variables are recorded. You have access to records form 1969 to 1988. 
 
-\textbf{Surveillance, Epidemiology, and End Results Program (SEER)}: The U.S. Census Bureau annually releases unabridged population estimates for five-year age groups and race at the county level. The Census Bureau does not release bridged race estimates by single year of age at the county level due to concerns about the reliability of these estimates. However, these estimates are provided to the National Cancer Institute through SEER to meet programmatic needs such as the creation of age groupings that differ from the standard groupings used by the Census Bureau. Users of the single-year-of-age county-level interpolated race population estimates should carefully consider the limited reliability of these estimates. County-level population files with 19 age groups (<1, 1-4, ..., 80-84, 85+) and with 86 single-year age groups (<1, 1, 2, ..., 84, 85+) are provided.  
+\textbf{Surveillance, Epidemiology, and End Results Program (SEER)}: The U.S. Census Bureau annually releases unabridged population estimates for five-year age groups and race at the county level. The Census Bureau does not release bridged race estimates by single year of age at the county level due to concerns about the reliability of these estimates. However, these estimates are provided to the National Cancer Institute through SEER to meet programmatic needs such as the creation of age groupings that differ from the standard groupings used by the Census Bureau. Users of the single-year-of-age county-level interpolated race population estimates should carefully consider the limited reliability of these estimates. County-level population files with 19 age groups ($<$1, 1-4, ..., 80-84, 85+) and with 86 single-year age groups ($<$1, 1, 2, ..., 84, 85+) are provided.  
 
 \textbf{Socioeconomic Data and Applications Center (SEDAC)}: SEDAC, the Socioeconomic Data and Applications Center, is one of the Distributed Active Archive Centers (DAACs) in the Earth Observing System Data and Information System (EOSDIS) of the U.S. National Aeronautics and Space Administration (NASA). SEDAC contains georeferenced U.S. county-level population projections, total and by sex, race and age, based on shared socioeconomic pathways (SSPs). This data set, produced by Mathew E. Hauer, consists of county-level population projection scenarios of population in five-year intervals for all U.S. counties for the period 2020 - 2100. Obtain the data description from \href{https://doi.org/10.1038/sdata.2019.5}{https://doi.org/10.1038/sdata.2019.5}. 
 
 The NCHS data set covers from 1969 through 1986; it provides individual birth data. The SEER data set provides age-bracketed population estimates from 1969 to 2020. Since for this exercise we do not have birth data beyond 1986, you will have to use the SEER data to infer births in the period 1987-2020; alternatively, you could go to the NCHS source and obtain more recent data, however the NCHS data is complex and downloading additional years is not advised in the short time available to complete the Rowdy Datathon (but we will not stop you). The SEDAC data has total population estimates per county from 2020 through 2100 categorized in four ethnicities: Hispanic, white, black, and other. A viable sequence of analysis is NCHS $\rightarrow$ SEER $\rightarrow$ SEDAC.  
 
-% Table generated by Excel2LaTeX from sheet 'Sheet1'
+%================================================================
+\section{Identifying Underweight Cutoff Points}
+%================================================================
+The CDC offers a data table of infant weight for age, available at: \\ \href{https://www.cdc.gov/growthcharts/data/zscore/wtageinf.xls}{https://www.cdc.gov/growthcharts/data/zscore/wtageinf.xls} \\ You can extract from this table the information related to weight at birth.
+
+The Excel file \texttt{wtageinf.xls} contains the LMS parameters and selected percentile values needed to compute exact percentiles and $z$-scores for anthropometric measurements. The parameters are provided by sex (1 = male, 2 = female) and by single month of age. Age is listed at the half-month point representing the entire month (e.g., 1.5 months corresponds to 1.0--1.99 months). The only exception is birth, which represents the point at birth.
+
+The LMS method summarizes the distribution of a measurement at a given age using three parameters:
+\begin{itemize}
+    \item $L$: the Box--Cox power transformation,
+    \item $M$: the median,
+    \item $S$: the generalized coefficient of variation.
+\end{itemize}
+These parameters allow computation of both percentiles and $z$-scores.
+
+To obtain the measurement value $X$ corresponding to a given $z$-score $Z$ (or percentile), use:
+
+\[
+X = M(1 + LSZ)^{1/L}, \quad L \neq 0
+\]
+
+\[
+X = M \exp(SZ), \quad L = 0
+\]
+%
+where $L$, $M$, and $S$ are taken from the Excel row corresponding to the child's age (in months) and sex. The $z$-score corresponding to common percentiles is:
+%
+\[
+\begin{aligned}
+-1.881 &\leftrightarrow 3^\text{rd} \\
+-1.645 &\leftrightarrow 5^\text{th} \\
+-1.282 &\leftrightarrow 10^\text{th} \\
+-0.674 &\leftrightarrow 25^\text{th} \\
+0      &\leftrightarrow 50^\text{th}
+\end{aligned}
+\]
+%
+\paragraph{Example:}
+For a 9-month-old male, the \texttt{WTAGEINF} table gives:
+\[
+L = -0.1600954, \quad 
+M = 9.476500305, \quad 
+S = 0.11218624.
+\]
+Using $Z = -1.645$ (5th percentile), the cutoff is:
+\[
+X = 7.90 \text{ kg}.
+\]
+%
+This value represents the 5th percentile weight-for-age and can be used as an underweight threshold if the 5th percentile definition is adopted.
+%
+\paragraph{Computing a Z-Score from a Measurement:}
+%
+To obtain the $z$-score corresponding to a given measurement $X$:
+
+\[
+Z = \frac{(X/M)^L - 1}{LS}, \quad L \neq 0
+\]
+
+\[
+Z = \frac{\ln(X/M)}{S}, \quad L = 0.
+\]
+%
+The corresponding percentile is then obtained from the standard normal distribution.
+%
+\paragraph{Example:}
+For a 9-month-old male weighing 9.7 kg:
+%
+\[
+Z = 0.207,
+\]
+%
+which corresponds approximately to the 58th percentile.
+
+\paragraph{Identifying Underweight Cutoff Points in Excel:}
+To identify an underweight threshold in the Excel file:
+%
+\begin{enumerate}
+    \item Filter the data by sex (1 = male, 2 = female).
+    \item Locate the row corresponding to the child's age in months.
+    \item Identify the desired cutoff percentile (e.g., 5th or 3rd percentile column).
+    \item Alternatively, compute the exact cutoff using the LMS formula above.
+\end{enumerate}
+%
+A child is classified as underweight if their measured value falls below the selected percentile cutoff (e.g., below the 5th percentile or below $Z=-2$, depending on the chosen clinical definition).
+
+If finer age resolution is required, linear interpolation between adjacent months may be applied to the $L$, $M$, and $S$ parameters prior to computation.
+
+%================================================================
+\section{Data Files}
+%================================================================
+
 \begin{table}[htbp]
   \centering
   \caption{File sizes. If you have limited storage, plan your analysis in stages.}
@@ -136,25 +227,17 @@ I have made available two files for you: a compressed file with birth records fr
 
 Please answer the following questions:
 \begin{enumerate}
-	\item How many live births occurred in Texas in 1969 from mothers residing in Texas?	
+	\item How many live births occurred in Texas in 1969 from mothers residing in Texas?	\QA
 	\begin{itemize}
 		\item Bonus question: How would you visualize births from each state with respect to every other state?
 	\end{itemize}
-	\item Show graphically how the level of education of the mother is related to the birth order (1st born, second child, third, etc.)	
+	\item Show graphically how the level of education of the mother is related to the birth order (1st born, second child, third, etc.)	 \QA
 	\begin{itemize}
 		\item Bonus question: How would you visualize each variable with respect to every other variable?
 	\end{itemize}
 \end{enumerate}
 
-It is possible that you might not know how to answer some of these questions on first contact with this problem. As a senior undergraduate or beginning graduate student, you are expected to figure things out and solve new problems to which you have not been previously exposed... which involves reading, and asking questions to your peers and instructors.
-A common approach to extract information from flat files is by importing it into Excel. The ``\textit{Text Import Wizard}'' would guide you through the process of identifying variables by column. However, this results in a problem. Describe it. \QA
-
-\begin{figure}
-	\centering
-		\includegraphics{../images/Excel.png}
-	\caption{Excel's Import Wizard}
-	\label{fig:Excel}
-\end{figure}
+It is possible that you might not know how to answer some of these questions on first contact with this problem. 
 
 A simple program that can help you explore this file is 
 
@@ -167,8 +250,19 @@ for x in f:
 print(counter)
 \end{verbatim}
 \EndCode 
+%
 
 The instruction \textit{encoding=``cp1252"} is necessary in non-Windows systems due the presence of single-byte character encoding of the Latin alphabet, used by default in the legacy components of Microsoft Windows for English and many European languages including Spanish, French, and German. If you remove this instruction, the following error might show up in non-Windows operating systems: ``'utf-8' codec can't decode byte...''
+
+A common approach to extract information from flat files is by importing it into Excel. The ``\textit{Text Import Wizard}'' (typically shown as in Figure \ref{fig:Excel}) would guide you through the process of identifying variables by column. However, this results in a problem. Describe it. \QA
+
+\begin{figure}[hb]
+	\centering
+		\includegraphics{../images/Excel.png}
+	\caption{Excel's Import Wizard}
+	\label{fig:Excel}
+\end{figure}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -191,7 +285,7 @@ The instruction \textit{encoding=``cp1252"} is necessary in non-Windows systems 
 \subsubsection{1.1 Ethical Considerations in Vital Statistics Analysis}
 Consider the NCHS vital statistics data you will be analyzing:
 \begin{enumerate}
-    \item Why is the date and time of birth no longer recorded after 1988, only the week of birth? Discuss privacy implications. \QA
+
     \item Identify at least three ethical concerns when projecting underweight newborns and infant mortality by county. Consider:
     \begin{itemize}
         \item Stigmatization of specific counties or populations
