@@ -1,270 +1,167 @@
-\documentclass[letterpaper,12pt]{report}
-\newcommand{\TheTitle}{DAIR$^3$}
-\newcommand{\TheSubtitle}{2026 Data Challenge: Vital Statistics}
-\newcommand{\TheAuthor}{Juan B. Guti\'errez}
-\newcommand{\ThePageCount}{39}
-\newcommand{\TheDate}{May-June, 2026}
-\newcommand{\TheObsolescenceDate}{August 31, 2026}
-%-----------------------------
-% Configure instance type
-\newcommand{\CLASSROOM}{1}
-\newcommand{\DATATHON}{2}
-\newcommand{\DocVersion}{\DATATHON} % 1 = classroom, 2 = datathon
-%-----------------------------
-\include{../common/DAIR3Config}
+# SPECS-2026DAIR3-Alignment.md
 
-\begin{document}
-	\input{../common/DAIR3FrontMatter}
-	\setcounter{page}{1}
-	\tableofcontents \newpage
+## Overview
 
+Align `/challenge2026/2026DAIR-3.tex` with the authoritative curriculum documents:
+- **Primary source:** `Curriculum_with_Learning_Objectives-_2026_DRAFT.docx`
+- **Secondary source:** `Curriculum_SLO_and_Assessment_2026_DRAFT.xlsx` (sheet: "Edited UNITS - 2026")
+- **Unit 7 supplement:** `EthicsOfAgents.tex` (for Section 7.1 content)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+## Current State Analysis
+
+### Current Structure of 2026DAIR-3.tex
+
+```
+Chapter 1: 2022 Data Challenge - Vital Statistics  [PROBLEM: says "2022" should be "2026"]
+  - Section: Problem Description
+  - Section: Data Description  
+  - Section: Identifying Underweight Cutoff Points
+  - Section: Data Files
+  - Section: Criteria
+
+Chapter 2: Analysis Activities  [PROBLEM: duplicated chapter title]
+  - Section: A single year of vital statistics
+
+Chapter 3: Analysis Activities  [PROBLEM: duplicated chapter title, incomplete units]
+  - Section 1: Unit 1 - RCR and Ethics (partial)
+  - Section 2: Unit 2 - Data Management (missing)
+  - Section 3: Unit 3 - Rigorous Statistical Design (missing)
+  - Section 4: Unit 4 - Predictive Models (missing)
+  - Section 5: Unit 5 - Reproducible Workflows (missing)
+  - Section 6: Unit 6 - Meta-analysis (missing)
+  - Section 7: Unit 7 - Transformer AI (outdated, needs 7.1 Ethics content)
+```
+
+### Target Structure (from Word Document)
+
+```
+Chapter 1: 2026 Data Challenge - Vital Statistics
+  - Problem Description
+  - Data Description
+  - Identifying Underweight Cutoff Points
+  - Data Files
+  - Criteria
+
+Chapter 2: Foundational Analysis Activities
+  - A single year of vital statistics (existing content, keep)
+
+Chapter 3: Unit 1 - Responsible Conduct of Research (3 hours)
+  - 1.1 RCR in the context of biomedical data science
+  - 1.2 What are ethics? Ethical issues in biomedical data science
+
+Chapter 4: Unit 2 - Foundations of Data in Biomedical Research (7 hours)
+  - 2.1 Data Management - Introduction to the Jackson Heart Study
+  - 2.2 Metadata - Data About Data
+  - 2.3 Data Representation
+  - 2.4 Data Sharing
+
+Chapter 5: Unit 3 - Rigorous Statistical Design (5.5 hours)
+  - 3.1 Principles of study design for empirical research
+  - 3.2 Analytic plans and statistical power
+  - 3.3 Sources of bias and causal interpretation
+
+Chapter 6: Unit 4 - Designing Interpretable Predictive Models (5 hours)
+  - 4.0 Pre-reading materials
+  - 4.1 Foundations of Supervised Learning
+  - 4.2 Feature Engineering
+  - 4.3 Feature Selection and Model Explainability
+  - 4.4 Model Evaluation, Comparison, and Reporting
+
+Chapter 7: Unit 5 - Reproducible Workflows (5.5 hours)
+  - 5.1 Goals of Reproducible Analyses
+  - 5.2 Reproducibility via Code Notebooks
+  - 5.3 Best practices for Reproducible Programming
+  - 5.4 Version Control
+  - 5.5 Containers
+  - 5.6 Assembling a full analysis pipeline
+
+Chapter 8: Unit 6 - Meta-analysis (3.5 hours)
+  - 6.1 Key concepts in research synthesis
+  - 6.2 Accounting for heterogeneity
+  - 6.3 Accounting for non-independence and network effects
+
+Chapter 9: Unit 7 - Transformer-based AI in Biomedical Research (3 hours)
+  - 7.1 The Ethics of AI Agents
+  - 7.2 AI Agents for Technical Tasks - Consensus in LLMs
+  - 7.3 LLMs in Biomedical Research - Building Consensus Pipelines
+```
+
+---
+
+## Phase 1: Fix Chapter 1 Title and Verify Content
+
+### Task 1.1: Update chapter title from "2022" to "2026"
+
+**Location:** Around line 57 in current file
+
+**Find:**
+```latex
+\chapter{2022 Data Challenge - Vital Statistics}  \newpage
+```
+
+**Replace with:**
+```latex
 \chapter{2026 Data Challenge - Vital Statistics}  \newpage
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+```
 
-%================================================================
-\section{Problem Description}\label{sec:Problem}
-%================================================================
-Your team is part of a consultancy supporting a planning commission for the State of Texas.  The commission is planning budgetary requirements for various State services in 2030.  The commission requests the following:
-\begin{itemize}
-	\item Projections of underweight newborns by county in Texas.
-	\item Projections of newborn mortality by county in Texas. According to the CDC, a stillbirth is classified as either early, late, or term. An early stillbirth is a fetal death occurring between 20 and 27 completed weeks of pregnancy. A late stillbirth occurs between 28 and 36 completed pregnancy weeks. A term stillbirth occurs between 37 or more completed pregnancy weeks.
-	\item Identification of the socioeconomic factors associated with these two outcomes.
-	\item Comparison to other states.
-\end{itemize}
+### Task 1.2: Verify Problem Description section exists and is complete
 
-Your team will produce an executive report accompanied by an appendix of technical material.
+The current content appears complete. No changes needed unless discrepancies found.
 
-%================================================================
-\section{Data Description}
-%================================================================
-The commission has approved specific data sources for this analysis. You can only use approved data available at \href{https://drive.google.com/drive/folders/1oq2yuKgBPOAp4wwRngMAI5b_tvVDlNvm}{this hyperlink}.
+### Task 1.3: Verify Data Description section is complete
 
-\textbf{National Center for Health Statistics (NCHS)}: Since 1969, all births recorded in the US are available as digital records from the NCHS, from the Centers for Disease Control and Prevention (CDC). The date and time of birth is publicly available only between 1969 and 1988; starting in 1989, only the week of birth is recorded. %Why is the date and time of birth no longer recorded? %\QA
-The NCHS keeps records of place of birth, assistance during delivery (at home, with doctors, with midwives), level of education of the parents, place of residence, weight at birth, number of weeks of gestation, number of siblings, birth order, etc. In total, over 100 variables are recorded. You have access to records form 1969 to 1988.
+Current content references NCHS, SEER, SEDAC. Appears complete.
 
-\textbf{Surveillance, Epidemiology, and End Results Program (SEER)}: The U.S. Census Bureau annually releases unabridged population estimates for five-year age groups and race at the county level. The Census Bureau does not release bridged race estimates by single year of age at the county level due to concerns about the reliability of these estimates. However, these estimates are provided to the National Cancer Institute through SEER to meet programmatic needs such as the creation of age groupings that differ from the standard groupings used by the Census Bureau. Users of the single-year-of-age county-level interpolated race population estimates should carefully consider the limited reliability of these estimates. County-level population files with 19 age groups ($<$1, 1-4, ..., 80-84, 85+) and with 86 single-year age groups ($<$1, 1, 2, ..., 84, 85+) are provided.
+### Task 1.4: Verify remaining Chapter 1 sections
 
-\textbf{Socioeconomic Data and Applications Center (SEDAC)}: SEDAC, the Socioeconomic Data and Applications Center, is one of the Distributed Active Archive Centers (DAACs) in the Earth Observing System Data and Information System (EOSDIS) of the U.S. National Aeronautics and Space Administration (NASA). SEDAC contains georeferenced U.S. county-level population projections, total and by sex, race and age, based on shared socioeconomic pathways (SSPs). This data set, produced by Mathew E. Hauer, consists of county-level population projection scenarios of population in five-year intervals for all U.S. counties for the period 2020 - 2100. Obtain the data description from \href{https://doi.org/10.1038/sdata.2019.5}{https://doi.org/10.1038/sdata.2019.5}.
+- Identifying Underweight Cutoff Points: Present and complete
+- Data Files: Present with table
+- Criteria: Present with evaluation table
 
-The NCHS data set covers from 1969 through 1986; it provides individual birth data. The SEER data set provides age-bracketed population estimates from 1969 to 2020. Since for this exercise we do not have birth data beyond 1986, you will have to use the SEER data to infer births in the period 1987-2020; alternatively, you could go to the NCHS source and obtain more recent data, however the NCHS data is complex and downloading additional years is not advised in the short time available to complete the Rowdy Datathon (but we will not stop you). The SEDAC data has total population estimates per county from 2020 through 2100 categorized in four ethnicities: Hispanic, white, black, and other. A viable sequence of analysis is NCHS $\rightarrow$ SEER $\rightarrow$ SEDAC.
+**No changes needed to Chapter 1 content beyond title fix.**
 
-%================================================================
-\section{Identifying Underweight Cutoff Points}
-%================================================================
-The CDC offers a data table of infant weight for age, available at: \\ \href{https://www.cdc.gov/growthcharts/data/zscore/wtageinf.xls}{https://www.cdc.gov/growthcharts/data/zscore/wtageinf.xls} \\ You can extract from this table the information related to weight at birth.
+---
 
-The Excel file \texttt{wtageinf.xls} contains the LMS parameters and selected percentile values needed to compute exact percentiles and $z$-scores for anthropometric measurements. The parameters are provided by sex (1 = male, 2 = female) and by single month of age. Age is listed at the half-month point representing the entire month (e.g., 1.5 months corresponds to 1.0--1.99 months). The only exception is birth, which represents the point at birth.
+## Phase 2: Restructure Chapter 2
 
-The LMS method summarizes the distribution of a measurement at a given age using three parameters:
-\begin{itemize}
-    \item $L$: the Box--Cox power transformation,
-    \item $M$: the median,
-    \item $S$: the generalized coefficient of variation.
-\end{itemize}
-These parameters allow computation of both percentiles and $z$-scores.
+### Task 2.1: Rename Chapter 2
 
-To obtain the measurement value $X$ corresponding to a given $z$-score $Z$ (or percentile), use:
+**Find:**
+```latex
+\chapter{Analysis Activities}  \newpage
+```
+(First occurrence after Chapter 1)
 
-\[
-X = M(1 + LSZ)^{1/L}, \quad L \neq 0
-\]
-
-\[
-X = M \exp(SZ), \quad L = 0
-\]
-%
-where $L$, $M$, and $S$ are taken from the Excel row corresponding to the child's age (in months) and sex. The $z$-score corresponding to common percentiles is:
-%
-\[
-\begin{aligned}
--1.881 &\leftrightarrow 3^\text{rd} \\
--1.645 &\leftrightarrow 5^\text{th} \\
--1.282 &\leftrightarrow 10^\text{th} \\
--0.674 &\leftrightarrow 25^\text{th} \\
-0      &\leftrightarrow 50^\text{th}
-\end{aligned}
-\]
-%
-\paragraph{Example:}
-For a 9-month-old male, the \texttt{WTAGEINF} table gives:
-\[
-L = -0.1600954, \quad
-M = 9.476500305, \quad
-S = 0.11218624.
-\]
-Using $Z = -1.645$ (5th percentile), the cutoff is:
-\[
-X = 7.90 \text{ kg}.
-\]
-%
-This value represents the 5th percentile weight-for-age and can be used as an underweight threshold if the 5th percentile definition is adopted.
-%
-\paragraph{Computing a Z-Score from a Measurement:}
-%
-To obtain the $z$-score corresponding to a given measurement $X$:
-
-\[
-Z = \frac{(X/M)^L - 1}{LS}, \quad L \neq 0
-\]
-
-\[
-Z = \frac{\ln(X/M)}{S}, \quad L = 0.
-\]
-%
-The corresponding percentile is then obtained from the standard normal distribution.
-%
-\paragraph{Example:}
-For a 9-month-old male weighing 9.7 kg:
-%
-\[
-Z = 0.207,
-\]
-%
-which corresponds approximately to the 58th percentile.
-
-\paragraph{Identifying Underweight Cutoff Points in Excel:}
-To identify an underweight threshold in the Excel file:
-%
-\begin{enumerate}
-    \item Filter the data by sex (1 = male, 2 = female).
-    \item Locate the row corresponding to the child's age in months.
-    \item Identify the desired cutoff percentile (e.g., 5th or 3rd percentile column).
-    \item Alternatively, compute the exact cutoff using the LMS formula above.
-\end{enumerate}
-%
-A child is classified as underweight if their measured value falls below the selected percentile cutoff (e.g., below the 5th percentile or below $Z=-2$, depending on the chosen clinical definition).
-
-If finer age resolution is required, linear interpolation between adjacent months may be applied to the $L$, $M$, and $S$ parameters prior to computation.
-
-%================================================================
-\section{Data Files}
-%================================================================
-
-\begin{table}[htbp]
-  \centering
-  \caption{File sizes. If you have limited storage, plan your analysis in stages.}
-    \begin{tabular}{|l|r|l|l|}
-    \toprule
-    DATA SET & \multicolumn{1}{l|}{FILE} & ZIPPED & UNZIPPED \\
-    \midrule
-    NCHS  & \multicolumn{1}{l|}{US1969-1986.zip} & 2.7 GB & 22.8 GB \\
-\cmidrule{2-4}          & \multicolumn{1}{l|}{natalityConfBackup\_PostgreSQL.sql} & 2.42 GB & 25 GB \\
-\cmidrule{2-4}          & \multicolumn{1}{l|}{US1969.zip} & 32.6 MB & 381 MB \\
-    \midrule
-    SEDAC & \multicolumn{1}{l|}{hauer\_county\_NH\_pop\_SSPs.xlsx} & N/A   & 15.1 MB \\
-    \midrule
-    SEER  & \multicolumn{1}{l|}{SEER Data Dictionary.pdf} &       & 73 KB \\
-\cmidrule{2-4}          & \multicolumn{1}{l|}{tx.1969\_2020.19ages.adjusted.txt.gz} & 5.3 MB & 35 MB \\
-\cmidrule{2-4}          & \multicolumn{1}{l|}{tx.1969\_2020.singleages.adjusted.txt.gz} & 18.8 BM & 19 MB \\
-\cmidrule{2-4}          & \multicolumn{1}{l|}{tx.1990\_2020.19ages.adjusted.txt.gz} & 6.5 MB & 6 MB \\
-\cmidrule{2-4}          & \multicolumn{1}{l|}{tx.1990\_2020.singleages.adjusted.txt.gz} & 20.9 MB & 21 MB \\
-\cmidrule{2-4}          & \multicolumn{1}{l|}{us.1969\_2020.19ages.adjusted.txt.gz} & 66.7 MB & 430 MB \\
-\cmidrule{2-4}          & \multicolumn{1}{l|}{us.1969\_2020.singleages.adjusted.txt.gz} & 238.8 MB & 1.6 GB \\
-\cmidrule{2-4}          & \multicolumn{1}{l|}{us.1990\_2020.19ages.adjusted.txt.gz} & 76.7 MB & 520 MB \\
-\cmidrule{2-4}          & \multicolumn{1}{l|}{us.1990\_2020.singleages.adjusted.txt.gz} & 246.3 MB & 1.8 GB \\
-    \midrule
-    TOTAL  &       & 5.7 GB & 52 GB \\
-    \bottomrule
-    \end{tabular}%
-  \label{tab:addlabel}%
-\end{table}%
-
-%================================================================
-\section{Criteria}
-%================================================================
-Results will be evaluated according to requirements set by the commission:
-\begin{itemize}
-	\item \textbf{Compelling presentation}: You must enable the commission to share your numerical and graphical results directly with legislators and citizens through executive summaries. This lay audience should find your summaries and implications to be understandable and convincing.  Express your results in ways that can be acted on to plan e.g. funding of schools, care for the elderly, etc. The supporting documentation can be technical.
-	\item \textbf{Analysis comprehension}: Before a single line of code is written, before a single byte of raw data is processed, you must be able to tell the story of what is the progression of steps that will be undertaken in analysis.
-	\item \textbf{Sound technical methods}: You may cite the analyses of others, but the commission wants to see the methods that you have invented or adopted to calculate these projections (which should be accompanied by error bars, if possible).  The commision must have confidence in your results in order to present those results to others.
-	\item \textbf{Awareness of the data context}: All data have bias. Before, during and after analysis, it is essential to identify biases in the data and articulate clearly how these biases influence all steps of analysis and interpretation.
-	\item \textbf{Reproducible results}: You must enable the commission to have your results confirmed by an independent team.  That is, enable the independent team to replicate your results by describing your data and methods in detail.
-\end{itemize}
-
-% Table generated by Excel2LaTeX from sheet 'Sheet3'
-\begin{table}[htbp]
-  \centering
-  \caption{Evaluation Criteria}
-    \begin{tabular}{|p{22em}|r|}
-    \toprule
-    \textbf{CRITERION} & \multicolumn{1}{p{8em}|}{\textbf{\% WEIGHT}} \\
-    \midrule
-    1. Compelling presentation - Informative & 10\% \\
-    \midrule
-    2. Compelling presentation - Understandable & 10\% \\
-    \midrule
-    3. Analysis comprehension & 20\% \\
-    \midrule
-    4. Sound technical methods & 20\% \\
-    \midrule
-    5. Awareness of the data context & 20\% \\
-    \midrule
-    6. Reproducible results & 20\% \\
-    \bottomrule
-    \end{tabular}%
-  \label{tab:addlabel}%
-\end{table}%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+**Replace with:**
+```latex
 \chapter{Foundational Analysis Activities}  \newpage
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+```
 
-%--------------------------------------------
-\section{A single year of vital statistics}
-%--------------------------------------------
+### Task 2.2: Keep existing "A single year of vital statistics" section
 
-A problem most people can relate to is demography. Millions of people are born in the US every year. Recording birth events is necessary for legal matters such as obtaining a driver's license or other forms of government-issued identification. However, recording, keeping, and using this information has challenges that exemplify many aspects of data analysis, as this exercise will demonstrate.
+This section contains useful introductory programming exercises. Retain as-is.
 
-Since 1969, all births recorded in the US are available as digital records from the National Center for Health Statistics (NCHS) from the Centers for Disease Control and Prevention (CDC). Only between 1969 and 1988 the date and time of birth is publicly available; starting on 1989, only the week of birth is recorded. Why is the date and time of birth no longer recorded? \QA
+---
 
+## Phase 3: Restructure Chapter 3 into Proper Unit Chapters
 
-The NCHS keeps records of place of birth, assistance during delivery (at home, with doctors, with midwives), level of education of the parents, place of residence, weight at birth, number of weeks of gestation, number of siblings, birth order, etc. In total, over 100 variables are recorded.
+The current Chapter 3 titled "Analysis Activities" contains incomplete unit stubs. This needs to be completely restructured into separate chapters (one per unit).
 
-I have made available two files for you: a compressed file with birth records from 1969, and a data dictionary. The uncompressed data file is about 380 MB in size. The data is contained in a "flat file". This means that every line of text in this file is a continuous chain of characters. We must extract information from this type of files with a "dictionary" that tells us the beginning and ending columns of a given variable. Why was this format used? \QA
+### Task 3.1: Replace the entire Chapter 3 section
 
+**Find and delete:** The entire chapter starting with:
+```latex
+\chapter{Analysis Activities}  \newpage
+```
+(Second occurrence)
 
-Please answer the following questions:
-\begin{enumerate}
-	\item How many live births occurred in Texas in 1969 from mothers residing in Texas?	\QA
-	\begin{itemize}
-		\item Bonus question: How would you visualize births from each state with respect to every other state?
-	\end{itemize}
-	\item Show graphically how the level of education of the mother is related to the birth order (1st born, second child, third, etc.)	 \QA
-	\begin{itemize}
-		\item Bonus question: How would you visualize each variable with respect to every other variable?
-	\end{itemize}
-\end{enumerate}
+Through to `\end{document}`
 
-It is possible that you might not know how to answer some of these questions on first contact with this problem.
+**Replace with:** The content specified in Phase 3.2 through Phase 3.8 below.
 
-A simple program that can help you explore this file is
+### Task 3.2: Create Chapter 3 - Unit 1: Responsible Conduct of Research
 
-\BeginCode
-f = open("US1969.dat", "r", encoding="cp1252")
-counter = 0;
-for x in f:
-    if x[25] == "7" and x[26] ==  "4": # other conditions?
-        counter = counter + 1
-print(counter)
-\end{verbatim}
-\EndCode
-%
-
-The instruction \textit{encoding=``cp1252"} is necessary in non-Windows systems due the presence of single-byte character encoding of the Latin alphabet, used by default in the legacy components of Microsoft Windows for English and many European languages including Spanish, French, and German. If you remove this instruction, the following error might show up in non-Windows operating systems: ``'utf-8' codec can't decode byte...''
-
-A common approach to extract information from flat files is by importing it into Excel. The ``\textit{Text Import Wizard}'' (typically shown as in Figure \ref{fig:Excel}) would guide you through the process of identifying variables by column. However, this results in a problem. Describe it. \QA
-
-\begin{figure}[hb]
-	\centering
-		\includegraphics{../images/Excel.png}
-	\caption{Excel's Import Wizard}
-	\label{fig:Excel}
-\end{figure}
-
-
-
+```latex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Unit 1: Responsible Conduct of Research}
 \label{chap:unit1}
@@ -313,7 +210,11 @@ This lesson equips students to address ethical challenges in biomedical data sci
 \subsection{Assessment Instrument}
 
 The assessment involves designing a governance framework for a data science initiative, selecting one of three projects derived from the course-wide data activity. The framework must address stakeholder engagement, decision-making, monitoring, benefit-sharing, unexpected impacts, and consent, while evaluating ethical considerations, future challenges, and feasibility. The goal is to create an ethical, well-structured, and adaptable governance plan.
+```
 
+### Task 3.3: Create Chapter 4 - Unit 2: Foundations of Data in Biomedical Research
+
+```latex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Unit 2: Foundations of Data in Biomedical Research}
 \label{chap:unit2}
@@ -437,7 +338,11 @@ This lesson examines privacy and confidentiality concerns in Open Science and da
     \item Create a 2-page Data Management and Sharing Plan following the NIH requirements for your analyses of the birthweight data challenge.
     \item Apply the FAIR principles (Findable, Accessible, Interoperable, Reusable) to your datasets.
 \end{itemize}
+```
 
+### Task 3.4: Create Chapter 5 - Unit 3: Rigorous Statistical Design
+
+```latex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Unit 3: Rigorous Statistical Design}
 \label{chap:unit3}
@@ -456,17 +361,17 @@ We will provide a practical introduction to conducting rigorous data-driven rese
 
 \begin{enumerate}
     \item The learner will be able to rapidly internalize the current state of scientific knowledge about a specific health-related topic. The goal here is not to master every detail that a specialist would know, but rather to develop fluency with the key known mechanisms, to recognize the quantitative strengths of established relationships, and to identify gaps in the current state of knowledge.
-
+    
     \item The learner will be able to rapidly internalize the structure and capacity of one or more datasets that can be used to conduct research on a specific health-related topic. This includes identifying the units of analysis (who is being measured) and the variables or attributes (what is being measured), understanding how the units of analysis were selected, what population they represent, how the variables were measured, and what types of measurement errors may be present.
-
+    
     \item The learner will be able to engage in a sophisticated discussion of quantitative relationships among measured quantities. This includes considering how such relationships can be assessed, how they contribute to achieving research aims, what it means for an association to be causal, and the meanings of confounding and heterogeneity.
-
+    
     \item The learner will have a sophisticated understanding of the opportunities provided by temporal and longitudinal data. This includes understanding notions of spatial and temporal heterogeneity, the specific types of confounding that can be resolved with longitudinal data, and the implications of autocorrelation and other forms of dependence for estimation precision.
-
+    
     \item The learner will be able to develop a rigorous analytic plan to address a hypothesis that adds to the state of knowledge about a health science-relevant topic, using available data and employing sophisticated analytic methods.
-
+    
     \item The learner will have a sophisticated understanding of uncertainty, including (a) \textit{a priori} notions of uncertainty as reflected in statistical power, and (b) uncertainty following data analysis as reflected in statistical measures of confidence, significance, and precision. The learner will understand how uncertainty is influenced by sample size, sampling and experimental design, collinearity, dependence of measurements, measurement error, and heterogeneity, among other factors.
-
+    
     \item The learner will be able to communicate in both speech and writing the high-level message as well as the technical details of a sophisticated, data-driven scientific inquiry in a health science setting. This will include strategies for effectively communicating to different audiences using precise but accessible language, providing complete documentation sufficient for reproducibility, while still having a narrative that does not lose sight of the forest for the trees.
 \end{enumerate}
 
@@ -485,11 +390,11 @@ Further developing topic 6a above, this lesson equips learners with the skills n
 
 \begin{enumerate}
     \item Learners will understand the concepts of effect size, parameter estimation, and estimation precision, as the core theoretical ideas upon which \textit{a priori} power analysis is based.
-
+    
     \item Learners will understand how estimation precision is related to the scope of available data, how these data were collected, and properties of the analytic approach. Learners will be able to articulate what types of data could be collected in the future to most efficiently improve the statistical power.
-
+    
     \item Learners will understand the conventional definition of power as the probability of research success contingent on the unknown true effect size. Learners will also be conversant in alternative notions of power that are directly related to estimation precision or prediction accuracy rather than hypothesis testing.
-
+    
     \item Learners will be able to articulate how assessments of statistical power do and do not reflect the real-world reproducibility of analytic findings.
 \end{enumerate}
 
@@ -508,20 +413,24 @@ This section of the course will revisit and deepen learners' understanding of is
 
 \begin{enumerate}
     \item Learners will be able to identify exposures and outcomes in a research design, and identify plausible confounders (both observed and unobserved) of the exposure/outcome relationship.
-
+    
     \item Learners will be able to articulate how temporal and spatial structure enables deeper understanding of exposure/outcome relationships, and opens new opportunities to reduce or eliminate certain types of bias.
-
+    
     \item Learners will understand the different ways that an auxiliary variable can enter an analysis, such as being colliders and mediators, and will understand when an auxiliary variable is unlikely to introduce confounding bias.
-
+    
     \item Learners will understand how certain forms of bias can be reduced or eliminated analytically, while others cannot.
-
+    
     \item Learners will understand how various methods for sensitivity analysis can bound or provide conditional insights into the likely contributions of unobserved confounders.
 \end{enumerate}
 
 \subsection{Assessment Instrument}
 
 Building on the assessments for Sections~\ref{sec:3.1} and~\ref{sec:3.2}, provide specific examples of potential measured confounders or other measured sources of bias. To the extent possible, provide analyses that do, and that do not attempt to compensate for such measured sources of bias, and compare these results. Then, provide some examples of unmeasured sources of bias, and conduct sensitivity analyses to assess the likely potential impact of these sources of bias. Finally, use negative control and/or negative exposure methods to provide further context into any causal associations identified through the analysis that you conducted in Section~\ref{sec:3.1}.
+```
 
+### Task 3.5: Create Chapter 6 - Unit 4: Designing Interpretable Predictive Models
+
+```latex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Unit 4: Designing Interpretable Predictive Models}
 \label{chap:unit4}
@@ -636,7 +545,11 @@ Finally, students will practice communicating the performance and design decisio
 \subsection{Assessment Instrument (30 minutes)}
 
 Students will write a short report documenting and comparing the performances of two models, including relevant visualizations.
+```
 
+### Task 3.6: Create Chapter 7 - Unit 5: Reproducible Workflows
+
+```latex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Unit 5: Reproducible Workflows}
 \label{chap:unit5}
@@ -728,7 +641,11 @@ Learn key factors in organizing an analysis pipeline and develop the skills to a
     \item Describe your progress on the template workflow. What aspects did you find most confusing or challenging? Which tools (e.g., Git, Make, Docker) were hardest to implement, and why?
     \item What is one thing you plan to change or do differently in your own projects after today's session? Give a specific example of an analysis or workflow improvement you intend to make.
 \end{enumerate}
+```
 
+### Task 3.7: Create Chapter 8 - Unit 6: Meta-analysis
+
+```latex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Unit 6: Meta-analysis}
 \label{chap:unit6}
@@ -796,7 +713,11 @@ Grounded in the setting of population health outcomes assessed at different spat
 \subsection{Assessment Instrument}
 
 Continuing the work from Sections~\ref{sec:6.1} and~\ref{sec:6.2}, students will reconsider the precision of partially pooled estimates of event rates in light of possible non-independence. Then they will consider whether and how explained and unexplained heterogeneity should be re-evaluated if the evidence sources are non-independent.
+```
 
+### Task 3.8: Create Chapter 9 - Unit 7: Transformer-based AI in Biomedical Research
+
+```latex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Unit 7: Transformer-based AI in Biomedical Research}
 \label{chap:unit7}
@@ -827,9 +748,9 @@ This lesson examines the ethical dimensions of using LLM-based AI agents in biom
 
 \begin{enumerate}
     \item \textbf{Knowledge Check (6 minutes):} A short quiz covering: (a) distinguishing features of agents vs. chatbots, (b) types of invalidation, (c) authorship attribution for AI-assisted work, (d) confidentiality risks in peer review contexts, and (e) multi-agent compute tradeoffs.
-
+    
     \item \textbf{Case-Based Evaluation (12 minutes):} In small groups, analyze a scenario where an agentic pipeline generates a data dictionary, drafts methods text, proposes models, and summarizes results for the vital statistics data challenge. Identify risks and produce a 5-bullet ``agent governance plan'' addressing epistemic risk, confidentiality, authorship, bias/security, and sustainability.
-
+    
     \item \textbf{Disclosure Statement:} Write a one-sentence disclosure describing how AI tools were used in an analysis, suitable for inclusion in a manuscript methods section.
 \end{enumerate}
 
@@ -889,3 +810,79 @@ Refer to step-by-step tutorial in the lesson PDF. Estimated time: 1 hour.
 
 
 \end{document}
+```
+
+---
+
+## Phase 4: Verification Checklist
+
+After all changes are applied:
+
+### Task 4.1: Verify compilation
+```bash
+cd challenge2026
+pdflatex 2026DAIR-3.tex
+pdflatex 2026DAIR-3.tex  # Second pass for references
+```
+
+### Task 4.2: Verify chapter structure
+- [ ] Chapter 1: 2026 Data Challenge (not 2022)
+- [ ] Chapter 2: Foundational Analysis Activities
+- [ ] Chapter 3: Unit 1 (1.1, 1.2)
+- [ ] Chapter 4: Unit 2 (2.1, 2.2, 2.3, 2.4)
+- [ ] Chapter 5: Unit 3 (3.1, 3.2, 3.3)
+- [ ] Chapter 6: Unit 4 (4.0, 4.1, 4.2, 4.3, 4.4)
+- [ ] Chapter 7: Unit 5 (5.1, 5.2, 5.3, 5.4, 5.5, 5.6)
+- [ ] Chapter 8: Unit 6 (6.1, 6.2, 6.3)
+- [ ] Chapter 9: Unit 7 (7.1, 7.2, 7.3)
+
+### Task 4.3: Verify cross-references
+- [ ] All \label{} commands are unique
+- [ ] All \ref{} commands resolve correctly
+- [ ] Table of contents generates correctly
+
+### Task 4.4: Verify no emdashes
+Search for and replace any instances of `---` or `--` used as punctuation (em-dashes or en-dashes) with appropriate alternatives (commas, semicolons, parentheses).
+
+---
+
+## Phase 5: Stage Changes
+
+```bash
+git add challenge2026/2026DAIR-3.tex
+```
+
+**Do NOT commit.** User will run `gh.bat` after review.
+
+---
+
+## Summary of Changes
+
+| Section | Action | Source |
+|---------|--------|--------|
+| Chapter 1 title | Fix "2022" → "2026" | Correction |
+| Chapter 2 title | Rename to "Foundational Analysis Activities" | Clarity |
+| Chapter 3+ | Complete restructure into 7 unit chapters | Word document |
+| Unit 1 (1.1, 1.2) | Add complete content | Word document |
+| Unit 2 (2.1-2.4) | Add complete content | Word document |
+| Unit 3 (3.1-3.3) | Add complete content | Word document |
+| Unit 4 (4.0-4.4) | Add complete content | Word document |
+| Unit 5 (5.1-5.6) | Add complete content | Word document |
+| Unit 6 (6.1-6.3) | Add complete content | Word document |
+| Unit 7 (7.1-7.3) | Add refined content | Word document + EthicsOfAgents.tex |
+
+## Notes for Coding Agent
+
+1. **Preserve existing content:** Chapter 1 content (problem description, data, criteria) and Chapter 2 "single year" exercise should be preserved.
+
+2. **Remove duplicate chapter titles:** The current file has two chapters both titled "Analysis Activities."
+
+3. **LaTeX formatting:** Use consistent formatting with the existing document style (same sectioning commands, environments).
+
+4. **Cross-references:** Use \label{} and \ref{} for all section cross-references.
+
+5. **No emdashes:** Use commas, semicolons, colons, or parentheses instead of `---` or `--`.
+
+6. **Image paths:** Existing image references (e.g., `../images/Excel.png`) should remain unchanged.
+
+7. **lstset configurations:** The document already includes lstset configurations via `../common/DAIR3Config.tex`. Code examples should use `\lstinputlisting` or `verbatim` environments as in the original.
