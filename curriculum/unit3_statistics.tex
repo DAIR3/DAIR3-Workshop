@@ -1,0 +1,84 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Unit 3: Rigorous Statistical Design}
+\label{chap:unit3}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Total Time: 5.5 hours}
+
+%================================================================
+\section{Principles of Study Design for Empirical Research}
+\label{sec:3.1}
+%================================================================
+
+We will provide a practical introduction to conducting rigorous data-driven research in a health-science setting that is scientifically-grounded and analytically sophisticated. We will focus on methods for data analysis that can be utilized in the setting of population health research, leveraging official statistics or other systematically collected data with spatial and temporal structure.
+
+\subsection{Learning Objectives}
+
+\begin{enumerate}
+    \item The learner will be able to rapidly internalize the current state of scientific knowledge about a specific health-related topic. The goal here is not to master every detail that a specialist would know, but rather to develop fluency with the key known mechanisms, to recognize the quantitative strengths of established relationships, and to identify gaps in the current state of knowledge.
+
+    \item The learner will be able to rapidly internalize the structure and capacity of one or more datasets that can be used to conduct research on a specific health-related topic. This includes identifying the units of analysis (who is being measured) and the variables or attributes (what is being measured), understanding how the units of analysis were selected, what population they represent, how the variables were measured, and what types of measurement errors may be present.
+
+    \item The learner will be able to engage in a sophisticated discussion of quantitative relationships among measured quantities. This includes considering how such relationships can be assessed, how they contribute to achieving research aims, what it means for an association to be causal, and the meanings of confounding and heterogeneity.
+
+    \item The learner will have a sophisticated understanding of the opportunities provided by temporal and longitudinal data. This includes understanding notions of spatial and temporal heterogeneity, the specific types of confounding that can be resolved with longitudinal data, and the implications of autocorrelation and other forms of dependence for estimation precision.
+
+    \item The learner will be able to develop a rigorous analytic plan to address a hypothesis that adds to the state of knowledge about a health science-relevant topic, using available data and employing sophisticated analytic methods.
+
+    \item The learner will have a sophisticated understanding of uncertainty, including (a) \textit{a priori} notions of uncertainty as reflected in statistical power, and (b) uncertainty following data analysis as reflected in statistical measures of confidence, significance, and precision. The learner will understand how uncertainty is influenced by sample size, sampling and experimental design, collinearity, dependence of measurements, measurement error, and heterogeneity, among other factors.
+
+    \item The learner will be able to communicate in both speech and writing the high-level message as well as the technical details of a sophisticated, data-driven scientific inquiry in a health science setting. This will include strategies for effectively communicating to different audiences using precise but accessible language, providing complete documentation sufficient for reproducibility, while still having a narrative that does not lose sight of the forest for the trees.
+\end{enumerate}
+
+\subsection{Assessment Instrument}
+
+The assessment will be based on the vital statistics data challenge, centered on birth outcomes (underweight birth and infant mortality) in the state of Texas. Learners will be asked to develop a sophisticated but tractable research aim that can be addressed through careful analysis of public datasets from NCHS, SEER, SEDAC, and elsewhere. Learners will then (i) implement the analysis, (ii) interpret findings, and (iii) report their results. Methods and strategies for all three of these requirements will be covered in lectures and written materials provided to the learners.
+
+%================================================================
+\section{Analytic Plans and Statistical Power}
+\label{sec:3.2}
+%================================================================
+
+Further developing topic 6a above, this lesson equips learners with the skills needed to assess the likelihood of success of a rigorous analytical plan that is aligned with a specific scientific research aim. In most empirical research this is known informally as ``power analysis,'' but here we take a much more expansive definition of this concept in order to consider all forms of \textit{a priori} vetting to which an analytic plan can be subjected.
+
+\subsection{Learning Objectives}
+
+\begin{enumerate}
+    \item Learners will understand the concepts of effect size, parameter estimation, and estimation precision, as the core theoretical ideas upon which \textit{a priori} power analysis is based.
+
+    \item Learners will understand how estimation precision is related to the scope of available data, how these data were collected, and properties of the analytic approach. Learners will be able to articulate what types of data could be collected in the future to most efficiently improve the statistical power.
+
+    \item Learners will understand the conventional definition of power as the probability of research success contingent on the unknown true effect size. Learners will also be conversant in alternative notions of power that are directly related to estimation precision or prediction accuracy rather than hypothesis testing.
+
+    \item Learners will be able to articulate how assessments of statistical power do and do not reflect the real-world reproducibility of analytic findings.
+\end{enumerate}
+
+\subsection{Assessment Instrument}
+
+Carry out a comprehensive assessment of \textit{a priori} power for the analysis conducted in Section~\ref{sec:3.1}. This analysis should not take into account the actual findings of this analysis, but rather should evaluate the proposed research design, situating yourself at the point before the analysis was implemented and executed.
+
+%================================================================
+\section{Sources of Bias and Causal Interpretation}
+\label{sec:3.3}
+%================================================================
+
+This section of the course will revisit and deepen learners' understanding of issues related to bias and causality introduced more briefly in Section~\ref{sec:3.1}. Students will understand how bias is directly related to fundamental notions of causality, while being complementary to the notion of estimation precision as developed in Section~\ref{sec:3.2}. Learners will understand why observational data is nearly always at risk for such bias, but why an ideal experiment is free of such concerns (but is subject to other limitations on validity). Learners will learn to identify potential sources of bias, uncertainty, and non-reproducibility in observational cohort studies, and suggest basic strategies to address these issues.
+
+\subsection{Learning Objectives}
+
+\begin{enumerate}
+    \item Learners will be able to identify exposures and outcomes in a research design, and identify plausible confounders (both observed and unobserved) of the exposure/outcome relationship.
+
+    \item Learners will be able to articulate how temporal and spatial structure enables deeper understanding of exposure/outcome relationships, and opens new opportunities to reduce or eliminate certain types of bias.
+
+    \item Learners will understand the different ways that an auxiliary variable can enter an analysis, such as being colliders and mediators, and will understand when an auxiliary variable is unlikely to introduce confounding bias.
+
+    \item Learners will understand how certain forms of bias can be reduced or eliminated analytically, while others cannot.
+
+    \item Learners will understand how various methods for sensitivity analysis can bound or provide conditional insights into the likely contributions of unobserved confounders.
+\end{enumerate}
+
+\subsection{Assessment Instrument}
+
+Building on the assessments for Sections~\ref{sec:3.1} and~\ref{sec:3.2}, provide specific examples of potential measured confounders or other measured sources of bias. To the extent possible, provide analyses that do, and that do not attempt to compensate for such measured sources of bias, and compare these results. Then, provide some examples of unmeasured sources of bias, and conduct sensitivity analyses to assess the likely potential impact of these sources of bias. Finally, use negative control and/or negative exposure methods to provide further context into any causal associations identified through the analysis that you conducted in Section~\ref{sec:3.1}.
+

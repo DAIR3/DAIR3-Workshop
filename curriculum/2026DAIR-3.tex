@@ -1,0 +1,31 @@
+\documentclass[letterpaper,12pt]{report}
+\newcommand{\TheTitle}{DAIR$^3$}
+\newcommand{\TheSubtitle}{2026 DAIR$^3$ Curriculum}
+\newcommand{\TheAuthor}{Juan B. Guti\'errez}
+\newcommand{\ThePageCount}{39}
+\newcommand{\TheDate}{May-June, 2026}
+\newcommand{\TheObsolescenceDate}{August 31, 2026}
+%-----------------------------
+% Configure instance type
+\newcommand{\CLASSROOM}{1}
+\newcommand{\DATATHON}{2}
+\newcommand{\DocVersion}{\DATATHON} % 1 = classroom, 2 = datathon
+%-----------------------------
+\include{../common/DAIR3Config}
+
+\begin{document}
+	\input{../common/DAIR3FrontMatter}
+	\setcounter{page}{1}
+	\tableofcontents \newpage
+
+    \input{unit1_ethics.tex}
+    \input{unit2_dataMgmt.tex}
+    \input{unit3_statistics.tex}
+    \input{unit4_predictive.tex}
+    \input{unit5_workflows.tex}
+    \input{unit6_meta-analysis.tex}
+    \input{unit7_LLMs.tex}
+    \input{unit8_JHS.tex}
+
+
+\end{document}

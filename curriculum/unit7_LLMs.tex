@@ -1,0 +1,89 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Unit 7: Transformer-based AI in Biomedical Research}
+\label{chap:unit7}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Total Time: 3 hours}
+
+%================================================================
+\section{The Ethics of AI Agents}
+\label{sec:7.1}
+%================================================================
+
+\textbf{Time: 1 hour (Instructional: 50 minutes, Project Work: 10 minutes)}
+
+This lesson examines the ethical dimensions of using LLM-based AI agents in biomedical data science. Unlike single-turn chatbot interactions, agentic workflows involve planning, tool use, memory, and multi-agent coordination, expanding the ethical surface area considerably. Students will learn to identify invalidation risks (a broader concept than ``hallucination''), understand accountability frameworks for agent-assisted research, and apply governance-by-design principles aligned with Responsible Conduct of Research (RCR) standards.
+
+\subsection{Learning Objectives}
+
+\begin{enumerate}
+    \item Define an AI agent in terms of planning, tool use, memory, and multi-agent interaction, and explain why agentic workflows expand ethical risk compared to single-turn model use.
+    \item Explain invalidation (factual, logical, normative, structural) as a framework broader than ``hallucination,'' and identify at least three invalidation types relevant to biomedical data science.
+    \item Apply an ethics checklist to an agentic research workflow, identifying concrete risks in accuracy, authorship, privacy/confidentiality, bias, security, and sustainability.
+    \item Evaluate when multi-agent critique can improve reliability and when it may be inappropriate due to confidentiality constraints, compute burden, or epistemic homogenization.
+    \item Draft a compliant disclosure and accountability statement for agent-assisted work aligned with COPE/ICMJE/WAME publication-ethics norms.
+\end{enumerate}
+
+\subsection{Assessment Instrument}
+
+\begin{enumerate}
+    \item \textbf{Knowledge Check (6 minutes):} A short quiz covering: (a) distinguishing features of agents vs. chatbots, (b) types of invalidation, (c) authorship attribution for AI-assisted work, (d) confidentiality risks in peer review contexts, and (e) multi-agent compute tradeoffs.
+
+    \item \textbf{Case-Based Evaluation (12 minutes):} In small groups, analyze a scenario where an agentic pipeline generates a data dictionary, drafts methods text, proposes models, and summarizes results for the vital statistics data challenge. Identify risks and produce a 5-bullet ``agent governance plan'' addressing epistemic risk, confidentiality, authorship, bias/security, and sustainability.
+
+    \item \textbf{Disclosure Statement:} Write a one-sentence disclosure describing how AI tools were used in an analysis, suitable for inclusion in a manuscript methods section.
+\end{enumerate}
+
+%================================================================
+\section{AI Agents for Technical Tasks: Consensus in LLMs}
+\label{sec:7.2}
+%================================================================
+
+\textbf{Time: 1 hour (Instructional: 45 minutes, Project Work: 15 minutes)}
+
+This lesson introduces the theoretical foundations of transformer models and demonstrates how multiple LLM systems can be orchestrated to achieve consensus on technical tasks. Participants will work hands-on with APIs from multiple providers (e.g., OpenAI GPT, Anthropic Claude) to compare model behaviors and understand how cross-model verification can reduce invalidation. The emphasis is on programmatic integration via APIs rather than web-based interfaces, preparing participants to build robust, verifiable analysis pipelines.
+
+\subsection{Learning Objectives}
+
+\begin{enumerate}
+    \item Describe the core architecture of transformer models (attention mechanisms, tokenization, context windows) and explain how transformers evolve into Large Language Models.
+    \item Compare and contrast simple Artificial Neural Networks (ANNs) with transformer architectures, articulating the advantages of attention-based models for sequential data.
+    \item Set up and authenticate programmatic access to multiple LLM APIs (OpenAI, Anthropic) using Python, demonstrating environment configuration and secure credential management.
+    \item Execute a consensus framework across multiple LLMs, either manually via parallel browser sessions or programmatically using provided source code templates.
+    \item Analyze convergent and divergent responses from multiple models to identify high-confidence outputs versus areas requiring human review.
+\end{enumerate}
+
+\subsection{Assessment Instrument}
+
+\textbf{Pre-workshop requirement:} Complete environment setup for local API access to at least two LLM providers.
+
+\textbf{In-session task (30 minutes):} Using the consensus framework (manual or programmatic), query multiple LLMs about analysis routes for the Jackson Heart Study or vital statistics data. Document: (a) the prompt used, (b) responses from each model, (c) areas of agreement/disagreement, and (d) your synthesis of the consensus recommendation. Refer to step-by-step tutorial in the lesson PDF.
+
+%================================================================
+\section{LLMs in Biomedical Research: Building Consensus Pipelines}
+\label{sec:7.3}
+%================================================================
+
+\textbf{Time: 1 hour (Instructional: 30 minutes, Project Work: 30 minutes)}
+
+Building on the foundations from Sections~\ref{sec:7.1} and~\ref{sec:7.2}, participants will construct a complete consensus analysis pipeline using LLMs to address authentic biomedical research tasks. A step-by-step template is provided that participants can adapt and expand. The session emphasizes that LLMs serve as assistants; humans retain accountability for all outputs, consistent with the ethics framework introduced in Section~\ref{sec:7.1}.
+
+\subsection{Learning Objectives}
+
+\begin{enumerate}
+    \item Construct a multi-model consensus pipeline following a provided template, incorporating prompt design, response collection, and synthesis stages.
+    \item Apply the consensus pipeline to evaluate an NIH grant proposal, producing structured feedback aligned with review criteria.
+    \item Apply the consensus pipeline to draft a Jackson Heart Study manuscript proposal, using LLMs to generate structured content while maintaining human accountability for accuracy and originality.
+    \item Implement verification checkpoints within the pipeline to detect and flag potential invalidation (factual errors, logical inconsistencies, normative violations).
+    \item Document the pipeline with appropriate provenance logging (prompts, model versions, timestamps) to support reproducibility and accountability.
+\end{enumerate}
+
+\subsection{Assessment Instrument}
+
+\textbf{Deliverable (choose one):}
+
+\textbf{Option A: NIH Grant Evaluation Report.} Using your consensus pipeline, evaluate a provided NIH grant proposal. Produce a technical report that includes: (a) consensus scores for each review criterion, (b) identified strengths and weaknesses with model agreement levels, and (c) a synthesis recommendation with confidence assessment.
+
+\textbf{Option B: JHS Manuscript Proposal Draft.} Using your consensus pipeline and JHS guidelines, produce a draft manuscript proposal. Document: (a) the research question generated/refined by LLMs, (b) the proposed methods with model consensus assessment, and (c) a disclosure statement for AI assistance. Note: Participants do not write proposal text directly; all text is generated via the pipeline and reviewed for accuracy.
+
+Refer to step-by-step tutorial in the lesson PDF. Estimated time: 1 hour.

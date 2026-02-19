@@ -1,0 +1,115 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Unit 4: Designing Interpretable Predictive Models}
+\label{chap:unit4}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Total Time: 5 hours} \\
+\textbf{Instructional Time: 3.5 hours} \\
+\textbf{Unit Project Work Time: 1.5 hours}
+
+This unit will introduce the foundations of supervised machine learning models, with a focus on interpretability and communicating decision-making.
+
+%================================================================
+\section{Pre-reading Materials}
+\label{sec:4.0}
+%================================================================
+
+These pre-reading materials focus on foundational concepts in statistics and machine learning.
+
+\subsection{Learning Objectives}
+
+Learners will be able to:
+\begin{enumerate}
+    \item Understand ideas from introductory statistics, including measures of central tendency and variability, visualization techniques, and lines of best fit.
+    \item Understand how to fit a basic machine learning model in Python using sklearn and real data.
+    \item Understand TRIPOD guidelines pertinent to this session.
+\end{enumerate}
+
+\subsection{Assessment Instrument}
+
+Learners will be asked to load a dataset into sklearn, fit a linear regression model, and report the model's mean squared error.
+
+%================================================================
+\section{Foundations of Supervised Learning}
+\label{sec:4.1}
+%================================================================
+
+\textbf{Time: 1.5 hours (Instructional: 70 minutes)}
+
+We will start by providing a broad overview of the landscape of machine learning, and practice the general workflow for building a model, starting from raw data.
+
+\subsection{Learning Objectives}
+
+\begin{enumerate}
+    \item Understand the landscape of possible machine learning models (supervised vs. unsupervised, regression vs. classification).
+    \item Build a linear regression model, understanding how its optimal parameters were chosen and how they can be interpreted.
+    \item Practice the workflow for performing a train-test split, training a model on training data, evaluating a model on held-out test data, and the role of cross-validation.
+    \item Understand the risks of overfitting and data leakage.
+\end{enumerate}
+
+\subsection{Assessment Instrument (20 minutes)}
+
+Learners will build a basic linear regression model using the Vital Statistics dataset, which will serve as a baseline for future work.
+
+%================================================================
+\section{Feature Engineering}
+\label{sec:4.2}
+%================================================================
+
+\textbf{Time: 1 hour (Instructional: 60 minutes)}
+
+Next, we will cover how linear regression can be extended to a variety of other tasks, and how to create new features that capture trends in the data.
+
+\subsection{Learning Objectives}
+
+\begin{enumerate}
+    \item Practice interpreting the coefficients of fit models.
+    \item Use visualizations to spot patterns in the data that inform feature engineering decisions, while keeping in mind the risks of overfitting.
+    \item Understand the differences between encoding strategies (one hot encoding vs. ordinal encoding).
+\end{enumerate}
+
+\subsection{Assessment Instrument (20 minutes)}
+
+Learners will be given a practical task and will need to build a small feature engineering Pipeline in sklearn and be asked to document their decision-making process.
+
+%================================================================
+\section{Feature Selection and Model Explainability}
+\label{sec:4.3}
+%================================================================
+
+\textbf{Time: 1.5 hours (Instructional: 60 minutes)}
+
+Building upon Section~\ref{sec:4.2}, students will gain an understanding of the statistical approaches involved in selecting features.
+
+\subsection{Learning Objectives}
+
+\begin{enumerate}
+    \item Understand mutual information as a feature selection criterion.
+    \item Understand how to apply statistically appropriate techniques to select and justify features, e.g., Pearson, Spearman, and Cram\'er's V correlations, Variance Inflation Factor, multiple $R^2$.
+    \item Understand the role of interaction terms.
+\end{enumerate}
+
+\subsection{Assessment Instrument (30 minutes)}
+
+Learners will practice generating feature importance analyses and documenting their feature selection rationale.
+
+%================================================================
+\section{Model Evaluation, Comparison, and Reporting}
+\label{sec:4.4}
+%================================================================
+
+\textbf{Time: 1 hour (Instructional: 30 minutes)}
+
+Finally, students will practice communicating the performance and design decisions behind a model to external stakeholders.
+
+\subsection{Learning Objectives}
+
+\begin{enumerate}
+    \item Understand how to report and compare different models on the same task (e.g., MSE/RMSE/MAE for regression models, accuracy vs. precision vs. recall vs. ROC-AUC vs. F1 for classification models).
+    \item Practice communicating modeling choices and model behavior.
+\end{enumerate}
+
+\subsection{Assessment Instrument (30 minutes)}
+
+Students will write a short report documenting and comparing the performances of two models, including relevant visualizations.
+
