@@ -87,3 +87,132 @@ Building on the foundations from Sections~\ref{sec:7.1} and~\ref{sec:7.2}, parti
 \textbf{Option B: JHS Manuscript Proposal Draft.} Using your consensus pipeline and JHS guidelines, produce a draft manuscript proposal. Document: (a) the research question generated/refined by LLMs, (b) the proposed methods with model consensus assessment, and (c) a disclosure statement for AI assistance. Note: Participants do not write proposal text directly; all text is generated via the pipeline and reviewed for accuracy.
 
 Refer to step-by-step tutorial in the lesson PDF. Estimated time: 1 hour.
+
+% Required packages (add to your preamble if not already there):
+% \usepackage{longtable}
+% \usepackage{booktabs}
+% \usepackage{ragged2e}
+% \usepackage{array}
+% \usepackage{pdflscape}
+
+\begin{landscape}
+
+    \section{Evaluation Rubric}
+
+    {\footnotesize
+
+    \begin{longtable}{%
+        >{\RaggedRight\arraybackslash}p{2.5cm}   % Component
+        >{\RaggedRight\arraybackslash}p{4.5cm}   % Excellent
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Good
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Satisfactory
+        >{\RaggedRight\arraybackslash}p{4.5cm}}  % Needs Improvement
+
+    \toprule
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
+    \midrule
+    \endfirsthead
+
+    \toprule
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
+    \midrule
+    \endhead
+
+    \midrule
+    \multicolumn{5}{r}{\textit{Continued on next page}} \\
+    \endfoot
+
+    \bottomrule
+    \endlastfoot
+
+    % Row 1
+    \textbf{1.\ Ethics of AI Agents}
+    \newline\textbf{(30\%)}
+    &
+    Accurately distinguishes AI agents from chatbots and clearly explains why
+    agentic workflows expand ethical risk; correctly identifies and explains
+    all four invalidation types with biomedical examples; applies a thorough
+    ethics checklist to an agentic pipeline, addressing all six risk areas
+    (accuracy, authorship, privacy, bias, security, sustainability); produces
+    a complete 5-bullet agent governance plan; drafts a precise, publication-ready
+    disclosure statement aligned with COPE/ICMJE/WAME norms.
+    &
+    Mostly correct distinction between agents and chatbots; identifies most
+    invalidation types with reasonable examples; ethics checklist and
+    governance plan address most risk areas with minor omissions; disclosure
+    statement mostly appropriate.
+    &
+    Basic understanding of agents vs.\ chatbots; identifies some invalidation
+    types but with limited depth; governance plan incomplete or superficial;
+    disclosure statement present but not well-aligned with publication norms.
+    &
+    Fails to distinguish agents from chatbots or misunderstands invalidation;
+    ethics checklist or governance plan missing or incorrect; disclosure
+    statement absent or unsuitable for publication.
+    \\
+    \midrule
+
+    % Row 2
+    \textbf{2.\ LLM Consensus Framework}
+    \newline\textbf{(35\%)}
+    &
+    Demonstrates successful environment setup and authenticated API access to
+    at least two LLM providers; clearly documents the prompt used, responses
+    from each model, and areas of agreement/disagreement; produces a
+    well-reasoned synthesis of the consensus recommendation; shows strong
+    understanding of transformer architecture (attention, tokenization, context
+    windows) and how it differs from simple ANNs.
+    &
+    Environment setup complete with minor issues; documents prompt and model
+    responses with mostly clear comparison; consensus synthesis reasonable
+    but lacking some depth; understands transformer architecture with minor
+    gaps.
+    &
+    Environment setup attempted but incomplete; documentation of prompt or
+    model responses is partial; consensus synthesis is superficial or poorly
+    justified; basic understanding of transformer architecture with notable
+    gaps.
+    &
+    Environment setup not completed or API access not demonstrated; prompt,
+    responses, or synthesis missing; little to no understanding of transformer
+    architecture or cross-model verification.
+    \\
+    \midrule
+
+    % Row 3
+    \textbf{3.\ Consensus Pipeline Construction \& Application}
+    \newline\textbf{(35\%)}
+    &
+    Constructs a complete, well-documented consensus pipeline incorporating
+    prompt design, response collection, and synthesis stages; correctly applies
+    the pipeline to either the NIH grant evaluation or JHS manuscript proposal;
+    implements verification checkpoints that detect and flag invalidation;
+    provides thorough provenance logging (prompts, model versions, timestamps);
+    maintains clear human accountability for all outputs.
+    &
+    Pipeline mostly complete with minor structural gaps; applied to chosen
+    assessment option with reasonable outputs; verification checkpoints
+    present but may lack depth; provenance logging mostly complete.
+    &
+    Pipeline partially constructed; application to chosen option is incomplete
+    or outputs are poorly synthesized; verification checkpoints minimal or
+    inconsistently applied; provenance logging sparse.
+    &
+    Pipeline not constructed or non-functional; chosen assessment option not
+    meaningfully addressed; no verification checkpoints or provenance logging;
+    human accountability not demonstrated.
+    \\
+
+    \end{longtable}
+
+    } % end \footnotesize
+
+\end{landscape}

@@ -113,3 +113,184 @@ Finally, students will practice communicating the performance and design decisio
 
 Students will write a short report documenting and comparing the performances of two models, including relevant visualizations.
 
+% Required packages (add to your preamble if not already there):
+% \usepackage{longtable}
+% \usepackage{booktabs}
+% \usepackage{ragged2e}
+% \usepackage{array}
+% \usepackage{pdflscape}
+
+\begin{landscape}
+
+    \section{Evaluation Rubric}
+
+    {\footnotesize
+
+    \begin{longtable}{%
+        >{\RaggedRight\arraybackslash}p{2.5cm}   % Component
+        >{\RaggedRight\arraybackslash}p{4.5cm}   % Excellent
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Good
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Satisfactory
+        >{\RaggedRight\arraybackslash}p{4.5cm}}  % Needs Improvement
+
+    \toprule
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
+    \midrule
+    \endfirsthead
+
+    \toprule
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
+    \midrule
+    \endhead
+
+    \midrule
+    \multicolumn{5}{r}{\textit{Continued on next page}} \\
+    \endfoot
+
+    \bottomrule
+    \endlastfoot
+
+    % Row 1
+    \textbf{1.\ Pre-Reading Foundations}
+    \newline\textbf{(10\%)}
+    &
+    Demonstrates clear understanding of core statistical concepts (central
+    tendency, variability, visuals, best-fit lines); correctly loads data,
+    fits sklearn linear regression, and accurately reports MSE; strong grasp
+    of TRIPOD-relevant principles.
+    &
+    Minor errors in interpretation or MSE reporting; overall understanding
+    solid; TRIPOD concepts mostly correct.
+    &
+    Basic understanding demonstrated; errors in implementation or conceptual
+    explanation; shaky grasp of TRIPOD elements.
+    &
+    Incorrect or incomplete implementation; misunderstanding of statistical
+    foundations; missing or incorrect MSE.
+    \\
+    \midrule
+
+    % Row 2
+    \textbf{2.\ Supervised Learning Foundations}
+    \newline\textbf{(20\%)}
+    &
+    Clearly distinguishes supervised vs.\ unsupervised, regression
+    vs.\ classification; correctly performs train-test split, trains model,
+    evaluates it, and explains cross-validation; demonstrates strong
+    understanding of overfitting and data leakage.
+    &
+    Good workflow with minor errors in reasoning or terminology;
+    overfitting/data leakage described but not deeply.
+    &
+    Workflow partially correct; inconsistent understanding of splits,
+    evaluation metrics, or model fitting.
+    &
+    Incorrect or incomplete workflow; poor understanding of model evaluation,
+    overfitting, or data leakage.
+    \\
+    \midrule
+
+    % Row 3
+    \textbf{3.\ Generalized Linear \& Non-Parametric Models}
+    \newline\textbf{(15\%)}
+    &
+    Accurately explains and applies linear, logistic, and Poisson regression;
+    correctly interprets coefficients; demonstrates understanding of
+    assumptions; incorporates tree-based ideas if relevant.
+    &
+    Mostly correct application and interpretation; minor gaps in assumptions
+    or coefficient explanations.
+    &
+    Partial understanding; misinterprets coefficients or uses GLMs
+    incorrectly; assumptions' role unclear.
+    &
+    Major misunderstandings of regression types, assumptions, or
+    interpretations; incomplete or incorrect analysis.
+    \\
+    \midrule
+
+    % Row 4
+    \textbf{4.\ Feature Engineering}
+    \newline\textbf{(15\%)}
+    &
+    Insightfully uses visualizations to identify trends; appropriately applies
+    encoding, scaling, and interaction terms; builds a clear sklearn Pipeline;
+    thoroughly documents decisions and rationales.
+    &
+    Good feature engineering with minor justification gaps; Pipeline mostly
+    correct; documentation adequate.
+    &
+    Basic feature creation with limited insight; Pipeline incomplete or
+    justification superficial.
+    &
+    Poor or incorrect feature engineering; missing Pipeline; unclear or
+    unjustified decisions.
+    \\
+    \midrule
+
+    % Row 5
+    \textbf{5.\ Feature Selection \& Explainability}
+    \newline\textbf{(20\%)}
+    &
+    Correctly applies correlation measures (Pearson/Spearman/Cram\'er's V),
+    VIF, R\textsuperscript{2}; thoughtfully justifies feature selection;
+    generates accurate SHAP explanations and interprets them clearly for model
+    behavior.
+    &
+    Most statistical techniques applied correctly; SHAP computed with minor
+    interpretation issues.
+    &
+    Partial or inconsistent application of selection methods; SHAP produced
+    but poorly interpreted.
+    &
+    Incorrect statistical methods; missing or incorrect SHAP analysis; no
+    justification of selected features.
+    \\
+    \midrule
+
+    % Row 6
+    \textbf{6.\ Model Evaluation, Comparison \& Reporting}
+    \newline\textbf{(20\%)}
+    &
+    Accurately computes and compares regression/classification metrics
+    (MSE/RMSE/MAE, accuracy, precision, recall, ROC-AUC, F1); report is
+    clear, well-structured, and communicates model design decisions and
+    behavior with professional visuals.
+    &
+    Metrics computed correctly with minor errors; comparison and explanation
+    clear; visuals mostly appropriate.
+    &
+    Metrics included but inconsistently computed or interpreted; limited
+    explanation; visuals basic or unclear.
+    &
+    Metrics missing or incorrect; report unclear or incomplete; explanations
+    not aligned with results.
+    \\
+    \midrule
+
+    % Row 7
+    \textbf{7.\ Overall Professionalism, Clarity, and Documentation}
+    &
+    Writing polished and well-organized; notebooks/scripts clean,
+    reproducible, and well-commented; outputs easy to interpret.
+    &
+    Mostly clear with minor structural or formatting issues; code readable.
+    &
+    Understandable but inconsistent structure or documentation.
+    &
+    Poorly organized, unclear writing, missing documentation, or sloppy code.
+    \\
+
+    \end{longtable}
+
+    } % end \footnotesize
+
+\end{landscape}

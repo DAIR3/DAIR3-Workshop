@@ -48,20 +48,43 @@ This lesson equips students to address ethical challenges in biomedical data sci
 The assessment involves designing a governance framework for a data science initiative, selecting one of three projects derived from the course-wide data activity. The framework must address stakeholder engagement, decision-making, monitoring, benefit-sharing, unexpected impacts, and consent, while evaluating ethical considerations, future challenges, and feasibility. The goal is to create an ethical, well-structured, and adaptable governance plan.
 
 
+% Required packages (add to your preamble if not already there):
+% \usepackage{longtable}
+% \usepackage{booktabs}
+% \usepackage{ragged2e}
+% \usepackage{array}
+% \usepackage{pdflscape}
+
 \begin{landscape}
+
     %================================================================
     \section{Evaluation Rubric}
     %================================================================
+
     {\footnotesize
 
-    \begin{longtable}{>{\RaggedRight\arraybackslash}p{2.5cm} >{\RaggedRight\arraybackslash}p{3cm} >{\RaggedRight\arraybackslash}p{2.8cm} >{\RaggedRight\arraybackslash}p{2.8cm} >{\RaggedRight\arraybackslash}p{3cm}}
+    \begin{longtable}{%
+        >{\RaggedRight\arraybackslash}p{2.5cm}   % Component
+        >{\RaggedRight\arraybackslash}p{4.5cm}   % Excellent
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Good
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Satisfactory
+        >{\RaggedRight\arraybackslash}p{4.5cm}}  % Needs Improvement
+
     \toprule
-    \textbf{Component} & \textbf{Excellent (90--100\%)} & \textbf{Good (80--89\%)} & \textbf{Satisfactory (70--79\%)} & \textbf{Needs Improvement ($<$70\%)} \\
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
     \midrule
     \endfirsthead
 
     \toprule
-    \textbf{Component} & \textbf{Excellent (90--100\%)} & \textbf{Good (80--89\%)} & \textbf{Satisfactory (70--79\%)} & \textbf{Needs Improvement ($<$70\%)} \\
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
     \midrule
     \endhead
 
@@ -72,34 +95,94 @@ The assessment involves designing a governance framework for a data science init
     \bottomrule
     \endlastfoot
 
-    \textbf{1. Metadata -- Data About Data} \newline \textbf{(20\%)} 
-    & Identifies 5 critical metadata categories with clear, relevant examples; provides a thorough analysis of metadata from Hauer's article, including how, on whom, and under what circumstances data were collected; differentiates high-quality vs poor metadata for reproducibility. 
-    & Lists most metadata categories with relevant examples; analysis from Hauer article is solid but lacks some detail; distinction between good/bad metadata is mostly clear. 
-    & Lists some metadata categories but with limited examples or partial relevance; Hauer's article analysis is basic; distinction is made at the surface level. 
-    & Fewer than 5 categories or inaccurate examples; superficial or missing analysis of Hauer article; shows little grasp of metadata quality for reproducibility. \\
+    % Row 1
+    \textbf{1.\ Metadata -- Data About Data}
+    \newline\textbf{(20\%)}
+    &
+    Identifies 5 critical metadata categories with clear, relevant examples;
+    provides a thorough analysis of metadata from Hauer's article, including
+    how, on whom, and under what circumstances data were collected;
+    differentiates high-quality vs.\ poor metadata for reproducibility.
+    &
+    Lists most metadata categories with relevant examples; analysis from the
+    Hauer article is solid but lacks some detail; distinction between
+    good/bad metadata is mostly clear.
+    &
+    Lists some metadata categories but with limited examples or partial
+    relevance; Hauer's article analysis is basic; distinction is made at the
+    surface level.
+    &
+    Fewer than 5 categories or inaccurate examples; superficial or missing
+    analysis of Hauer article; shows little grasp of metadata quality for
+    reproducibility.
+    \\
     \midrule
 
-    \textbf{2. Data Representation} \newline \textbf{(20\%)} 
-    & Clearly describes alternative data representations and justifies which schema best supports analysis tasks; insightfully compares the flat file to alternative, with thoughtful reasoning and examples; demonstrates a strong understanding of how representation affects research. 
-    & Describes an alternative schema and makes a reasonable comparison to the flat file, with some justification; demonstrates good understanding with minor gaps. 
-    & Identifies a basic alternative, but justification/comparison to the flat file is weak or incomplete; limited examples. 
-    & Incomplete, irrelevant, or unclear alternatives; little to no justification or analysis of schema versus flat file; shows limited understanding. \\
+    % Row 2
+    \textbf{2.\ Data Representation}
+    \newline\textbf{(20\%)}
+    &
+    Clearly describes alternative data representations and justifies which
+    schema best supports analysis tasks; insightfully compares the flat file
+    to the alternative, with thoughtful reasoning and examples; demonstrates
+    a strong understanding of how representation affects research.
+    &
+    Describes an alternative schema and makes a reasonable comparison to the
+    flat file, with some justification; demonstrates good understanding with
+    minor gaps.
+    &
+    Identifies a basic alternative, but justification/comparison to the flat
+    file is weak or incomplete; limited examples.
+    &
+    Incomplete, irrelevant, or unclear alternatives; little to no
+    justification or analysis of schema versus flat file; shows limited
+    understanding.
+    \\
     \midrule
 
-    \textbf{3. Data Sharing 101: Open Science, NIH Policy, FAIR} \newline \textbf{(30\%)} 
-    & Thoroughly defines rationale for NIH Data Management \& Sharing; lists 5 key components with well-explained relevance; accurately lists and explains all 4 FAIR principles with practical examples for each. 
-    & Defines rationale and lists the key NIH components with basic relevance; lists and explains all FAIR principles, with most examples being suitable. 
-    & Provides basic rationale and fewer than 5 NIH components; lists most FAIR principles with limited or superficial examples. 
-    & Incomplete rationale and components, missing several critical points; fails to list all FAIR principles or provides incorrect explanations/examples. \\
+    % Row 3
+    \textbf{3.\ Data Sharing 101: Open Science, NIH Policy, FAIR}
+    \newline\textbf{(30\%)}
+    &
+    Thoroughly defines rationale for NIH Data Management \& Sharing; lists 5
+    key components with well-explained relevance; accurately lists and
+    explains all 4 FAIR principles with practical examples for each.
+    &
+    Defines rationale and lists the key NIH components with basic relevance;
+    lists and explains all FAIR principles, with most examples being suitable.
+    &
+    Provides basic rationale and fewer than 5 NIH components; lists most
+    FAIR principles with limited or superficial examples.
+    &
+    Incomplete rationale and components, missing several critical points;
+    fails to list all FAIR principles or provides incorrect
+    explanations/examples.
+    \\
     \midrule
 
-    \textbf{4. Data Sharing (The Reality): Privacy, Confidentiality, Types of Biomedical Research} \newline \textbf{(30\%)} 
-    & Creates a complete Data Management \& Sharing Plan tailored to the Texas birthweight challenge, following NIH requirements; thoroughly applies FAIR principles to the dataset; clearly articulates privacy concerns and differences among bench, clinical, and animal model research, with thoughtful analysis of sharing implications. 
-    & Plan meets most NIH requirements; applies FAIR principles with minor gaps; reasonably discusses privacy and research type differences. 
-    & Plan basic or incomplete; applies FAIR principles at the surface level; discusses privacy/research types with limited detail. 
-    & Missing/incomplete plan; fails to address FAIR principles, research types, or privacy concerns meaningfully. \\
+    % Row 4
+    \textbf{4.\ Data Sharing (The Reality): Privacy, Confidentiality,
+    Types of Biomedical Research}
+    \newline\textbf{(30\%)}
+    &
+    Creates a complete Data Management \& Sharing Plan tailored to the Texas
+    birthweight challenge, following NIH requirements; thoroughly applies
+    FAIR principles to the dataset; clearly articulates privacy concerns and
+    differences among bench, clinical, and animal model research, with
+    thoughtful analysis of sharing implications.
+    &
+    Plan meets most NIH requirements; applies FAIR principles with minor
+    gaps; reasonably discusses privacy and research type differences.
+    &
+    Plan basic or incomplete; applies FAIR principles at the surface level;
+    discusses privacy/research types with limited detail.
+    &
+    Missing/incomplete plan; fails to address FAIR principles, research
+    types, or privacy concerns meaningfully.
+    \\
 
     \end{longtable}
-    }
+
+    } % end \footnotesize
 
 \end{landscape}

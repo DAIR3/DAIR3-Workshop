@@ -43,19 +43,43 @@ Explain Data Access Procedures: Describe the process for requesting and obtainin
     \item Using the information acquired from the lecture, draft a mock JHS manuscript proposal, using the Manuscript Proposal Form provided and the sample manuscript proposal.
 \end{enumerate}
 
+% Required packages (add to your preamble if not already there):
+% \usepackage{longtable}
+% \usepackage{booktabs}
+% \usepackage{ragged2e}
+% \usepackage{array}
+% \usepackage{pdflscape}
+
 \begin{landscape}
+
     %================================================================
     \section{Evaluation Rubric}
     %================================================================
 
-    \begin{longtable}{>{\RaggedRight\arraybackslash}p{2.8cm} >{\RaggedRight\arraybackslash}p{3cm} >{\RaggedRight\arraybackslash}p{2.5cm} >{\RaggedRight\arraybackslash}p{2.5cm} >{\RaggedRight\arraybackslash}p{2.5cm}}
+    {\footnotesize
+
+    \begin{longtable}{%
+        >{\RaggedRight\arraybackslash}p{2.5cm}   % Component
+        >{\RaggedRight\arraybackslash}p{4.5cm}   % Excellent
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Good
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Satisfactory
+        >{\RaggedRight\arraybackslash}p{4.5cm}}  % Needs Improvement
+
     \toprule
-    \textbf{Component} & \textbf{Excellent (90--100\%)} & \textbf{Good (80--89\%)} & \textbf{Satisfactory (70--79\%)} & \textbf{Needs Improvement ($<$70\%)} \\
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
     \midrule
     \endfirsthead
 
     \toprule
-    \textbf{Component} & \textbf{Excellent (90--100\%)} & \textbf{Good (80--89\%)} & \textbf{Satisfactory (70--79\%)} & \textbf{Needs Improvement ($<$70\%)} \\
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
     \midrule
     \endhead
 
@@ -66,25 +90,49 @@ Explain Data Access Procedures: Describe the process for requesting and obtainin
     \bottomrule
     \endlastfoot
 
-    \textbf{Variable Identification (50\%)} 
-    & Accurately identifies variables; clear rationale; demonstrates deep understanding of JHS datasets 
-    & Minor omissions but overall strong alignment 
-    & Adequate but limited justification 
-    & Incomplete or incorrect variable selection \\
+    % Row 1
+    \textbf{1.\ Variable Identification}
+    \newline\textbf{(50\%)}
+    &
+    Accurately identifies variables; clear rationale; demonstrates deep
+    understanding of JHS datasets.
+    &
+    Minor omissions but overall strong alignment.
+    &
+    Adequate but limited justification.
+    &
+    Incomplete or incorrect variable selection.
+    \\
     \midrule
 
-    \textbf{Manuscript Proposal (50\%)} 
-    & Logically extends grant proposal; well-articulated and publication-ready 
-    & Solid but needs refinement in framing or methods 
-    & Basic understanding but lacks clarity or completeness 
-    & Unclear, inconsistent, or incomplete proposal \\
+    % Row 2
+    \textbf{2.\ Manuscript Proposal}
+    \newline\textbf{(50\%)}
+    &
+    Logically extends grant proposal; well-articulated and publication-ready.
+    &
+    Solid but needs refinement in framing or methods.
+    &
+    Basic understanding but lacks clarity or completeness.
+    &
+    Unclear, inconsistent, or incomplete proposal.
+    \\
     \midrule
 
-    \textbf{Overall Professionalism and Clarity} 
-    & Polished writing, correct formatting, adherence to instructions 
-    & Minor issues with organization or formatting 
-    & Understandable but contains stylistic or format errors 
-    & Poor structure, numerous errors \\
+    % Row 3
+    \textbf{3.\ Overall Professionalism and Clarity}
+    &
+    Polished writing, correct formatting, adherence to instructions.
+    &
+    Minor issues with organization or formatting.
+    &
+    Understandable but contains stylistic or format errors.
+    &
+    Poor structure, numerous errors.
+    \\
 
     \end{longtable}
+
+    } % end \footnotesize
+
 \end{landscape}

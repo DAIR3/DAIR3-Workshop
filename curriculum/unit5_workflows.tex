@@ -90,3 +90,193 @@ Learn key factors in organizing an analysis pipeline and develop the skills to a
     \item What is one thing you plan to change or do differently in your own projects after today's session? Give a specific example of an analysis or workflow improvement you intend to make.
 \end{enumerate}
 
+% Required packages (add to your preamble if not already there):
+% \usepackage{longtable}
+% \usepackage{booktabs}
+% \usepackage{ragged2e}
+% \usepackage{array}
+% \usepackage{pdflscape}
+
+\begin{landscape}
+
+    \section{Evaluation Rubric}
+
+    {\footnotesize
+
+    \begin{longtable}{%
+        >{\RaggedRight\arraybackslash}p{2.5cm}   % Component
+        >{\RaggedRight\arraybackslash}p{4.5cm}   % Excellent
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Good
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Satisfactory
+        >{\RaggedRight\arraybackslash}p{4.5cm}}  % Needs Improvement
+
+    \toprule
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
+    \midrule
+    \endfirsthead
+
+    \toprule
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
+    \midrule
+    \endhead
+
+    \midrule
+    \multicolumn{5}{r}{\textit{Continued on next page}} \\
+    \endfoot
+
+    \bottomrule
+    \endlastfoot
+
+    % Row 1
+    \textbf{1.\ Goals of Reproducible Analyses}
+    \newline\textbf{(10\%)}
+    &
+    Provides a thorough summary, clearly articulating key goals/challenges of
+    reproducible analyses; connects concepts to personal work and the CDC
+    dataset; demonstrates careful reflection on transparency, usability,
+    version control, and archiving.
+    &
+    Addresses most key challenges/goals clearly; provides some connection to
+    personal work and dataset; demonstrates solid understanding with minor
+    omissions.
+    &
+    Identifies basic challenges/goals, but with limited depth or reflection;
+    may not connect well to examples or skip some elements.
+    &
+    Incomplete or superficial summary; lacks understanding of core concepts
+    or fails to address relevance to own work.
+    \\
+    \midrule
+
+    % Row 2
+    \textbf{2.\ Reproducibility via Code Notebooks}
+    \newline\textbf{(20\%)}
+    &
+    Creates a well-structured notebook with reproducible code, markdown, at
+    least one plot and table; documentation is clear; script downloads CDC
+    dataset; all work uploaded; demonstrates integration of tools.
+    &
+    Notebook includes most required elements (code, markdown, plot/table);
+    documentation is mostly clear; dataset obtained; minor gaps in
+    reproducibility or clarity.
+    &
+    Notebook has basic elements, but some required elements (plot/table,
+    markdown, script) are missing or poorly integrated; minimal documentation.
+    &
+    Notebook missing key requirements; poorly documented or not reproducible;
+    files not uploaded, or CDC dataset not included.
+    \\
+    \midrule
+
+    % Row 3
+    \textbf{3.\ Best Practices for Reproducible Programming}
+    \newline\textbf{(15\%)}
+    &
+    Adds thorough documentation to notebook; creates a well-organized Makefile
+    with clear, reusable commands; analysis file is uploaded; demonstrates
+    strong understanding of reproducible scripting (functions, no magic
+    numbers, caching, seeding randomness, refactoring).
+    &
+    Documentation and Makefile present and mostly clear; analysis file
+    uploaded; most best practices followed, though minor omissions may be
+    present.
+    &
+    Documentation or Makefile is incomplete or unclear; basic understanding
+    of practices is evident, but with gaps in execution or clarity.
+    &
+    Documentation and/or Makefile missing or severely lacking; little
+    evidence of understanding reproducible programming practices.
+    \\
+    \midrule
+
+    % Row 4
+    \textbf{4.\ Version Control}
+    \newline\textbf{(15\%)}
+    &
+    Template project code on GitHub is complete and well-structured; the link
+    is shared; meaningful commit history demonstrates staged progress and
+    clarity; challenges are described in detail.
+    &
+    Project is on GitHub with most files complete; link is shared; some
+    commit history and brief challenge discussion; mostly correct use of git.
+    &
+    Project present but incomplete or poorly organized; minimal commit
+    history; challenges noted superficially.
+    &
+    Project not on GitHub or files missing; little/no evidence of version
+    control understanding; challenges not described.
+    \\
+    \midrule
+
+    % Row 5
+    \textbf{5.\ Containers \& Dependency Management}
+    \newline\textbf{(20\%)}
+    &
+    The template project is successfully containerized (Docker/renv/venv);
+    runs as expected; Dockerfile/other files uploaded; demonstrates a clear
+    understanding of strengths/weaknesses; GitHub project is complete and
+    well-documented; challenges discussed.
+    &
+    Container image runs with minor issues; most files uploaded; reasonable
+    documentation and explanation of tool choices; challenges discussed
+    briefly.
+    &
+    Container created but may not run as expected, or files/documentation
+    incomplete; basic understanding of tools, but lacks depth.
+    &
+    Container not created or does not run; missing files/documentation;
+    little/no understanding of dependency management.
+    \\
+    \midrule
+
+    % Row 6
+    \textbf{6.\ Assembling a Full Analysis Pipeline}
+    \newline\textbf{(15\%)}
+    &
+    Creates a comprehensive template project with a clear directory structure
+    and markdown documentation; the pipeline demonstrates thoughtful
+    organization, reproducibility, and ease of use; meets all requirements
+    outlined in class with innovative or robust elements.
+    &
+    Project structure and markdown are mostly clear; most requirements met,
+    with minor organizational or documentation gaps.
+    &
+    Basic directory structure and markdown present; pipeline missing some
+    components or documentation unclear; meets minimal requirements.
+    &
+    Template project missing core structure or documentation; does not
+    demonstrate pipeline assembly skills; requirements not met.
+    \\
+    \midrule
+
+    % Row 7
+    \textbf{7.\ Professionalism, Clarity, Structure}
+    \newline\textbf{(5\%)}
+    &
+    Work is polished, well-organized, clear, and follows all instructions;
+    files are named and formatted consistently; writing is succinct and
+    logical.
+    &
+    Work is mostly clear and organized; minor formatting or organizational
+    issues.
+    &
+    Basic clarity but contains organizational weaknesses, unclear writing, or
+    some failures to follow instructions.
+    &
+    Work is disorganized, unclear, or does not follow instructions; formatting
+    and naming are inconsistent or missing.
+    \\
+
+    \end{longtable}
+
+    } % end \footnotesize
+
+\end{landscape}

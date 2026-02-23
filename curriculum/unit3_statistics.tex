@@ -82,3 +82,185 @@ This section of the course will revisit and deepen learners' understanding of is
 
 Building on the assessments for Sections~\ref{sec:3.1} and~\ref{sec:3.2}, provide specific examples of potential measured confounders or other measured sources of bias. To the extent possible, provide analyses that do, and that do not attempt to compensate for such measured sources of bias, and compare these results. Then, provide some examples of unmeasured sources of bias, and conduct sensitivity analyses to assess the likely potential impact of these sources of bias. Finally, use negative control and/or negative exposure methods to provide further context into any causal associations identified through the analysis that you conducted in Section~\ref{sec:3.1}.
 
+% Required packages (add to your preamble if not already there):
+% \usepackage{longtable}
+% \usepackage{booktabs}
+% \usepackage{ragged2e}
+% \usepackage{array}
+% \usepackage{pdflscape}
+
+\begin{landscape}
+
+    \section{Evaluation Rubric}
+
+    {\footnotesize
+
+    \begin{longtable}{%
+        >{\RaggedRight\arraybackslash}p{2.5cm}   % Component
+        >{\RaggedRight\arraybackslash}p{4.5cm}   % Excellent
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Good
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Satisfactory
+        >{\RaggedRight\arraybackslash}p{4.5cm}}  % Needs Improvement
+
+    \toprule
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
+    \midrule
+    \endfirsthead
+
+    \toprule
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
+    \midrule
+    \endhead
+
+    \midrule
+    \multicolumn{5}{r}{\textit{Continued on next page}} \\
+    \endfoot
+
+    \bottomrule
+    \endlastfoot
+
+    % Row 1
+    \textbf{1.\ Research Aim \& Study Design}
+    \newline\textbf{(30\%)}
+    &
+    Research aim is precise, impactful, and clearly motivated by literature;
+    proposes a rigorous study design with well-justified choices; articulates
+    data sources and methods clearly and non-technically; demonstrates deep
+    understanding of design rigor and practical considerations.
+    &
+    Strong aim and generally appropriate design; minor gaps in justification
+    or clarity; literature context adequate but not comprehensive.
+    &
+    Aim is understandable but narrow, vague, or missing justification; study
+    design adequate but not clearly aligned to research aim or literature.
+    &
+    Aim poorly defined or unsupported; study design unclear, infeasible, or
+    disconnected from research aim or available data.
+    \\
+    \midrule
+
+    % Row 2
+    \textbf{2.\ Strengths, Weaknesses, and Practical Considerations of Design}
+    \newline\textbf{(10\%)}
+    &
+    Insightful discussion of methodological rigor, feasibility, and
+    tradeoffs; identifies limitations and practical challenges with clear,
+    evidence-based reasoning.
+    &
+    Good identification of strengths/weaknesses; minor omissions in
+    feasibility or rigor reasoning.
+    &
+    Basic discussion present but shallow; misses key limitations or practical
+    issues.
+    &
+    Minimal or incorrect discussion; fails to address rigor, feasibility, or
+    weaknesses.
+    \\
+    \midrule
+
+    % Row 3
+    \textbf{3.\ Analytic Plan}
+    \newline\textbf{(25\%)}
+    &
+    Analytic plan is technically sound, well-aligned to design, and matches
+    study structure; demonstrates strong command of appropriate statistical
+    methods; plan is reproducible, transparent, and scientifically rigorous.
+    &
+    Plan is coherent and largely appropriate; some methods need refinement or
+    lack full justification.
+    &
+    Plan is partially appropriate but missing methodological details, clarity,
+    or alignment to study design.
+    &
+    Analytic plan incomplete, inappropriate, or methodologically incorrect.
+    \\
+    \midrule
+
+    % Row 4
+    \textbf{4.\ Power Analysis \& Precision Justification}
+    \newline\textbf{(20\%)}
+    &
+    Power analysis well-constructed, clearly explained, and directly tied to
+    study design; includes effect sizes, parameter precision, detectable
+    differences, and assessment of reproducibility; demonstrates excellent
+    reasoning about what can and cannot be detected.
+    &
+    Power analysis correct and relevant, though missing depth in effect sizes
+    or reproducibility justification; interpretation generally sound.
+    &
+    Basic power analysis included but incomplete, overly simplistic, or
+    lacking explicit connection to study design or precision.
+    &
+    Missing, incorrect, or poorly executed power analysis; no discussion of
+    precision or reproducibility.
+    \\
+    \midrule
+
+    % Row 5
+    \textbf{5.\ Bias, Uncertainty, and Non-Reproducibility}
+    \newline\textbf{(10\%)}
+    &
+    Clearly identifies key biases and uncertainty inherent to the
+    observational design; provides thoughtful, feasible remedies; demonstrates
+    strong understanding of causal and methodological threats.
+    &
+    Identifies major sources of bias and uncertainty; remedies adequate but
+    may lack depth or completeness.
+    &
+    Identifies some biases but misses important ones; remedies are generic or
+    under-developed.
+    &
+    Fails to identify important biases or misunderstands them; remedies
+    missing or incorrect.
+    \\
+    \midrule
+
+    % Row 6
+    \textbf{6.\ Interpretation of Findings}
+    \newline\textbf{(15\%)}
+    &
+    Interpretation directly and accurately addresses the research aim;
+    integrates analytic results, design limitations, bias considerations,
+    precision, and confidence; demonstrates sophisticated reasoning and nuance.
+    &
+    Interpretation mostly aligned with results and study aim; minor gaps in
+    addressing design limitations or confidence.
+    &
+    Interpretation present but superficial or disconnected from study aim;
+    limited reflection on confidence or limitations.
+    &
+    Interpretation incorrect, overly speculative, or not linked to results or
+    study design.
+    \\
+    \midrule
+
+    % Row 7
+    \textbf{7.\ Overall Professionalism, Structure, and Clarity}
+    &
+    Writing is polished, well-organized, and concise; formatting adheres to
+    instructions; figures/tables clear and correctly labeled; demonstrates
+    strong professional communication.
+    &
+    Generally well-written with minor organizational or formatting issues;
+    understandable and professional.
+    &
+    Writing understandable but includes stylistic or structural issues;
+    formatting inconsistent.
+    &
+    Poor structure, unclear writing, numerous errors, or failure to follow
+    instructions.
+    \\
+
+    \end{longtable}
+
+    } % end \footnotesize
+
+\end{landscape}
