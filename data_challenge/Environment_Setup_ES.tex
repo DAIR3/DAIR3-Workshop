@@ -1,0 +1,526 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Configuración del Entorno}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Estas instrucciones están centradas en Windows pero son adaptables para Mac y Linux. Comenzamos configurando variables de entorno para almacenar de forma segura las claves API de OpenAI, Anthropic y Groq. Luego se guía al lector a través de la instalación de Python, enfatizando la configuración adecuada del PATH y herramientas opcionales como Visual Studio Code (VSC), Git y Windows Terminal. Secciones adicionales cubren la configuración de entornos virtuales tanto dentro como fuera de VSC, la instalación de bibliotecas esenciales de Python y herramientas opcionales como LaTeX y compiladores de C/C++. La configuración culmina verificando la funcionalidad mediante la clonación de un repositorio de GitHub y la ejecución de un script auxiliar, asegurando que el entorno soporte el desarrollo modular y reproducible de proyectos con mínimos conflictos de dependencias.
+
+%================================================================
+\section{Requerido: Configuración de variables de entorno para claves API}\label{sec:apikeys}
+%================================================================
+
+Recibirás una clave API para OpenAI y Anthropic durante nuestra primera sesión. Puedes obtener tu propia clave API de forma gratuita en \href{https://groq.com}{Groq}. Necesitas crear tres variables de clave API siguiendo el procedimiento descrito a continuación: \texttt{OPENAI\_API\_KEY}, \texttt{ANTHROPIC\_API\_KEY}, \texttt{GROQ\_API\_KEY}. Prueba el programa \href{https://github.com/DiscursiveNetworks/FOO_QtPy}{agentGroq.py}, \href{https://github.com/DiscursiveNetworks/FOO_QtPy}{agentGPT.py} y/o \href{https://github.com/DiscursiveNetworks/FOO_QtPy}{agentClaude.py} del repositorio de Github descrito más adelante en este documento.
+
+\vs
+
+En Windows, ejecuta los siguientes tres comandos uno a la vez para cada clave API. El ejemplo para \texttt{OPENAI\_API\_KEY} es el siguiente:
+
+\begin{verbatim}
+setx OPENAI_API_KEY "[sk-... clave API]"
+Exit
+echo %OPENAI_API_KEY%
+\end{verbatim}
+
+En el código anterior, reemplaza \texttt{[sk-... clave API]} con tu clave API real. El primer comando establece la variable de entorno de forma permanente para tu cuenta de usuario. El segundo comando cierra el Símbolo del sistema para asegurar que la nueva variable de entorno quede registrada. El tercer comando, ejecutado en una nueva ventana del Símbolo del sistema, imprime el valor almacenado para verificar que se configuró correctamente.
+
+\vs
+
+En Mac/Linux ejecuta los siguientes tres comandos uno a la vez para cada clave API. El ejemplo para \texttt{OPENAI\_API\_KEY} es el siguiente:
+
+\begin{verbatim}
+echo "export OPENAI_API_KEY='[sk-... clave API]'" >> ~/.zshrc
+source ~/.zshrc
+echo $OPENAI_API_KEY
+\end{verbatim}
+
+En el código anterior, reemplaza \texttt{'[sk-... clave API]'} con tu clave API real.
+
+\vs
+
+Según reportó Bryan Fowler, si experimentas errores al intentar agregar tus variables de entorno en Mac/Linux, el problema más probable es la propiedad del archivo \texttt{\~{}/.zshrc}. En ese caso, ejecuta
+
+\begin{verbatim}
+sudo chown $(whoami) ~/.zshrc
+\end{verbatim}
+
+E intenta crear las variables de entorno nuevamente.
+
+\vs
+
+Según reportó Drew Stephen respecto a Mac, ``\textit{aparentemente no funciona en la shell c predeterminada pero cambiar a zsh permite que se ejecute}.'' Es posible que necesites cerrar y reabrir la ventana de terminal desde donde iniciaste para que los cambios sean efectivos.
+
+%================================================================
+\section{Requerido: Instalar Git}\label{sec:git}
+%================================================================
+
+Instala \href{https://gitforwindows.org}{Git para Windows}. Para Mac, instala \href{https://git-scm.com/download/mac}{Git para Mac}. Linux también tiene una versión disponible. En la segunda pantalla, selecciona Visual Studio Code como tu editor de Git. Usa todas las demás opciones predeterminadas.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{../images/envsetup-2-1.png}
+	\caption{Pantalla de configuración de Git mostrando Visual Studio Code como el editor predeterminado.}
+	\label{fig:envsetup-2-1}
+\end{figure}
+
+%================================================================
+\section{Requerido: Abrir Git Bash (o cualquier terminal)}\label{sec:gitbash}
+%================================================================
+
+La línea de comandos te permite controlar tu computadora escribiendo instrucciones, proporcionando acceso preciso a archivos y funciones del sistema. Por ejemplo, escribir \texttt{ls} en un sistema tipo Unix como Linux o macOS lista los archivos y directorios en la ubicación actual, como \texttt{ls /home/user/Documents} para mostrar el contenido de la carpeta Documents. En Windows, el comando \texttt{dir} cumple la misma función, así que \texttt{dir C:\textbackslash Users\textbackslash Alice\textbackslash Desktop} muestra lo que hay en el Escritorio. Para moverse entre directorios, se usa el comando \texttt{cd}; \texttt{cd Downloads} cambia el directorio de trabajo a Downloads, mientras que \texttt{cd ..} sube un nivel. Estos comandos permiten una navegación e inspección eficiente del sistema de archivos a través de la terminal.
+
+\vs
+
+Ahora que instalaste git, deberías \textbf{ir a la carpeta en la que quieres trabajar} usando la línea de comandos, y ejecutar el siguiente comando:
+
+\begin{verbatim}
+git clone https://github.com/DiscursiveNetworks/FOO_QtPy.git
+\end{verbatim}
+
+%================================================================
+\section{Requerido: Instalar Python}\label{sec:python}
+%================================================================
+
+\href{https://www.python.org/downloads/}{https://www.python.org/downloads/}. Instala cualquier versión reciente de Python. Ve a tus descargas y haz doble clic en el archivo de instalación para iniciar la instalación. Por defecto, el instalador de Python para Windows coloca sus ejecutables en el directorio AppData del usuario, de modo que no requiere permisos administrativos. Esto funciona para la mayoría de los escenarios. Si eres el único usuario en el sistema, podrías querer colocar Python en un directorio de nivel superior (por ejemplo, \texttt{C:\textbackslash Python} o \texttt{/usr/local/bin}) para tener una ruta más corta a los binarios (a veces lo necesitarás). Dependiendo de tus preferencias, selecciona ``\textit{Install Now}'' o ``\textit{Customized installation}'' (mi preferencia). Por favor asegúrate de seleccionar ``\textit{Add python.exe to path}''; esto te ahorrará algunos dolores de cabeza más adelante.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.65\textwidth]{../images/envsetup-3-1.png}
+	\caption{Instalador de Python mostrando la casilla ``Add python.exe to PATH'' en la parte inferior.}
+	\label{fig:envsetup-3-1}
+\end{figure}
+
+Para PC: Si no agregaste \texttt{python.exe} al PATH durante la instalación, espera hasta que la instalación se complete. Luego abre el Explorador de archivos y haz clic derecho en ``Este equipo''. Selecciona ``Propiedades'' del menú contextual. En la ventana de Sistema que se abre, haz clic en ``Configuración avanzada del sistema'' en la barra lateral izquierda. En la nueva ventana, asegúrate de que la pestaña ``Opciones avanzadas'' esté seleccionada y haz clic en el botón ``Variables de entorno'' cerca de la parte inferior. En la sección ``Variables del sistema'', encuentra y haz doble clic en la variable llamada ``Path''. Esto abrirá una ventana donde puedes agregar la ruta al ejecutable de Python manualmente.
+
+\vs
+
+Para Mac: Si no te aseguraste de que Python se agregara al PATH de tu sistema durante la instalación, puedes hacerlo manualmente siguiendo los pasos a continuación en una Mac. Después de que la instalación se complete, abre la aplicación Terminal. Ingresa el comando \texttt{which python3} o \texttt{which python} para encontrar la ruta al binario de Python instalado. Copia esa ruta. Luego abre tu archivo de configuración de shell en un editor de texto---este será típicamente \texttt{\~{}/.zshrc} si estás usando la shell Zsh (predeterminada en versiones más recientes de macOS) o \texttt{\~{}/.bash\_profile} si estás usando Bash. Agrega la línea \texttt{export PATH="/ruta/a/python:\$PATH"}, reemplazando \texttt{/ruta/a/python} con la ruta que copiaste. Guarda el archivo y cierra el editor. En la Terminal, ejecuta \texttt{source \~{}/.zshrc} o \texttt{source \~{}/.bash\_profile} dependiendo del archivo que editaste, para que el nuevo PATH se cargue en tu entorno.
+
+\vs
+
+En la ventana ``Características opcionales'' selecciona todas las características
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.65\textwidth]{../images/envsetup-4-1.png}
+	\caption{Pantalla de Características Opcionales de Python---selecciona todas las características.}
+	\label{fig:envsetup-4-1}
+\end{figure}
+
+Selecciona ``\textit{Install Python X.XX for all users}'' si puedes y quieres. Esto requiere privilegios administrativos. Selecciona la carpeta de tu preferencia para la ubicación de instalación.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.65\textwidth]{../images/envsetup-4-2.png}
+	\caption{Pantalla de Opciones Avanzadas de Python mostrando ``Instalar para todos los usuarios'' seleccionado.}
+	\label{fig:envsetup-4-2}
+\end{figure}
+
+%================================================================
+\section{Opcional: Compiladores de C/C++}\label{sec:compilers}
+%================================================================
+
+Si te gustaría programar en C o C++, tienes varias opciones, incluyendo \href{https://gcc.gnu.org}{GCC, la Colección de Compiladores GNU}, pero requiere algo de esfuerzo instalar los prerrequisitos. De Microsoft está \href{https://visualstudio.microsoft.com/vs/community/}{Visual Studio Community Edition} (VSCE), que encapsula la complejidad de instalar múltiples compiladores (incluyendo el SDK del framework .NET). Recomiendo que instales VSCE con todas las ``Cargas de trabajo'' en ``Web y nube'' y ``Escritorio y móvil'' (excepto Python).
+
+%================================================================
+\section{Opcional: LaTeX}\label{sec:latex}
+%================================================================
+
+Si pretendes producir documentos PDF usando LaTeX, instala \href{https://miktex.org}{MiKTeX}.
+
+%================================================================
+\section{Altamente recomendado: Instalar Visual Studio Code (VSC)}\label{sec:vsc}
+%================================================================
+
+\textbf{Si eres nuevo en Python, instala \href{https://code.visualstudio.com}{Visual Studio Code} (VSC)}: Hay muchas opciones para escribir código en Python, y podrías tener una favorita. Debo elegir una para impartir instrucción, y la experiencia me ha demostrado que VSC ofrece la menor cantidad de fricción.
+
+\vs
+
+En VSC, hay dos opciones principales: ``\textit{User Installer}'' y ``\textit{System Installer}''. Usa el User Installer si quieres instalar solo para el usuario actual. Para todos los usuarios, usa el System Installer; prefiero esta opción porque instala VSC en \texttt{C:\textbackslash Program Files\textbackslash Microsoft VS Code}.
+
+\vs
+
+Este pequeño gigante se ha convertido en el favorito de los programadores por muchas buenas razones. Está disponible para Mac, Linux y Windows. Hay una alternativa idéntica de código abierto llamada VSCodium, disponible en \href{https://vscodium.com/}{https://vscodium.com/} \quad Yo personalmente uso VSCode.
+
+%================================================================
+\section{Si instalaste VSC: Extensiones requeridas}\label{sec:extensions}
+%================================================================
+
+Selecciona el ícono de Extensiones a la izquierda e instala las siguientes bibliotecas de Visual Studio Code
+
+\begin{enumerate}
+	\item \textbf{Requerido}: Extensión de Python para Visual Studio Code.
+
+	\item \textbf{Opcional}: También instala Jupyter (esto también instala Pylance, Jupyter Keymap, Jupyter Notebook Renderers, Jupyter SlideShow). Presta atención al editor de la extensión; usa las de Microsoft.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-5-1.png}
+		\caption{Marketplace de extensiones de VS Code mostrando las extensiones de Python y Jupyter de Microsoft.}
+		\label{fig:envsetup-5-1}
+	\end{figure}
+
+	\item \textbf{Opcional}: Instala C/C++ para Visual Studio Code, C/C++ Themes y C/C++ Extension Pack.
+
+	\item \textbf{Opcional}: Instala la extensión ``\textbf{LaTeX Workshop}'' de James Yu. Nunca más usarás otro editor de LaTeX :)
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-6-1.png}
+		\caption{Página de la extensión LaTeX Workshop en VS Code.}
+		\label{fig:envsetup-6-1}
+	\end{figure}
+\end{enumerate}
+
+%================================================================
+\section{Opcional: Windows Terminal}\label{sec:terminal}
+%================================================================
+
+Para usuarios de Windows, instala \href{https://apps.microsoft.com/detail/windows-terminal}{Windows Terminal}. Esta aplicación de Microsoft te permite usar una ventana de múltiples documentos con pestañas para diferentes consolas de comandos como PowerShell, Ubuntu, DOS, Git, etc. Necesitarás esto si quieres completar los pasos relacionados con Linux en la siguiente sección de este documento.
+
+%================================================================
+\section{Si instalaste VSC: Requerido}\label{sec:vscstart}
+%================================================================
+
+Para iniciar VSC, usa la herramienta de línea de comandos de tu sistema operativo y ve a la carpeta \href{https://github.com/DiscursiveNetworks/FOO_QtPy}{CommandLineLLM}. Después del Paso 9, el comando será
+
+\begin{verbatim}
+cd CommandLineLLM
+\end{verbatim}
+
+Dentro de esta carpeta, ejecuta el comando
+
+\begin{verbatim}
+code .
+\end{verbatim}
+
+Nota el punto después del comando \texttt{code}; le indica a VSC que use la carpeta actual como carpeta de trabajo.
+
+%================================================================
+\section{Parcialmente requerido (esto o \ref{sec:venvoutside}): Entornos virtuales dentro de VS Code}\label{sec:venvinside}
+%================================================================
+
+Crea entornos virtuales \textit{dentro} de Visual Studio. Comenzaremos creando un entorno virtual; la razón de esto es que a veces versiones específicas de diferentes bibliotecas pueden ser incompatibles. Deberías crear un entorno para cada proyecto en el que trabajes.
+
+\begin{enumerate}
+	\item Abre Visual Studio. Selecciona la opción \textit{File $>$ Open Folder}\ldots\ Elige la carpeta que quieres usar para tu proyecto.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-7-1.png}
+		\caption{Menú File de VS Code mostrando Open Folder.}
+		\label{fig:envsetup-7-1}
+	\end{figure}
+
+	\item Una vez que selecciones la carpeta, verás los archivos relacionados con el proyecto en el que estás trabajando en el Explorador de archivos de Visual Studio. Nota que la barra de estado cambia de color púrpura a azul.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-7-2.png}
+		\caption{VS Code con un proyecto abierto---nota la barra de estado azul.}
+		\label{fig:envsetup-7-2}
+	\end{figure}
+
+	\item Ahora, presiona las teclas \textit{SHIFT+CTRL+P}. Esto te permitirá escribir en la paleta de comandos la siguiente instrucción:
+
+	\begin{verbatim}
+	Python: Create Environment
+	\end{verbatim}
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-8-1.png}
+		\caption{Paleta de comandos de VS Code con ``Python: Create Environment'' seleccionado.}
+		\label{fig:envsetup-8-1}
+	\end{figure}
+
+	\item Probablemente verás dos opciones: \texttt{venv} y \texttt{conda}. Elige \texttt{venv}.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-8-2.png}
+		\caption{Seleccionando venv sobre conda en VS Code.}
+		\label{fig:envsetup-8-2}
+	\end{figure}
+
+	\item Una vez que elijas \texttt{venv}, tendrás que seleccionar una instalación de Python. Elige la que acabamos de instalar (esta podría ser la única que veas).
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-9-1.png}
+		\caption{Seleccionando la instalación de Python para el entorno virtual.}
+		\label{fig:envsetup-9-1}
+	\end{figure}
+
+	\item Ahora, ve al menú \textit{View $>$ Terminal}.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-9-2.png}
+		\caption{Menú View de VS Code mostrando la opción Terminal.}
+		\label{fig:envsetup-9-2}
+	\end{figure}
+
+	\item Verás que el indicador de comandos ahora tiene la palabra \texttt{(.venv)}. Esto significa que el entorno virtual ha sido instalado y ahora está activo. Si no se ha activado, simplemente escribe \texttt{activate}. Para desactivar el entorno virtual, simplemente necesitas escribir \texttt{deactivate}.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-10-1.png}
+		\caption{Terminal mostrando el indicador \texttt{(.venv)} que indica un entorno virtual activo.}
+		\label{fig:envsetup-10-1}
+	\end{figure}
+\end{enumerate}
+
+%================================================================
+\section{Parcialmente requerido (esto o \ref{sec:venvinside}): Entornos virtuales fuera de VS Code}\label{sec:venvoutside}
+%================================================================
+
+Crea entornos virtuales \textit{fuera} de Visual Studio. Una guía completa está aquí:
+
+\href{https://biomathematicus.me/working-with-python-virtual-environments-in-visual-studio-code/}{https://biomathematicus.me/working-with-python-virtual-environments-in-visual-studio-code/}
+
+\vs
+
+Abre una ventana de terminal. Ahora estás listo para instalar paquetes de Python. Comenzaremos creando un entorno virtual; la razón de esto es que a veces versiones específicas de diferentes bibliotecas pueden ser incompatibles. Deberías crear un entorno para cada proyecto en el que trabajes.
+
+\begin{enumerate}
+	\item Todas las instrucciones relacionadas sobre paquetes y entornos virtuales están en:
+
+	\href{https://packaging.python.org/en/latest/tutorials/installing-packages/}{https://packaging.python.org/en/latest/tutorials/installing-packages/}
+
+	\item Verifica tu versión de pip. Es la herramienta más popular para instalar paquetes de Python, y la incluida con las versiones modernas de Python. Si el siguiente comando devuelve un número de versión, estás listo. De lo contrario, reinstala python (o inícialo con bootstrap).
+
+	\begin{verbatim}
+	python -m pip --version
+	\end{verbatim}
+
+	\item Actualiza pip y setuptools
+
+	\begin{verbatim}
+	python -m pip install --upgrade pip setuptools wheel
+	\end{verbatim}
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.85\textwidth]{../images/envsetup-11-1.png}
+		\caption{Salida de terminal al actualizar pip, setuptools y wheel.}
+		\label{fig:envsetup-11-1}
+	\end{figure}
+
+	\item Me gusta tener una carpeta de fácil acceso para entornos virtuales, por eso siempre creo una carpeta como \texttt{c:\textbackslash penv} para este propósito. Para crear esta carpeta, ejecuta el siguiente comando en la terminal: \texttt{mkdir c:\textbackslash penv}. Puedes nombrar esta carpeta como quieras. La importancia de esto será evidente en el paso 8. También es importante destacar que la carpeta en la que creas tus entornos virtuales no necesita ser la carpeta en la que reside tu código.
+
+	\item Ahora \textbf{crea} un entorno virtual llamado venn (este es un ejemplo para un programa sobre diagramas de Venn; puedes llamarlo con el nombre que prefieras):
+
+	\begin{verbatim}
+	python -m venv c:\penv\venn
+	\end{verbatim}
+
+	\item Para \textbf{activar} este entorno ejecuta el siguiente comando en la terminal de VSC:
+
+	\begin{verbatim}
+	C:\penv\venn\Scripts\activate
+	\end{verbatim}
+
+	Ahora la línea de comandos mostrará el indicador con el nombre del entorno que fue activado.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{../images/envsetup-11-2.png}
+		\caption{Indicador de comandos mostrando el entorno virtual activado.}
+		\label{fig:envsetup-11-2}
+	\end{figure}
+
+	\item Para \textbf{desactivar} un entorno virtual, simplemente escribe \texttt{deactivate} en el indicador de comandos.
+
+	\item La solución ideal es usar el archivo ActivateEnv.bat descrito en el apéndice (agrega \texttt{c:\textbackslash venv} a la variable de entorno PATH). Llámalo desde un archivo .bat o .sh como en el siguiente ejemplo:
+
+	\begin{verbatim}
+	ActivateEnv DiNet "C:\Dropbox\!JBGResearch\!!!DiNet\FOO_QtPy"
+	\end{verbatim}
+\end{enumerate}
+
+%================================================================
+\section{Solución de problemas}\label{sec:troubleshoot}
+%================================================================
+
+Según reportó Lorena Roa de La Cruz, podrías ver un error al intentar activar un entorno virtual. Esto se debe a la configuración de permisos. Si esto sucede, ejecuta el comando:
+
+\begin{verbatim}
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+\end{verbatim}
+
+Después de eso, ejecuta el script \texttt{activate}.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.85\textwidth]{../images/envsetup-12-1.png}
+	\caption{Error de política de ejecución de PowerShell y solución: ejecutando \texttt{Set-ExecutionPolicy} seguido de \texttt{activate}.}
+	\label{fig:envsetup-12-1}
+\end{figure}
+
+%================================================================
+\section{Requerido (después de \ref{sec:venvinside} o \ref{sec:venvoutside}): Instalar bibliotecas de Python}\label{sec:libraries}
+%================================================================
+
+Instalaremos bibliotecas para el entorno Python de este proyecto. Las bibliotecas más importantes son:
+
+\begin{itemize}
+	\item OpenAI
+	\item Anthropic
+	\item Langchain
+	\item PyQt5
+	\item NumPy
+	\item Matplotlib
+	\item SciPy
+	\item Jupyter
+	\item Pandas
+\end{itemize}
+
+Para cada una de ellas escribe el siguiente comando: \texttt{python -m pip install [nombre de la biblioteca]}. Por ejemplo:
+
+\begin{verbatim}
+python -m pip install NumPy
+\end{verbatim}
+
+Alternativamente, si estás usando git bash, simplemente puedes escribir:
+
+\begin{verbatim}
+pip install NumPy
+\end{verbatim}
+
+Repite para las bibliotecas listadas arriba. Deberías ver algo como esto:
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.85\textwidth]{../images/envsetup-13-1.png}
+	\caption{Salida de terminal mostrando una instalación exitosa de NumPy.}
+	\label{fig:envsetup-13-1}
+\end{figure}
+
+Es posible que el código falle; el repositorio de código fuente cambia con el tiempo. En ese caso el error será algo como:
+
+\begin{verbatim}
+ModuleNotFoundError: No module named 'library_name'
+\end{verbatim}
+
+Donde \texttt{'library\_name'} representa el nombre de la biblioteca que está causando el error. En ese caso, simplemente sigue los procedimientos anteriores para instalar la biblioteca faltante.
+
+\vs
+
+Una sugerencia importante que proviene de experimentar frustración en el pasado es esta: Mantén el entorno base limpio, es decir, con bibliotecas mínimas. Los conflictos entre bibliotecas surgirán una vez que instales varias de ellas. Por eso es una buena práctica crear un entorno para cada proyecto.
+
+\vs
+
+\textbf{\textcolor{Input}{Sabrás que tu entorno es completamente funcional cuando puedas ejecutar el archivo agentGroq.py, agentGPT.py y/o agentClaude.py}}.
+
+%================================================================
+\section{Requerido: Jupyter Notebook}\label{sec:jupyter}
+%================================================================
+
+\textbf{Opcional}: Ahora, crea un Jupyter Notebook.
+
+\begin{enumerate}
+	\item Abundante información relevante sobre Jupyter en VSC está disponible en \href{https://code.visualstudio.com/docs/datascience/jupyter-notebooks}{https://code.visualstudio.com/docs/datascience/jupyter-notebooks}
+
+	\item Activa el entorno que quieres usar según el paso \ref{sec:venvoutside}.f
+
+	\item Necesitas adjuntar el kernel de tu entorno virtual. Por ejemplo, si tienes un entorno virtual llamado venn:
+
+	\begin{verbatim}
+	python -m ipykernel install --user --name=venn
+	\end{verbatim}
+
+	\item Ejecuta el paso \ref{sec:venvoutside}.a
+
+	\item En VSC, ejecuta el comando \texttt{Create:New Jupyter Notebook} desde la Paleta de comandos (Ctrl+Shift+P) o creando un nuevo archivo .ipynb en tu espacio de trabajo.
+
+	\item Podrías recibir una Alerta de seguridad respecto al firewall. Permite el acceso.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.6\textwidth]{../images/envsetup-14-1.png}
+		\caption{Alerta del Firewall de Windows Defender---permite el acceso para Visual Studio Code.}
+		\label{fig:envsetup-14-1}
+	\end{figure}
+
+	\item Después de ingresar un comando, podrías ver el siguiente mensaje:
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.55\textwidth]{../images/envsetup-14-2.png}
+		\caption{Solicitud de VS Code para instalar el paquete ipykernel---haz clic en Install.}
+		\label{fig:envsetup-14-2}
+	\end{figure}
+
+	Instálalo.
+\end{enumerate}
+
+%================================================================
+\section{Comandos de Python en la Terminal}\label{sec:pythonterminal}
+%================================================================
+
+Finalmente, puedes simplemente ingresar comandos de Python en la Terminal. Abre un Símbolo del sistema y escribe el siguiente comando:
+
+\begin{verbatim}
+python
+\end{verbatim}
+
+Esto te permitirá ingresar comandos de python, por ejemplo \texttt{1+1}
+
+%================================================================
+\section*{APÉNDICE: ActivateEnv.bat}\label{sec:appendix}
+%================================================================
+\addcontentsline{toc}{section}{APÉNDICE: ActivateEnv.bat}
+
+ActivateEnv.bat para colocar en \texttt{c:\textbackslash venv} para activar entornos de Python
+
+\begin{verbatim}
+@echo off
+setlocal
+
+:: Read parameters
+set "ENV_NAME=%~1"
+set "BASE_DIR=%~2"
+echo Starting activation of the virtual environment '%ENV_NAME%'...
+
+:: Validate input
+if "%ENV_NAME%"=="" (
+    echo [ERROR] Environment name not specified.
+    goto :eof
+)
+
+if "%BASE_DIR%"=="" (
+    echo [ERROR] Base directory not specified.
+    goto :eof
+)
+
+:: Check if base directory exists
+if not exist "%BASE_DIR%" (
+    echo [ERROR] Directory not found: %BASE_DIR%
+    goto :eof
+)
+
+:: Change to working directory
+cd /d "%BASE_DIR%"
+
+:: Define the path to the venv under C:\penv
+set "VENV_ROOT=C:\penv"
+set "VENV_ACTIVATE=%VENV_ROOT%\%ENV_NAME%\Scripts\activate.bat"
+
+:: Check for the activation script
+if exist "%VENV_ACTIVATE%" (
+    echo calling activation...
+    call "%VENV_ACTIVATE%"
+    echo activation was called...
+) else (
+    echo [ERROR] Virtual environment activation script not found:
+%VENV_ACTIVATE%
+    goto :eof
+)
+
+echo Activation of the virtual environment '%ENV_NAME%' has ended
+
+echo Launching VSC Starting
+code .
+echo Launching VSC Ended
+
+endlocal
+\end{verbatim}
