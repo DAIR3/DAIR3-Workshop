@@ -23,9 +23,18 @@ This lesson examines the sociotechnical and ethical aspects of biomedical data s
 
 \begin{itemize}
     \item Compare responses to the data challenge with your peers. What issues arise?
-    \item Why was date and time no longer recorded after 1987?
+    \item Why is the date and time of birth no longer recorded after 1987, only the week of birth? Discuss the privacy implications.
+    \item Identify at least three ethical concerns when projecting underweight newborns and infant mortality by county. Consider: stigmatization of specific counties or populations; secondary use of data originally collected for other purposes; and potential biases in historical data collection.
     \item Who decides what data to collect, how to store it and how to access it? What biases could there be in the data (e.g., data collection in rural areas, existence of infrastructure)? What is the difference between bias and trend in these data? Provide examples.
 \end{itemize}
+
+% \subsection{Assessment Instrument}
+
+% \begin{itemize}
+%     \item Compare responses to the data challenge with your peers. What issues arise?
+%     \item Why was date and time no longer recorded after 1987?
+%     \item Who decides what data to collect, how to store it and how to access it? What biases could there be in the data (e.g., data collection in rural areas, existence of infrastructure)? What is the difference between bias and trend in these data? Provide examples.
+% \end{itemize}
 
 %================================================================
 \section{What are Ethics? Ethical Issues in Biomedical Data Science}
@@ -45,15 +54,53 @@ This lesson equips students to address ethical challenges in biomedical data sci
 
 \subsection{Assessment Instrument}
 
-%The assessment involves designing a governance framework for a data science initiative, selecting one of three projects derived from the course-wide data activity. The framework must address stakeholder engagement, decision-making, monitoring, benefit-sharing, unexpected impacts, and consent, while evaluating ethical considerations, future challenges, and feasibility. The goal is to create an ethical, well-structured, and adaptable governance plan.
+\begin{itemize}
+    \item Suppose you are doing a study using NCHS vital statistics to develop an AI/ML application that will help policymakers make decisions about allocating resources for prenatal care. Who are the key stakeholders that should be involved in the design, dissemination, and/or evaluation of the application? Develop a stakeholder engagement strategy for presenting your findings to affected communities.
+    \item You have been tasked with developing a draft governance framework for the use of predictive models in guiding decisions made by the State of Texas. Develop a framework to help the State by describing the ethical considerations and key questions and/or recommendations for approaching each ethical issue:
+\end{itemize}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{0.35\textwidth}|p{0.28\textwidth}|p{0.28\textwidth}|}
+\hline
+\textbf{Topic} & \textbf{Ethical Issue(s)} & \textbf{Approach} \\
+\hline
+Stakeholder identification and engagement processes & & \\[2.5em]
+\hline
+Decision-making structures and authorities & & \\[2.5em]
+\hline
+Monitoring and evaluation mechanisms & & \\[2.5em]
+\hline
+Benefit-sharing policies & & \\[2.5em]
+\hline
+Procedures for addressing unexpected impacts & & \\[2.5em]
+\hline
+Informed consent and/or notification & & \\[2.5em]
+\hline
+Data quality and bias & & \\[2.5em]
+\hline
+Privacy & & \\[2.5em]
+\hline
+Other (please specify) & & \\[2.5em]
+\hline
+\end{tabular}
+\end{table}
 
 \begin{itemize}
-    \item Design a governance framework for a data science initiative. 
-    \item Select one of three projects derived from the course-wide data activity. Address stakeholder engagement, decision-making, monitoring, benefit-sharing, unexpected impacts, and consent. 
-    \item Evaluate ethical considerations and future challenges. 
-    \item Assess the feasibility of the proposed framework. 
-    \item Goal: produce an ethical, well-structured, and adaptable governance plan. 
+    \item Accompany your framework with a brief reflection (one paragraph) on how well it addresses key issues. Are there any issues that are missing (e.g., for individuals, communities, or populations)? How well does it anticipate future ethical challenges? What feasibility issues and resource constraints should be taken into consideration if the framework is implemented?
 \end{itemize}
+
+% \subsection{Assessment Instrument}
+
+%The assessment involves designing a governance framework for a data science initiative, selecting one of three projects derived from the course-wide data activity. The framework must address stakeholder engagement, decision-making, monitoring, benefit-sharing, unexpected impacts, and consent, while evaluating ethical considerations, future challenges, and feasibility. The goal is to create an ethical, well-structured, and adaptable governance plan.
+
+% \begin{itemize}
+%     \item Design a governance framework for a data science initiative. 
+%     \item Select one of three projects derived from the course-wide data activity. Address stakeholder engagement, decision-making, monitoring, benefit-sharing, unexpected impacts, and consent. 
+%     \item Evaluate ethical considerations and future challenges. 
+%     \item Assess the feasibility of the proposed framework. 
+%     \item Goal: produce an ethical, well-structured, and adaptable governance plan. 
+% \end{itemize}
 
 
 
@@ -63,6 +110,238 @@ This lesson equips students to address ethical challenges in biomedical data sci
 % \usepackage{ragged2e}
 % \usepackage{array}
 % \usepackage{pdflscape}
+
+% \begin{landscape}
+
+%     \section{Evaluation Rubric}
+
+%     {\footnotesize
+
+%     \begin{longtable}{%
+%         >{\RaggedRight\arraybackslash}p{2.5cm}   % Component
+%         >{\RaggedRight\arraybackslash}p{4.5cm}   % Excellent
+%         >{\RaggedRight\arraybackslash}p{4.2cm}   % Good
+%         >{\RaggedRight\arraybackslash}p{4.2cm}   % Satisfactory
+%         >{\RaggedRight\arraybackslash}p{4.5cm}}  % Needs Improvement
+
+%     \toprule
+%     \textbf{Component} &
+%     \textbf{Excellent (90--100\%)} &
+%     \textbf{Good (80--89\%)} &
+%     \textbf{Satisfactory (70--79\%)} &
+%     \textbf{Needs Improvement ($<$70\%)} \\
+%     \midrule
+%     \endfirsthead
+
+%     \toprule
+%     \textbf{Component} &
+%     \textbf{Excellent (90--100\%)} &
+%     \textbf{Good (80--89\%)} &
+%     \textbf{Satisfactory (70--79\%)} &
+%     \textbf{Needs Improvement ($<$70\%)} \\
+%     \midrule
+%     \endhead
+
+%     \midrule
+%     \multicolumn{5}{r}{\textit{Continued on next page}} \\
+%     \endfoot
+
+%     \bottomrule
+%     \endlastfoot
+
+%     % Row 1
+%     \textbf{1.\ Peer Comparison \& Issue Identification}
+%     \newline\textbf{(10\%)}
+%     &
+%     Thoughtfully compares responses with peers and identifies multiple
+%     substantive issues; demonstrates critical reflection on discrepancies
+%     and their ethical or scientific implications; connects issues to
+%     broader reproducibility and data quality concerns.
+%     &
+%     Compares responses and identifies several relevant issues; discussion
+%     is mostly substantive with some reflection on implications; connection
+%     to reproducibility or data quality is partially developed.
+%     &
+%     Identifies some issues from peer comparison but analysis is surface
+%     level; limited reflection on why discrepancies matter for data
+%     science practice.
+%     &
+%     Minimal or no meaningful peer comparison; issues identified are vague
+%     or incorrect; little evidence of critical engagement with the data
+%     challenge.
+%     \\
+%     \midrule
+
+%     % Row 2
+%     \textbf{2.\ Historical Data Context}
+%     \newline\textbf{(10\%)}
+%     &
+%     Provides a well-reasoned, nuanced explanation for why date and time
+%     recording ceased after 1987; situates the change within broader
+%     sociotechnical, institutional, or policy contexts; demonstrates
+%     understanding of how historical decisions shape data availability
+%     and reproducibility.
+%     &
+%     Offers a reasonable explanation with some contextual grounding;
+%     demonstrates solid understanding of how institutional or policy
+%     factors affect data collection practices, with minor gaps.
+%     &
+%     Provides a basic explanation but lacks contextual depth; recognizes
+%     that external factors influence data collection without fully
+%     analyzing their implications.
+%     &
+%     Explanation is missing, or purely speculative; no
+%     grounding in sociotechnical or historical context; shows little
+%     understanding of how data collection decisions are made.
+%     \\
+%     \midrule
+
+%     % Row 3
+%     \textbf{3.\ Data Governance, Bias, \& Trends}
+%     \newline\textbf{(15\%)}
+%     &
+%     Clearly articulates who decides what data to collect, store, and
+%     access; identifies multiple plausible sources of bias (e.g., rural
+%     infrastructure, collection gaps) with specific examples; provides a
+%     nuanced, accurate distinction between bias and trend supported by
+%     concrete examples; demonstrates sophisticated understanding of how
+%     governance decisions shape data quality and equity.
+%     &
+%     Identifies key decision-makers and discusses bias sources with
+%     reasonable examples; distinction between bias and trend is mostly
+%     clear and accurate; connection to equity or data quality mostly
+%     well developed.
+%     &
+%     Names some stakeholders but analysis is incomplete; identifies at
+%     least one source of bias with a limited example; distinction between
+%     bias and trend is attempted but imprecise or only partly illustrated.
+%     &
+%     Fails to address who governs data collection, storage, or access;
+%     bias sources missing or incorrectly described; no meaningful
+%     distinction between bias and trend; examples absent or irrelevant.
+%     \\
+%     \midrule
+
+%     % Row 4
+%     \textbf{4.\ Stakeholder Engagement \& Decision-Making}
+%     \newline\textbf{(15\%)}
+%     &
+%     Framework identifies all relevant stakeholders with well-justified
+%     roles; describes specific, realistic engagement strategies;
+%     articulates a clear and equitable decision-making structure;
+%     anticipates conflicts of interest and addresses them thoughtfully.
+%     &
+%     Most stakeholders identified with reasonable engagement approaches;
+%     decision-making structure is mostly clear; minor gaps in equity
+%     considerations or conflict of interest analysis.
+%     &
+%     Key stakeholders named but engagement strategies are generic or
+%     underdeveloped; decision-making structure is present but lacks
+%     clarity or justification.
+%     &
+%     Stakeholders missing or poorly identified; no coherent engagement
+%     strategy or decision-making structure; shows limited understanding
+%     of governance design.
+%     \\
+%     \midrule
+
+%     % Row 5
+%     \textbf{5.\ Ethical Considerations \& Anticipatory Governance}
+%     \newline\textbf{(20\%)}
+%     &
+%     Thoroughly evaluates ethical challenges specific to the chosen
+%     project; integrates anticipatory governance principles to address
+%     future uncertainties; differentiates among traditional bioethical,
+%     sociotechnical, and other frameworks with sophistication; analysis
+%     is proactive rather than reactive.
+%     &
+%     Ethical challenges well evaluated; anticipatory governance referenced
+%     and mostly applied; frameworks differentiated with minor inaccuracies
+%     or incomplete integration.
+%     &
+%     Some ethical challenges identified; anticipatory governance mentioned
+%     but superficially applied; framework differentiation is partial or
+%     inconsistent.
+%     &
+%     Ethical considerations minimal or inaccurate; no meaningful
+%     application of anticipatory governance; frameworks absent,
+%     conflated, or misapplied.
+%     \\
+%     \midrule
+
+%     % Row 6
+%     \textbf{6.\ Monitoring, Unexpected Impacts, \& Benefit-Sharing}
+%     \newline\textbf{(15\%)}
+%     &
+%     Proposes specific, feasible monitoring mechanisms with clear
+%     indicators; thoughtfully anticipates unexpected impacts and describes
+%     adaptive responses; benefit-sharing plan is equitable, well-reasoned,
+%     and tied to the project-specific context.
+%     &
+%     Monitoring and benefit-sharing addressed with reasonable detail;
+%     unexpected impacts considered with some adaptive strategies; minor
+%     gaps in feasibility or equity analysis.
+%     &
+%     Monitoring and benefit-sharing mentioned but lack specificity or
+%     justification; unexpected impacts acknowledged without substantive
+%     adaptive planning.
+%     &
+%     Monitoring, benefit-sharing, or unexpected impacts missing or poorly
+%     addressed; framework is reactive or purely theoretical with no
+%     practical grounding.
+%     \\
+%     \midrule
+
+%     % Row 7
+%     \textbf{7.\ Consent \& Secondary Data Use}
+%     \newline\textbf{(10\%)}
+%     &
+%     Consent framework is clearly articulated and appropriately tailored
+%     to secondary data use; identifies specific privacy and confidentiality
+%     risks; proposes concrete strategies consistent with ethical standards
+%     and relevant policy or regulatory requirements.
+%     &
+%     Consent addressed with reasonable detail; privacy risks identified;
+%     strategies are mostly appropriate with minor gaps in policy alignment
+%     or specificity.
+%     &
+%     Consent mentioned but treatment is generic or incompletely applied
+%     to the secondary use context; privacy risks acknowledged without
+%     substantive mitigation strategies.
+%     &
+%     Consent absent, incorrect, or irrelevant to secondary use; privacy
+%     concerns not addressed; no evidence of understanding relevant
+%     ethical or regulatory standards.
+%     \\
+%     \midrule
+
+%     % Row 8
+%     \textbf{8.\ Feasibility \& Overall Framework Quality}
+%     \newline\textbf{(5\%)}
+%     &
+%     Framework is coherent, well-structured, and realistic; all components
+%     integrate into a unified governance plan; writing is clear and
+%     precise; demonstrates thorough command of course concepts across
+%     the full framework.
+%     &
+%     Framework is mostly coherent and feasible; components are largely
+%     integrated; writing is clear with minor lapses; good command of
+%     course concepts throughout.
+%     &
+%     Framework is partially coherent; some components feel disconnected
+%     or underdeveloped; writing is adequate; course concepts applied
+%     unevenly.
+%     &
+%     Framework is incoherent, infeasible, or largely incomplete;
+%     components do not integrate; writing is unclear; limited evidence
+%     of course concept mastery.
+%     \\
+
+%     \end{longtable}
+
+%     } % end \footnotesize
+
+% \end{landscape}
 
 \begin{landscape}
 
@@ -126,156 +405,154 @@ This lesson equips students to address ethical challenges in biomedical data sci
     \midrule
 
     % Row 2
-    \textbf{2.\ Historical Data Context}
+    \textbf{2.\ Privacy \& Historical Data Context}
     \newline\textbf{(10\%)}
     &
-    Provides a well-reasoned, nuanced explanation for why date and time
-    recording ceased after 1987; situates the change within broader
-    sociotechnical, institutional, or policy contexts; demonstrates
-    understanding of how historical decisions shape data availability
-    and reproducibility.
+    Provides a well-reasoned explanation for why date and time of birth
+    is no longer recorded after 1987; clearly articulates the privacy
+    implications of this change; situates the decision within broader
+    sociotechnical or policy contexts and connects it to data
+    availability and reproducibility.
     &
-    Offers a reasonable explanation with some contextual grounding;
-    demonstrates solid understanding of how institutional or policy
-    factors affect data collection practices, with minor gaps.
+    Offers a reasonable explanation with some discussion of privacy
+    implications; demonstrates solid understanding of how institutional
+    or policy factors affect data collection, with minor gaps.
     &
-    Provides a basic explanation but lacks contextual depth; recognizes
-    that external factors influence data collection without fully
-    analyzing their implications.
+    Provides a basic explanation and acknowledges privacy implications
+    but lacks depth; recognizes that external factors influence data
+    collection without fully analyzing their consequences.
     &
-    Explanation is missing, or purely speculative; no
-    grounding in sociotechnical or historical context; shows little
-    understanding of how data collection decisions are made.
+    Explanation missing or purely speculative; privacy implications not
+    addressed; no grounding in sociotechnical or historical context.
     \\
     \midrule
 
     % Row 3
-    \textbf{3.\ Data Governance, Bias, \& Trends}
+    \textbf{3.\ Ethical Concerns in Projection \& Secondary Data Use}
     \newline\textbf{(15\%)}
     &
-    Clearly articulates who decides what data to collect, store, and
-    access; identifies multiple plausible sources of bias (e.g., rural
-    infrastructure, collection gaps) with specific examples; provides a
-    nuanced, accurate distinction between bias and trend supported by
-    concrete examples; demonstrates sophisticated understanding of how
-    governance decisions shape data quality and equity.
+    Identifies at least three well-developed ethical concerns specific
+    to projecting underweight newborns and infant mortality by county;
+    thoughtfully addresses stigmatization, secondary data use, and
+    historical bias; demonstrates nuanced understanding of how each
+    concern could affect communities and research integrity.
     &
-    Identifies key decision-makers and discusses bias sources with
-    reasonable examples; distinction between bias and trend is mostly
-    clear and accurate; connection to equity or data quality mostly
-    well developed.
+    Identifies at least three ethical concerns with reasonable
+    development; addresses most of stigmatization, secondary use, and
+    bias; analysis is mostly substantive with minor gaps.
     &
-    Names some stakeholders but analysis is incomplete; identifies at
-    least one source of bias with a limited example; distinction between
-    bias and trend is attempted but imprecise or only partly illustrated.
+    Identifies two or three ethical concerns but treatment is uneven
+    or generic; at least one of stigmatization, secondary use, or bias
+    is addressed, though not fully analyzed.
     &
-    Fails to address who governs data collection, storage, or access;
-    bias sources missing or incorrectly described; no meaningful
-    distinction between bias and trend; examples absent or irrelevant.
+    Fewer than two concerns identified, or concerns are vague and
+    underdeveloped; key issues such as stigmatization, secondary use,
+    or bias are absent or incorrectly framed.
     \\
     \midrule
 
     % Row 4
-    \textbf{4.\ Stakeholder Engagement \& Decision-Making}
-    \newline\textbf{(15\%)}
+    \textbf{4.\ Data Governance, Bias, \& Trends}
+    \newline\textbf{(10\%)}
     &
-    Framework identifies all relevant stakeholders with well-justified
-    roles; describes specific, realistic engagement strategies;
-    articulates a clear and equitable decision-making structure;
-    anticipates conflicts of interest and addresses them thoughtfully.
+    Clearly articulates who decides what data to collect, store, and
+    access; identifies multiple plausible sources of bias with specific
+    examples; provides a nuanced, accurate distinction between bias and
+    trend supported by concrete examples from the data.
     &
-    Most stakeholders identified with reasonable engagement approaches;
-    decision-making structure is mostly clear; minor gaps in equity
-    considerations or conflict of interest analysis.
+    Identifies key decision-makers and discusses bias sources with
+    reasonable examples; distinction between bias and trend is mostly
+    clear and accurate, with minor gaps.
     &
-    Key stakeholders named but engagement strategies are generic or
-    underdeveloped; decision-making structure is present but lacks
-    clarity or justification.
+    Names some stakeholders but analysis is incomplete; identifies at
+    least one source of bias with a limited example; distinction between
+    bias and trend is attempted but imprecise.
     &
-    Stakeholders missing or poorly identified; no coherent engagement
-    strategy or decision-making structure; shows limited understanding
-    of governance design.
+    Fails to address who governs data collection or access; bias sources
+    missing or incorrectly described; no meaningful distinction between
+    bias and trend; examples absent or irrelevant.
     \\
     \midrule
 
     % Row 5
-    \textbf{5.\ Ethical Considerations \& Anticipatory Governance}
-    \newline\textbf{(20\%)}
+    \textbf{5.\ Stakeholder Identification \& Engagement Strategy}
+    \newline\textbf{(15\%)}
     &
-    Thoroughly evaluates ethical challenges specific to the chosen
-    project; integrates anticipatory governance principles to address
-    future uncertainties; differentiates among traditional bioethical,
-    sociotechnical, and other frameworks with sophistication; analysis
-    is proactive rather than reactive.
+    Identifies all relevant stakeholders across design, dissemination,
+    and evaluation phases with well-justified roles; proposes a specific,
+    realistic engagement strategy for affected communities; anticipates
+    conflicts of interest and addresses them thoughtfully.
     &
-    Ethical challenges well evaluated; anticipatory governance referenced
-    and mostly applied; frameworks differentiated with minor inaccuracies
-    or incomplete integration.
+    Most stakeholders identified with reasonable engagement approaches
+    across most phases; strategy is mostly realistic with minor gaps
+    in equity considerations or conflict of interest analysis.
     &
-    Some ethical challenges identified; anticipatory governance mentioned
-    but superficially applied; framework differentiation is partial or
-    inconsistent.
+    Key stakeholders named but engagement strategies are generic or
+    limited to one phase; strategy present but lacks specificity
+    or justification for community engagement.
     &
-    Ethical considerations minimal or inaccurate; no meaningful
-    application of anticipatory governance; frameworks absent,
-    conflated, or misapplied.
+    Stakeholders missing or poorly identified; no coherent engagement
+    strategy; shows limited understanding of who should be involved
+    or why.
     \\
     \midrule
 
     % Row 6
-    \textbf{6.\ Monitoring, Unexpected Impacts, \& Benefit-Sharing}
-    \newline\textbf{(15\%)}
+    \textbf{6.\ Governance Framework: Ethical Issues \& Approaches}
+    \newline\textbf{(20\%)}
     &
-    Proposes specific, feasible monitoring mechanisms with clear
-    indicators; thoughtfully anticipates unexpected impacts and describes
-    adaptive responses; benefit-sharing plan is equitable, well-reasoned,
-    and tied to the project-specific context.
+    Framework addresses all required areas (decision-making, monitoring,
+    benefit-sharing, unexpected impacts, consent, data quality/bias,
+    privacy); ethical issues and approaches are specific, well-reasoned,
+    and internally consistent; integrates anticipatory governance
+    principles throughout.
     &
-    Monitoring and benefit-sharing addressed with reasonable detail;
-    unexpected impacts considered with some adaptive strategies; minor
-    gaps in feasibility or equity analysis.
+    Most required areas addressed with reasonable depth; ethical issues
+    and approaches are mostly coherent; anticipatory governance
+    referenced and largely applied, with minor gaps or inconsistencies.
     &
-    Monitoring and benefit-sharing mentioned but lack specificity or
-    justification; unexpected impacts acknowledged without substantive
-    adaptive planning.
+    Several required areas addressed but treatment is uneven; some
+    ethical issues identified without substantive approaches proposed;
+    anticipatory governance mentioned but superficially applied.
     &
-    Monitoring, benefit-sharing, or unexpected impacts missing or poorly
-    addressed; framework is reactive or purely theoretical with no
-    practical grounding.
+    Multiple required areas missing or poorly addressed; ethical issues
+    vague or incorrect; no meaningful application of anticipatory
+    governance; framework lacks coherence.
     \\
     \midrule
 
     % Row 7
-    \textbf{7.\ Consent \& Secondary Data Use}
-    \newline\textbf{(10\%)}
+    \textbf{7.\ Reflective Analysis \& Feasibility}
+    \newline\textbf{(15\%)}
     &
-    Consent framework is clearly articulated and appropriately tailored
-    to secondary data use; identifies specific privacy and confidentiality
-    risks; proposes concrete strategies consistent with ethical standards
-    and relevant policy or regulatory requirements.
+    Reflection is incisive and well-structured; clearly identifies gaps
+    in the framework at individual, community, and population levels;
+    thoughtfully evaluates how well it anticipates future ethical
+    challenges; provides specific, realistic assessment of feasibility
+    constraints and resource considerations.
     &
-    Consent addressed with reasonable detail; privacy risks identified;
-    strategies are mostly appropriate with minor gaps in policy alignment
-    or specificity.
+    Reflection addresses most required elements with reasonable depth;
+    gaps identified at most levels; future challenges and feasibility
+    mostly considered, with minor omissions.
     &
-    Consent mentioned but treatment is generic or incompletely applied
-    to the secondary use context; privacy risks acknowledged without
-    substantive mitigation strategies.
+    Reflection is present but uneven; gaps or future challenges
+    acknowledged without substantive analysis; feasibility addressed
+    only superficially.
     &
-    Consent absent, incorrect, or irrelevant to secondary use; privacy
-    concerns not addressed; no evidence of understanding relevant
-    ethical or regulatory standards.
+    Reflection missing or minimal; no meaningful identification of gaps
+    or future challenges; feasibility not considered; little evidence
+    of critical self-assessment.
     \\
     \midrule
 
     % Row 8
-    \textbf{8.\ Feasibility \& Overall Framework Quality}
+    \textbf{8.\ Overall Framework Quality \& Integration}
     \newline\textbf{(5\%)}
     &
     Framework is coherent, well-structured, and realistic; all components
     integrate into a unified governance plan; writing is clear and
     precise; demonstrates thorough command of course concepts across
-    the full framework.
+    both sections.
     &
     Framework is mostly coherent and feasible; components are largely
     integrated; writing is clear with minor lapses; good command of
