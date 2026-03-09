@@ -70,6 +70,15 @@
 \usepackage{tikz}
 \usetikzlibrary{decorations.pathreplacing}
 
+\usetikzlibrary{arrows.meta,shapes,arrows,calc,fit,positioning}
+\tikzset{
+    -Latex,auto,node distance =1 cm and 1 cm,semithick,
+    state/.style ={ellipse, draw, minimum width = 0.7 cm},
+    point/.style = {circle, draw, inner sep=0.04cm,fill,node contents={}},
+    bidirected/.style={Latex-Latex,dashed},
+    el/.style = {inner sep=2pt, align=left, sloped}
+}
+
 \newcommand{\replacementchar}{%
   \begin{tikzpicture}[baseline={(current bounding box.center)}]
     \draw (0.25,0.6) -- (0.5,0.85) -- (0.25,1.1) -- (0,0.85) -- cycle; % Rhomboid shape moved up by 6pts

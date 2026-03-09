@@ -1,18 +1,391 @@
-\documentclass[12pt]{book}
-\usepackage{hyperref}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta}
+% \documentclass[12pt]{book}
+% \usepackage{hyperref}
+% \usepackage{tikz}
+% \usetikzlibrary{arrows.meta}
 
-\usetikzlibrary{shapes,decorations,arrows,calc,arrows.meta,fit,positioning}
-\tikzset{
-    -Latex,auto,node distance =1 cm and 1 cm,semithick,
-    state/.style ={ellipse, draw, minimum width = 0.7 cm},
-    point/.style = {circle, draw, inner sep=0.04cm,fill,node contents={}},
-    bidirected/.style={Latex-Latex,dashed},
-    el/.style = {inner sep=2pt, align=left, sloped}
-}
+% \usetikzlibrary{shapes,decorations,arrows,calc,arrows.meta,fit,positioning}
+% \tikzset{
+%     -Latex,auto,node distance =1 cm and 1 cm,semithick,
+%     state/.style ={ellipse, draw, minimum width = 0.7 cm},
+%     point/.style = {circle, draw, inner sep=0.04cm,fill,node contents={}},
+%     bidirected/.style={Latex-Latex,dashed},
+%     el/.style = {inner sep=2pt, align=left, sloped}
+% }
 
-\begin{document}
+% \begin{document}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \chapter{Unit 3: Rigorous Statistical Design}
+% \label{chap:unit3}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \textbf{Total Time: 5.5 hours}
+
+% This is a practical introduction to conducting rigorous data-driven research in a health-science setting.  Our goal is that upon mastering this section, you to be able to use analytically sophisticated methods to obtain scientifically meaningful, reproducible, and innovative results in your research endeavors. We will focus here on methods for data analysis that can be utilized in the setting of population health research, leveraging official statistics or other systematically collected data with spatial and temporal structure.
+
+% This document focuses on design, strategy, and interpretation, and includes no code or numerical results.  \href{https://github.com/kshedden/case_studies/blob/main/birthweight/birthweight.ipynb}{This} Python notebook provides some model analyses from which you can borrow ideas as you start to implement analyses informed by the principles covered here.
+
+% %================================================================
+% \section{Principles of Study Design for Empirical Research}
+% \label{sec:3.1}
+% %================================================================
+
+% In this subunit, we will consider how you can develop an understanding of the main ideas in a scientific domain in which you intend to conduct research, how to understand and communicate about the capacity of a given dataset for addressing research topics of interest, and how to develop a specific and tractable research aim.
+
+% \subsection{Learning objectives}
+
+% \begin{enumerate}
+
+% \item You will be able to rapidly internalize the current state of scientific knowledge about a specific health-related topic. The goal here is not to master every detail that a domain specialist would know, but rather to develop fluency with the key known mechanisms, to recognize the quantitative strengths of established relationships, and to identify gaps in the current state of knowledge.
+
+% \item You will be able to rapidly internalize the structure and capacity of a dataset that can be used to conduct research on a specific health-related topic. This includes identifying the units of analysis (who is being measured) and the variables or attributes (what is being measured), understanding how the units of analysis were selected, what population they represent, how the variables were measured, and what types of measurement errors may be present.
+
+% \item You  will be able to use appropriate terminology from epidemiology and biostatistics to discuss possible research studies relating to a given health-science domain, and that can be conducted using a provided dataset.
+
+% \item You will be able to identify plausible exposures, outcomes, and control variables in a research design,
+
+% \item You will be able to communicate in both speech and writing about a data-driven scientific inquiry in a health science setting. This will include strategies for effectively communicating to different audiences using precise but accessible language.
+
+% \end{enumerate}
+
+% \subsection{Introduction to birthweight as a biological variable}
+
+% Birthweight is almost universally measured for all births in developed countries, although globally birthweight is only captured for around \href{https://pubmed.ncbi.nlm.nih.gov/33557859}{60\% of births}.  In the US, birthweight is required to be entered on birth certificates in all states, and is therefore essentially always recorded.  Birthweight is an important indicator of fetal nutrition, and is a predictor of many short term, medium term, and long term health outcomes.  Nevertheless there has been some \href{https://pubmed.ncbi.nlm.nih.gov/11821313}{debate} about the meaning and importance of birthweight.  Moreover, the interpretation of birthweight is complicated by the fact that it varies by sex, race, gestational age, and birth plurality, and has changed systematically \href{https://www.ajog.org/article/S0002-9378(24)00431-9/fulltext}{over time}.
+
+% Low birth weight is associated with several immediate risks for the newborn including risk of infection and mortality, as well as longer-term risks for developmental delays and chronic health conditions in adulthood. Low birth weight is formally defined as the birth weight being less than 2500 grams, and very low birth weight is formally defined as the birth weight being less than 1500 grams.  Like most thresholds, these are somewhat arbitrary, and there is strong evidence that quantitative differences in birthweight have health implications beyond the birthweight categories determined by these thresholds.
+
+% There are many known causes of low birthweight including pre-term birth (low gestational age), maternal health factors such as undernutrition and infection, low or high maternal age, genetic factors, and issues affecting the placenta.  These are possible ``direct causes'' of low birthweight, but in addition one could look at factors that make these direct causes more likely, such as poverty and access to medical care.  In addition, one could look to characterize geographic, temporal, or other possible predictors of low birth weight that may be multiple steps removed from any direct causal role. 
+
+% \subsection{Introduction to the birthweight dataset}
+
+% The data used here are a complete record (a census) of all live births in the United States in specific years.  This is administrative data, collected by state health departments, that was subsequently repurposed for research.  The sample sizes are large, for example in 1971 there were around 1.8 million births. 
+
+% The US National Center for Health Statistics (NCHS) released individual birth records with detailed parental information and geographic location (state and county) until 1988.  Subsequently, geographic information was available only for large metropolitan areas, and after 2005 the geographic information was removed entirely.  To facilitate analyses that consider individual and community factors, we will work with the older datasets here.
+
+% The raw data and documentation are available from the NCHS \href{https://www.cdc.gov/nchs/data_access/vitalstatsonline.htm}{here}, or directly from \href{https://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/DVS/natality}{this page}.  You can use the \href{https://github.com/kshedden/case_studies/blob/main/birthweight/prep.py}{prep.py} script to download the data and generate the CSV files that are used in the analyses below.
+
+% Each record (observation) in the dataset corresponds to one birth.  Many of the variables are self-explanatory but here is some more information about several of the variables:
+
+% \begin{itemize}
+
+% \item Birthweight is the weight in grams of the newborn
+
+% \item Plurality is the number of infants born in a single pregnancy, e.g.\ 1 for single births, 2 for twins, etc.
+
+% \item Birth order is the total number of births to a mother, including the current birth, e.g.\ 1 for the first born, 2 for the second born, etc.
+
+% \item Birth interval is the length of time (in months) to the previous birth, and is missing for first born infants.
+
+% \item  State and county indicate the geographic location where the birth occurred
+
+% \end{itemize}
+
+% \subsection{Rigorously framing a study involving the birthweight dataset}
+
+% Clinical researchers, including specialists from epidemiology and biostatistics, have developed terminology and principles to facilitate rapid and consistent understanding of study designs, encompassing issues relating to aims, data, and methods.  Here, we review some terms and concepts that apply specifically to the birthweight data.  
+
+% The {\em unit of analysis} is one newborn baby.  Each observation in the dataset pertains to one such baby (mutiple births, such as twins, produce multiple observations, one for each newborn).  Each baby is characterized in terms of measured variables as discussed above.  Several of these variables are {\em quantitative}, and as such are measured in physical units (grams for birthweight, months for birth interval).  Several other variables are {\em ordinal} (plurality and birth order) -- they are represented as integer counts.  State and county are {\em nominal} (or {\em categorical}).  These variables are encoded as numbers, but the numbers convey no quantitative meaning, they are just labels for an unordered, finite collection of spatial entities.
+
+% The data are a {\em census}, in that essentially all births are included -- thus our data constitute the entire population of interest. More commonly, data encountered in research are a subset of the population of interest (the subset can be various types of random sample, or a convenience sample).  Much of the field of statistics deals with the issue of inference from the {\em sample} to the {\em population}, which seems difficult to apply when the data are a census.  We can work around this difficulty as follows, and still have the opportunity to employ conventional statistical thinking in our approach.  We can take the point of view that the data we observed for a given year, although it is a complete census of all births, was a random sample from a superpopulation, and if we could (counterfactually) revisit that year from an independent vantage point, we would theoretically be able to obtain an independent census reflecting the same point in history.  From this point of view, the census becomes a sample from the superpopulation, and the conventional perspective of statistical inference from the sample to the population is maintained.  
+
+% The birthweight data only support research that is {\em observational} in nature.  This is because there was no {\em intervention} (i.e.\ a treatment) in the study that was administered to some subjects and withheld from others (who would be {\em controls}).  We can consider exposures such as maternal age that may predict or even cause changes to birthweight, but maternal age is endogenous -- there is no randomization or researcher control over this or any other factor in the dataset.  This makes it much more difficult to ascribe causality to any findings we make.  Nevertheless, there is a rich array of meaningful and rigorous analyses that can be performed, as we will discuss below.
+
+% Some of the variables that may predict birthweight are {\em modifiable} while others are not.  For example, the government could pursue policies to reduce the number of births to very young mothers, effectively increasing maternal age (the rate of teenage motherhood has declined dramatically in recent years, demonstrating that it is modifiable, although we do not know which factors or policies are the root causes of this decline).  As another example, if we consider geographic differences (e.g.\ between counties), we may see that counties with better health care infrastructure or higher educational attainment have a lower rate of preterm births.  Differences associated with geography are at least in principle subject to modification, since it is inevitably circumstances associated with the geographic regions, rather than the regions themselves (i.e.\ their latitude and longitude coordinates) that cause the differences.  As one more example, birth order is related to family size, which changes over time due to social and cultural changes.  It is modifiable in theory, by restricting family sizes, but it is hard to see this being acted upon in the United States.
+
+% The data we have here are {\em spatial} and {\em temporal}.  However they are not {\em longitudinal}. Each birth took place in a given known year, in a specific US county, both of which are recorded.  If we combine data from several years, we can consider changes over time in aggregated summaries, for example, increasing mean birthweight.  The data are not longitudinal because the units (the babies) are not measured repeatedly over time.
+
+% The data are {\em partially observed}, that is, there is some missing data.  The most commonly missing data is information about the father.  These missing values are unlikely to be missing ``at random'' because births in which the father is not available are likely to be systematically different from births in which the father is present.  Many factors, both measured and unmeasured, may covary with the availability of information about the father.  This {\em informative missingness} can give rise to methodological challenges which we will return to later.
+
+% The data are {\em administrative}, as they were collected due to the interest of the government in understanding the population, but not for any specific research purpose.  They were subsequently repurposed for research.  The data were collected {\em prospectively}, in that information about each birth was collected at the time of the birth, and did not depend on anyone recalling circumstances of the birth from a later point in time (in which case the data would be {\em retrospective}).
+
+% The data are {\em clustered}, which means here that there is a grouping into subsets, determined by the county in which each baby was born, such that babies born in the same county will tend to have similar attributes.  This tendency may be weak for most factors, but there is still some such tendency.  Clustering likely reflects unavailable {\em stable covariates} that are constant for all births in a county, such as unmeasured social or environmental factors.  For rigorous analysis, clustered data should be analyzed using methods that account for the clustering, otherwise uncertainty is likely to be understated.
+
+% Fortunately, the data at hand are unlikely to be subject to large {\em measurement errors}. Birth weights are recorded on birth certificates and constitute important vital records, so the clinicians collecting birth data are likely to be quite careful.  However in a dataset of over a million observations, obtained in an era when the data were likely initially recorded manually on paper, there are likely to be some transcriptional errors.  There could also be deliberate falsification of some data (e.g.\ a parent misreporting their age).  We have no way to quantify how frequently this occurs, but presumably it is quite rare.  By 1971, most births took place hospitals, and birthweight should usually be captured with a standard medical-grade scale, but since the data are obtained in thousands of facilities, there could be some issues with quantitative measurement errors, due to scales being miscalibrated or faulty, but again it is likely that most birthweight measurements are quite accurate.  
+
+% Parental races are available, although we will not use that data here.  Race is to a large extent a construct, and in 1971 attitudes about race were very different from what they are today.  Even with the best intentions, it is impossible to fully capture a person's ancestry in a categorical variable, and furthermore, differences associated with a race construct are unlikely to be due to the ancestry itself, but rather to social and cultural factors that co-occur with race.      
+
+% \subsection{Research aims}
+
+% One of our learning goals is that you will be able to develop a research aim grounded in the current state of knowledge of a health science-related topic, which here will be the epidemiology of birthweight.  We will provide you with quite a bit of scaffolding before asking you to come up with your own research aim in the assessment below.
+
+% Data scientists typically work in collaboration with health science ``domain experts'', with the latter often being primarily responsible for proposing hypotheses and aims, while the former are responsible for identifying analytic methods, and for carrying out the analysis.  Interpreting results and reaching conclusions is usually a joint effort.  However, these ``role boundaries'' are blurry and subject to change as tools become available that lower the bar for both the conceptual and technical aspects of research.  Here, we will put you in the position of developing a research aim on your own, grounded in the brief overview of birthweight provided above.
+
+% We will not tell you what your research aim should be, instead we will provide you with the scaffolding needed for you to develop your own science-driven research aim that can be addressed using the NCHS birthweight dataset.  Your research aim does not need to center on a single binary hypothesis, you are welcome to propose a somewhat more open-ended and exploratory aim.  But there should be a limited and explicitly defined scope for your research aim, and it should be grounded in a clear conceptual framework.  
+
+% To provide you with some ideas that may prompt your creative thinking, you may wish to consider the high level goal of understanding the associations between risk factors and birth weights.  These risk factors could include maternal and paternal ages, offspring sex, plurality, birth order, parental races, and birth interval.  Other productive directions would be to consider systematic geographic and/or temporal variation in birthweights.  Your first assessment will be to develop a research aim that will form the basis of your subsequent work in this unit.
+
+% When developing a research aim around risk factors for an outcome, it is very natural to think in terms of approaches involving {\em regression analysis}.  However it is important to note that regression analysis is the method used to achieve the aim, rather than the aim itself, i.e.\ your scientific aim should not be to conduct a regression analysis.  We will discuss regression analysis in more detail in section 3.2, but briefly, what we mean here by ``regression analysis'' is broadly any method that seeks to learn from data something about the conditional distribution of an outcome $Y$ given predictors $X$.  This includes not only least squares and linear regression (where the focus is on learning the conditional expectation of $Y$ given $X$), but also any other quantitative and algorithmic approach that estimates some facet of the conditional distribution of $Y$ given $X$, e.g.\ a variance or a quantile.  This includes a wide array of regression methods, most of machine learning, and a substantial part of what is now known as AI.
+
+% While some meaningful research aims can center on a goal of making predictions, thinking mechanistically about scientific aims inevitably involves thinking about causes.  Arguably, if you are not thinking about causes, you are not doing science.  Therefore, we discourage you here from having a research aim that, for example, aims to achieve high predictive accuracy for the outcome (e.g.\ birthweight).  Such prediction-focused research aims can be useful in practice, but generally provide little insight about the fundamental workings of the system at hand.
+
+% \subsection{Statistical models and causal diagrams in mechanistic research}
+
+% We assume that you have a basic understanding of regression analysis, which broadly speaking encompasses any method for quantitatively understanding the relationship between explanatory variables and an outcome.  Conventional regression analysis views the data in a very ``flat'' manner.  There are only inputs (the predictors or explanatory variables) and an output (the outcome or response). Modern epidemiology favors thinking in terms of causal diagrams, which allow for multiple levels of structure.  In section \ref{cdiag} we will propose a possible causal diagram for birthweight and some of its predictors.  But before proceeding to that, we will first provide a brief overview of some ways to deepen your understanding of quantitative relationships by thinking beyond an ``input/output'' view of regression analysis.
+
+% \begin{itemize}
+
+% \item In a {\em mediation analysis}, an exposure $X$ predicts a mediator $M$, while $M$ can then predict an outcome $Y$ (providing an {\em indirect effect} of $X$ on $Y$ through $M$), while at the same time $X$ can have {\em direct effects} on $Y$ that do not involve $M$.
+
+% \item In a {\em moderation analysis}, the relationship between an exposure $X$ and outcome $Y$ is not the same for all units (i.e.\ for all patients or subjects), but rather is {\em modified} by a third variable $Z$.  This allows us to think in more personalized terms about both exposures and interventions.  When $X$ represents a treatment, this framework permits identification of {\em heterogeneous treatment effects}.  In data observed over space and time, we can aim to identify temporal and/or spatial heterogeneity, sometimes referred to as {\em nonstationarity}.
+  
+% \item In longitudinal data, we can develop models that consider differing roles for a predictor based on when it was measured relative to the outcome.  For example, there can be delayed or cumulative effects of a risk factor, as well as effects that are limited to the risk factor measured concurrently with the outcome.
+
+% \item Sometimes the explanatory variables can be partitioned into those denoted $X$ that potentially cause the outcome $Y$, and those denoted $Z$ that are caused by the outcome $Y$ and by the causal predictors $X$.  In this case, $Z$ is known as a {\em collider}, and it is usually misleading to consider $Z$ as a predictor of $Y$, or to control or adjust for $Z$ in the analysis.
+
+% \item The explanatory variables may be partitioned into those that are modifiable, denoted $X$, which are of special interest as the targets of potential intervention.  Other explanatory variables, denoted $Z$, are immutable, or like the passage of time are not subject to intervention.  The latter variables may be mainly of interest as {\em precision variables} that explain some variation in $Y$ and make it easier to identify the roles of the potentially modifiable factors $X$.
+
+% \item The explanatory variables may be partitioned into those denoted $X$ that are modifiable or otherwise of primary interest as potential causes of the outcome $Y$, while other variables $Z$ are {\em common causes} or {\em confounders} of the relationship between $X$ and $Y$.  These confounders may be observed, in which case various adjustments may be made to attenuate their effects, or they may be unobserved, but nevertheless remain conceptually important when developing the research aim.
+
+% \end{itemize}
+
+% Causal and mechanistic thinking opens up many opportunities for achieving insight, but is also fraught with challenges, especially when working with observational data, as we have here.  By {\em observational data}, we mean that the potential causes of birthweight (e.g.\ maternal age) are not assigned as part of the research study (e.g.\ by randomization), but are instead ``selected'' by the subjects themselves.  This introduces major challenges into the process of conducting rigorous research, and gives rise to the very active methodological domain of {\em causal inference}. We will not provide a comprehensive overview of causal inference here, and will limit ourselves to just a few key observations.
+
+% First, we think it is counterproductive to throw up our hands and state that due to the challenges of discussing causality, we will limit ourselves to discussing predictive relationships and characterize all findings as {\em associations}.  This generally will lead to our work having limited scientific impact.  It is important to engage with mechanistic and causal thinking, while acknowledging the limitations of our conclusions when working with non-experimental data.
+
+% For the purposes of this workshop, we can put ourselves in the position of being modelers who have the opportunity to examine rich, high-quality datasets using a wide array of modern modeling methods and powerful computing resources.  We should not be afraid to posit various mechanistic relationships and explore their fitness to the data.  While it is important to acknowledge the possibility that, for example, a finding could have different interpretations if strong confounding were present, it is not always helpful to repeatedly emphasize the qualifications of our findings that arise due to various causal mechanisms, to the point where this obscures any other messages arising from our work. 
+
+% \subsection{An initial causal diagram for the birthweight data \label{cdiag}}
+
+% A scientifically grounded research aim should reflect at least a provisional notion of the possible causal relationships among the predictors, and between the predictors and the outcome.  We will attempt to characterize these relationships here, emphasizing that this is intended to capture only the strong and essentially undisputed relationships.  We restrict ourselves to a subset of the predictors available in our extract from the NCHS data (maternal and paternal ages, birth order, plurality, and sex).  As an exercise, you could consider how additional factors such as parental races and birth interval could be incorporated into this diagram.
+
+% Our provisional causal diagram is shown in Figure \ref{bw-diagram}.  We explain the rationale behind some of our choices next.  To begin, all five of our predictors (maternal and paternal ages, birth order, plurality, and sex) have plausible causal effects on birthweight, so there is an arrow in the diagram from each of them to birthweight.  It is important to note that these are not all of the possible causes of birthweight, as there are many factors that we do not measure such as maternal nutrition and genetics.
+
+% Perhaps the strongest single predictor of birthweight is plurality.  For obvious reasons, when multiple fetuses are gestated together, each will tend to be smaller than would be the case in a single birth.  While there is a larger random component to plurality, it is not fully exogeneous -- several of our other predictors, besides affecting birthweight directly, also affect plurality.  For example, it is known that older mothers are somewhat more likely to have multiple births, but no such association is known for older fathers. Also, infants born in plural births are more likely to be female, but it is unclear whether sex causes plurality or plurality causes sex, so we draw this as a bidirectional arrow in our causal diagram.  Due to the relationships discussed so far, maternal age is likely a confounder (a common cause) of the relationship between plurality and birthweight.
+
+% Offspring sex is determined by whether the fertilizing sperm carries an X or a Y chromosome.  This is nearly random, although \href{https://www.science.org/doi/10.1126/sciadv.adu7402}{some research} has shown slight deviations from perfect randomness.  While it is unlikely that offspring sex causes maternal age, there could be small causal effects of maternal age on offspring sex.  Specifically, older mothers are found to have a slightly higher probability of having children of the same sex, but this sex could be either female or male, and there was little evidence of a directional bias in the offspring sex for individual births.  This is an example where, even in the context of observational data, mechanstic understanding allows us to rule out strong confounding.
+
+% Offspring sex causally influences birthweight, with girl babies being around 100-200 grams lighter than boy babies (as with many mean differences, individual variability is far larger than the mean difference, so many boy babies will be lighter than the average girl baby, and vice versa).  Arguably, as offspring sex is nearly independent of other factors, it is an important precision variable, but could only be a very weak confounder of other relationships in our causal diagram.
+
+% Maternal age is commonly discussed as a predictor of birthweight, and in particular it has an ``inverse U-shaped'' in which mothers of intermediate age (around 35 years) have the heaviest babies on average.  Paternal age is also a plausible causal predictor of birthweight, although the mechanisms behind this relationship are largely different from those for maternal age -- they are potentially less direct, and are likely of smaller magnitude.  Due to the relationships between maternal age, plurality, and birthweight, plurality is a possible mediator of the relationship between maternal age and birthweight (it would almost certainly be a partial mediator rather than a full mediator).
+
+% Paternal age is positively associated with maternal age, although it is unclear whether this relationship is causal, so we draw the arrow between maternal and paternal age as bidirectional.  Complicating matters, paternal age is sometimes missing (maternal age is never missing), and is unlikely to be {\em missing at random}, introducing yet another source of bias into the analysis if we choose to pursue {\em complete case analysis}.  We could add another variable ``paternal age observed'' to our diagram, to reflect the possibility that there is information in the missingness status of the paternal age variable. Since paternal age is predictive of maternal age, and is a causal predictor of birthweight, it is likely a confounder of the relationship between maternal age and birthweight (and conversely, maternal age is likely a confounder of the relationship between paternal age and birthweight).  
+
+% Finally, birth order is causally impacted by maternal age.  It is assocated with paternal age (through the association of paternal with maternal age), but it seems unlikely that paternal age causes birth order.  Birth order likely has its own causal effect on birthweight, but since it is collinear with maternal age, it might be somewhat difficult to distinguish these two effects in the data.
+
+% \begin{figure}
+% \begin{center}
+% \begin{tikzpicture}[node distance=2cm and 3cm]
+
+% \node[state] (A) {Birthweight};
+% \node[state, above=of A] (D) {Sex};
+% \node[state, below=of A] (F) {Plurality};
+% \node[state, left=of A] (E) {Order};
+% \node[state, below=of E] (B) {Maternal age};
+% \node[state, above=of E] (C) {Paternal age};
+
+% % Draw edges (arrows)
+% \draw[->,>={Stealth[scale=2]}] (D) edge [shorten >= 2pt] (A);
+% \draw[->,>={Stealth[scale=2]}] (E) edge [shorten >= 2pt] (A);
+% \draw[->,>={Stealth[scale=2]}] (F) edge [shorten >= 2pt] (A);
+% \draw[->,>={Stealth[scale=2]}] (B) edge [shorten >= 4pt] (A);
+% \draw[->,>={Stealth[scale=2]}] (C) edge [shorten >= 4pt] (A);
+% \draw[->,>={Stealth[scale=2]}] (B) edge [shorten >= 2pt] (E);
+% \draw[->,>={Stealth[scale=2]}] (B) edge [shorten >= 2pt] (F);
+% \draw[<->,>={Stealth[scale=2]}] (B) edge [in=180, out=180, shorten >= 2pt, shorten <= 2pt] (C);
+% \draw[<->,>={Stealth[scale=2]}] (D) edge [in=0, out=0, shorten >= 2pt, shorten <= 2pt] (F);
+% \end{tikzpicture}
+% \end{center}
+% \caption{Causal diagram illustrating possible causal relationships among predictors of birthweight. \label{bw-diagram}}
+% \end{figure}
+
+% \subsection{Assessment instrument}
+
+% In one or two sentences, state a research aim that can be addressed using the NCHS birthweight data discussed above.  Then write a roughly half-page memo to yourself providing a broader consideration of the dataset, study design, and research domain that provides the foundation for your research aim.
+
+% %================================================================
+% \section{Developing an analytic plan}
+% \label{sec:3.2}
+% %================================================================
+
+% In this subsection, we will discuss how to develop a precise and actionable analytic plan.
+
+% \subsection{Learning objectives}
+
+% \begin{enumerate}
+
+% \item You will be able to develop a rigorous analytic plan to address a stated scientific aim.  The analytic plan should be able to be implemented using available data and should employ sophisticated and rigorous analytic methods.
+
+% \item You will be able to explain the difference between conditional and marginal distributions, and identify which formal comparisons address a given research aim.
+
+% \item You will be able to propose summary statistics that provide initial insight into research questions and that can capture the direction of a relationship, and the magnitude of the relationship in both relative and absolute terms.
+
+% \item You will understand the different ways that an auxiliary variable can enter an analysis, such as being confounders and precision variables, and you will recognize when an auxiliary variable is unlikely to introduce confounding bias.
+
+% \item You will be able to engage in a sophisticated discussion of quantitative relationships among measured quantities. This includes considering how such relationships can be assessed and how they contribute to achieving research aims.
+
+% \end{enumerate}
+
+% \subsubsection{Analytic methods}
+
+% Now that your research aim is stated, we can consider how to approach it analytically.  We are using here a dataset that is freely available, which allows us to immediately propose methods for our analytic plan.  But it is important to note that in many cases where new data are to be collected or purchased, or if significant obstacles to data access are in place, you would need to provide explicit data collection protocols, and have your analytic plan approved, as well as obtain funding.  These are extremely important issues, so to at least partially acknowledge this reality, we will engage here in a discussion of analytic methods without allowing ourselves to immediately jump into exploring the data.  That is, we allow ourselves basic information about the data structure, sample size, and measurement units, but do not immediately perform any preliminary analyses, and instead will put ourselves in the position of devising an analytic plan without having access to any data.
+
+% Each of you will have your own research aim, but very likely it will involve regression analysis of the birth weights with a focus on identifying and understanding predictors of birth weight, especially low birth weight, employing some level of causal and mechanistic thinking.  As noted above, birth weight is often viewed with respect to thresholds, e.g.\ $<1500$ grams is very low and $<2500$ grams is low.  This may lead one to divide the births into three groups, and you are welcome to do this.  However in all the discussion below we will take alternative approaches in which the data are analyzed and interpreted quantitatively.
+
+% \subsection{Descriptive statistics and effect sizes}
+
+% While regression analysis is likely to be the main tool for your analysis, in some cases you can get a lot of insight by considering summary statistics.  This also provides us with the opportunity to begin talking about effect sizes, which is an important component of how scientists quantify relationships in data.  
+
+% As a simple example, consider the difference in birthweight between girl babies and boy babies.  According to the NCHS data, the median girl baby in 1971 weighed 3260 grams and the median boy weighed 3402 grams.  The difference between these two weights is -142 grams.  This can be viewed as an absolute quantification of the effect size for the sex difference in birth weights.  However this number has units (grams) and does not provide a sense of how big this difference is relative to the overall variation in birth weights.  To accomplish this we can divide the difference in locations by a measure of scale (or dispersion), which is another descriptive statistic.  We can measure dispersion here using the interquartile range, which is 652 grams for females and 680 grams for males.  The pooled dispersion is the average of the sex-specific dispersions, which is 666 grams.  A standardized effect size is therefore equal to -142 / 666 = -0.21 (which has no units and is thus dimensionless).  That is, the sex difference in locations (medians) is around one fifth of the dispersion within either sex. 
+
+% The median sex difference, while likely important, is much smaller than variation due to other sources.  One implication of this is that we will frequently find girls who are born heavier than the typical boy, even if the median girl is born lighter than the median boy. We can quantify this phenomenon with another descriptive statistic, the Kendall's tau concordance.  For sex and birthweight the value of this statistic is 0.1, which means that 55\% of the time, when randomly selecting one girl and one boy from the population, the birthweight of the boy will be greater than the birthweight of the girl, and 45\% the birthweight of the girl will be greater than the birthweight of the boy.  This rather modest concordance helps put the absolute sex difference in context.
+
+% Any summary statistic that aims to quantify the magnitude and/or direction of a relationship can be viewed as an effect size.  We will not provide a comprehensive review of descriptive statistics and effect sizes here, but wish to introduce this concept now due to the important role that it will play later.  Effect sizes play a major role in scientific communication, and also are important in assessing statistical power.  The two examples provided above should serve to illustrate descriptive statistics and effect sizes in the context of this research domain.
+
+% \subsubsection{Regression analysis that focuses on the conditional mean}
+
+% A natural staring point would be to focus on the conditional mean of birth weight given some risk factors as predictors.  The most common approach for achieving this goal is to use generalized linear modeling, which includes linear regression fit with least squares as a special case.  As a simple starting point, suppose that we plan to use linear regression fit with ordinary least squares (OLS) to model birthweight in terms of maternal age.  Linear regression posits a linear mean structure, and a basic mean structure model would be $E[Y|A_m] = b_0 + b_1A_m$, where $Y$ is birthweight and $A_m$ is maternal age.  However there is strong prior knowledge that low birthweight is more common for very young and older mothers, and less common for mothers of intermediate age.  A basic way to accommodate this nonlinearity is to posit the mean structure model $E[Y|A_m] = b_0 + b_1A_m + b_2A_m^2$, which is a technique known as {\em polynomial regression}. Polynomial regression has been used for 100 years or more, but since the 1980's a more general perspective of using basis functions in regression has emerged.  While polynomials are one type of basis function, other types such as splines have more favorable properties.
+
+% It is important to note that polynomial regression is still considered to be a linear model, since the mean structure is linear in the unknown parameters $b_0, b_1, b_2$.  This simple example illustrates how people often mis-state the way in which linear regression is linear -- linear regression does not assume that the conditional mean of the response is a linear function of the predictors, but rather that the mean structure model (or more precisely their estimating equations) are linear in the parameters.  This latter type of linearity greatly simplifies estimation and uncertainty assessment of our estimates of the unknown parameters $b_0, b_1, b_2$.  
+
+% In the specific case of quadratic (polynomial) regression, the relationship between birthweight and maternal age is convex if $b_2 > 0$ and concave if $b_2 < 0$.  The vertex of this relationship is $A_m^\star = -b_1/(2\cdot b_2)$.  If $A_m^\star$ lies outside the range of the data, then the relationship is monotone throughout the relevant range of ages.  Special interest will follow if $A_m^*$ lies inside the realistic range of ages, so that, if $b_2 < 0$, there is a maternal age that maximizes expected birthweight, while expected birthweight declines for either low or high maternal age.
+
+% Integrating our discussion so far, it is reasonable to propose the mean structure model $E[Y|A_m, A_p, S] = b_0 + b_1 A_m + b_2 A_m^2 + b_3A_p + b_4A_p^2 + b_5F$, where $A_p$ is paternal age, and $F$ is infant sex coded (arbitrarily) as $F=1$ for females and $F=0$ for males.  Furthermore, we can safely assume that $F$ is independent of both $A_m$ and $A_p$, and there is very unlikely to be any moderation (interaction) between $F$ and either $A_m$ or $A_p$.  Moderation between $A_m$ and $A_p$ cannot be ruled out, but we will not consider this possibility here.
+
+% While our research questions here relate to the conditional mean structure, we should also consider the conditional variance structure and conditional covariance structure.  Variance structure refers to the scatter of the data around the conditional mean, and can be written ${\rm Var}(Y|X)$.  It is often described using the terms {\em homoscedastic} and {\em heteroscedastic}, where homoscedasticity implies that ${\rm Var}(Y|X=x)$ is constant in $x$, and heteroscedasticity indicates that it is not.  A complete analysis should consider variance structure in detail, but we will not emphasize that here.
+
+% Covariance structure refers to the possibility that birthweights for two different infants can be correlated.  Formally, the covariance could be written ${\rm Cov}(Y_1, Y_2 | X_1, X_2)$, where $Y_1, X_1$ and $Y_2, X_2$ refer to two different births.  One natural source of covariance structure is sibling relationships, but the NCHS data does not provide that information.  Another source of covariance structure would be where due to unobserved covariates, two newborns are likely to share factors in common that we have not measured.  For example, two newborns in the same county in the same year are likely to share similar exposures that we have not measured, so their birthweights will be more similar than those of two newborns from different years and/or locations. 
+
+% \subsubsection{Regression analysis that focuses on low birth weight}
+
+% While mean structure differences are of genuine scientific interest, they do not directly address questions about low birth weight, which is the central interest in many studies of birthweight.  There are many regression approaches that target the low (or high) birthweights instead of the conditional mean birthweight, and it is quite interesting to consider the possibility that the causal architecture of the extreme birthweights may differ from that of the conditional mean.  Some powerful tools like expectile and expected shortfall regression have been applied in this setting, but here we will focus on the most direct and familiar approach which is quantile regression.
+
+% Quantile regression aims to estimate the $p^{\rm th}$ conditional quantile of $Y$ given $X$, which can be denoted $Q_p(Y|X)$.  For example, setting $p=0.01$ gives us $Q_{0.01}(Y|X)$, which estimates the one percentile point (the weight such that only 1\% of newborns are below this weight).  Classical quantile regression models the quantiles using linear predictors, analogous to the mean structure models discussed above.  For example, we can adopt the model $Q_{0.01}(Y|A_m, A_p, S) = b_0 + b_1 A_m + b_2 A_m^2 + b_3A_p + b_4A_p^2 + b_5F$.  It is important to note that the coefficients ($b_0$, $b_1$, etc.) would generally differ based on the particular probability point being modeled (here $0.01$).  
+
+% Quantile regression is not a GLM, and an important point of contrast between quantile regression and linear regression fit with OLS is that the estimating equations for the unknown parameters are not linear in the parameters, even when the quantile itself is modeled as a linear function of the parameters (as in the example above).  This substantially complicates estimation and inference.  Although these important technical details are largely handled by available software, it is important to be aware of these complications, especially regarding how inference is conducted as this will have implications for the power analyses to be discussed later in section \ref{power}.  Another challenging aspect of quantile regression that is important to be aware of is that statistical power, and the ability to conduct valid inference, becomes more challenging as the probability point $p$ approaches $0$ or $1$, which is exactly our regime of interest.  This challenge is partially offset by the very large sample sizes that we have available for this study.
+
+% We will briefly comment on an analysis approach that while natural, is not further developed here, which would be to categorize every birth into a group such as very low birthweight ($<1500$ grams), low birthweight ($1500-2500$ grams), or normal weight ($>2500$ grams).  This would lead to using regression approaches such as logistic or ordinal logistic regression (although many other methods are available).  On the one hand, this seems to directly address questions around low birthweight, whereas the conditional mean and quantile regression approaches yield results that are more indirect.  On the other hand, these category-based approaches are heavily dependent on numerical thresholds which, while widely used, are somewhat arbitrary.  Two newborns of weights 1499 and 1501 are treated as completely different, whereas two newborns of weights 1501 and 2499 are treated as the same.  A related issue is that much of the information in the data is thrown out by recoding the data into these categories.  While you are welcome to use these methods in your work for this unit, we encourage you to carefully consider these drawbacks.
+
+% \subsection{Assessment instrument}
+
+% Develop a brief analytic plan (approximately one half page in length), that addresses the research question that you posed in assessment 1, using the NCHS birthweight data.  The analytic plan should be specific enough that the results would be reproducible if implemented by different researchers.  You should not only document what is to be done, but also briefly motivate the selection of approaches to be employed.  
+
+% %================================================================
+% \section{Bias, causal interpretation, and statistical power}
+% \label{sec:3.3}
+% %================================================================
+
+% \subsection{Learning objectives}
+
+% \begin{enumerate}
+    
+% \item You will be able to explain the concepts of effect size, parameter estimation, and estimation precision, which are the core theoretical ideas upon which \textit{a priori} power analysis is based.
+
+% \item You will be able to explain statistical uncertainty, including (a) {\em a priori} notions of uncertainty as reflected in statistical power, and (b) uncertainty following data analysis as reflected in statistical measures of confidence, significance, and precision.  You will be able to identify specific features of the data and methods that result in lower confidence and higher bias.
+
+% \item You will understand the conventional definition of power as the probability of research success contingent on the unknown true effect size. You will also be conversant in alternative notions of power that are directly related to estimation precision or prediction accuracy rather than hypothesis testing.
+
+% \item You will be able to articulate how assessments of statistical power do and do not reflect the real-world reproducibility of analytic findings.
+
+% \item You will understand how certain forms of bias can be reduced or eliminated analytically, while others cannot.
+
+% \end{enumerate}
+
+
+% \subsection{Review of the foundations of statistical inference}
+
+% Statistical inference is concerned with the estimation of parameters that address research aims, and assessing whether the estimated values of these parameters are likely to be close to their true values.  This almost always involves invoking the notion that the data are a sample from the population of interest, and that we estimate parameters using the data, but judge their accuracy in relation to the unknown population.  Since we do not have access to the population, the estimation error can never be known, but by leveraging our knowledge of the way the data were collected, and considering carefully the properties of the estimation approaches that we use, we can infer meaningful properties of estimators, most notably their bias and their precision.
+
+% A parameter estimate is a function of the data, and since the data are random, the estimator is also random.  Therefore, the estimator follows a probability distribution that we call the {\em sampling distribution}.  Letting $\hat{\theta}$ denote the estimator, we can write $\theta_0 = E[\hat{\theta}]$ as the expected value of the estimator.  The true value of the parameter in the population, also known as the {\em estimation target} or {\em estimand}, can be denoted $\theta$.  The {\em bias} is $\theta_0 - \theta$, and the {\em standard error} of the estimator is ${\rm SD}(\hat{\theta})$.
+
+% Put in more intuitive terms, bias reflects {\em systematic error} -- the tendency of an estimator to be wrong in the same direction on average over all samples of data from the population.  Precision reflects {\em random error} -- the tendency of an estimator to be wrong in different ways for every sample of data that is analyzed, so that these errors average to zero over many independent replications.  These two sources of error can be combined to obtain the {\em total error}, often quantified as the {\em mean squared error} (MSE), which is ${\rm bias}^2 + {\rm SE}^2$.  For communicating findings, it is more natural to use the {\em root mean squared error} (RMSE), which is  $\sqrt{{\rm bias}^2 + {\rm SE}^2}$, since this has the same units as the data. Below we will discuss in more detail what factors may lead to greater bias and variance in a research study.
+
+% Our focus here is on regression analyses, and we can first consider a linear regression model fit with ordinary least squares (OLS).  Statistical software will always provide the standard errors for you when you are performing a regression analysis, but it is important to appreciate that that statistical uncertainty in a regression analysis arises from four orthogonal factors, as expressed in the relationship
+
+% \begin{eqnarray*}
+% {\rm SE}(\hat{\theta}_j) &=& \sqrt{{\rm VIF}_j \cdot {\rm Var}(Y|X) / (n \cdot {\rm var}(X_j))}\\
+%                          &=& {\rm VIF}_j^{1/2} \cdot {\rm SD}(Y|X) / (n^{1/2} \cdot {\rm SD}(X_j)).
+% \end{eqnarray*}
+
+% The terms in this expression can be interpreted as follows:
+
+% \begin{itemize}
+
+% \item ${\rm Var}(Y|X)$ reflects unexplained variability or residual scatter in the response variable.  The standard error of every regression coefficient is directly related to the standard deviation of this residual scatter.
+
+% \item $n$ is the sample size.  The standard error of every regression coefficient is directly related to $1/\sqrt{n}$ (which is also true of the sample mean, and most other statistical estimators).  One implication of this ``root n scaling'' is that you need to increase your sample size by a factor of 4 to reduce the standard error by half.
+
+% \item ${\rm Var}(X_j)$ is the variance of the $j^{\rm th}$ covariate.  The more spread out the values of an explanatory variable are, the easier it is to assess the partial slope for this covariate.  The standard error of every regression coefficient is inversely related to the standard deviation of its corresponding covariate.  If ${\rm SD}(X_j)$ is zero, the standard error of $\hat{\beta}_j$ is infinite and the parameter is not estimable.  
+
+% \item ${\rm VIF}_j$ refers to the {\em variance inflation factor}.  It is defined to be $1 / (1 - R_j^2)$, where $R_j^2$ is the squared correlation when regressing $X_j$ on the other covariates.  The ${\rm VIF}$ does not involve the response variable $Y$ at all.  VIF reflects collinearity, and specifically the fact that it is harder to estimate the coefficient of a covariate if that covariate is related to other covariates.  For example, if half of the variance of $X_1$ is explained by regressing it on $X_2, \ldots, X_p$, then the standard error for $\hat{b}_1$ is $\sqrt{2} \approx 1.4$ times greater than it would have been if $X_1$ were uncorrelated with the other covariates.
+
+% \end{itemize}
+
+% There are many important implications of this expression for the standard error of a regression coefficient.  For example, we see that the standard error scales with ${\rm SD}(X_j)$ and the estimate $\hat{\beta}_j$ scales the same way.  That is, if we rescale an explanatory variable by a constant factor (e.g.\ to change measurement units), both the parameter estimate and its standard error scale by this same factor.  Thus, the Z-score, which is the ratio of the parameter estimate to its standard error, is unaffected, and hence is {\em equivariant} or {\em dimension-free}.  It is also notable that ${\rm Var}(Y|X)$ appears in the numerator of the standard error, but ${\rm Var}(X_j)$ appears in the denominator of the standard error.  Thus, some forms of variation are good and others are bad, at least in terms of their impact on estimation precision.
+ 
+% \subsection{Causal interpretation of findings}
+
+% In principle, if we specify a statistical model correctly (i.e.\ in a way that perfectly matches the real world), and estimate the model parameters from high-quality data using estimators that are unbiased and consistent, then with enough data we will recover the true state of nature in our model, which will then be interpretable in a fully causal sense.  However, you have likely heard the aphorism ``all models are wrong but some are useful'' (attributed to the statistician George Box).  By ``wrong'', we mean here that the quantitative details of a statistical model are extremely unlikely to match the true state of nature.  This can be the case for many reasons, but a few would be that we have ``omitted variables'' (variables that play a causal role but are not available to us), or that our model over-simplifies the quantitative relationships among observed variables, e.g.\ treating effects as linear and additive when they in fact are not.
+
+% With sufficient data, semi-parametric and non-parametric modeling methods can be employed, and since such approaches are more flexible, and place fewer restrictions on the assumed model, it is likely that fitted non-parametric models are less likely to be biased (in a way that harms causality) than fitted parametric models, especially parametric models that are very simple.  However, non-parametric models generally require more data in order to be fit accurately.  As discussed earlier, total error is the sum of systematic error (bias) and random error (imprecision).  Thus, in many cases parametric models suffer more from systematic error while non-parametric models suffer more from random error.  Since total error is the main threat to the validity of our findings, the choice between flexible non-parametric models and somewhat less flexible parametric models is not always easy to make.
+
+% Apart from the models and estimation procedures, the data themselves can sometimes constitute an obstacle to reaching valid causal conclusions.  We may have a biased sample (one that doesn't represent the population).  While some sampling biases can be statistically corrected, this is usually only the case when the nature of the sampling bias is known.  Measurement error, due to factors such as technical noise or even adversarial data corruption can also harm causality, even if our models are perfectly specified.
+
+% \subsection{Targeted methods of causal inference}
+
+% To overcome the challenges of fully non-parametric analysis while retaining their advantages in terms of bias, a number of techniques have been developed that exploit the fact that in many research studies, only one or a small number of explanatory variables is a priority for causal interpretation, with other factors being secondary,  These secondary factors are sometimes called {\em nuisance factors}.  For example, we may have a demographically diverse population of subjects in terms of age, sex, and race, but our interest is only whether on average those subjects who are treated have better outcomes than those who are not treated.  To rigorously assess the treatment effect, we need to account for confounding and effect modification by the demographic factors, but all parameters related to the demographic factors are {\em nuisance parameters} and hence not of primary interest.
+
+% In this situation, rather than attempting to model all factors non-para\-metrically to the same extent, it is possible to use more targeted techniques that focus only on establishing the causal role of one particular factor of interest.  One early example of this type of approach was {\em propensity score analysis}.  We will not provide a full treatment of this method, here, but briefly, it involves modeling the propensity (probability) for a subject to be treated, which is not constant when there is confounding.  It is then possible to match, adjust, or weight an analysis that compares the outcome between treated and untreated subjects.  Accounting for the propensity scores in one of these three ways can reduce or eliminate the confounding without jointly modeling all relationships among the measured variables.
+
+% Other methods for targeted causal inference include g-computation and synthetic controls.  Roughly speaking, g-computation uses a model fit to the controls to synthesize a counterfactual control for each of the treated cases.  These counterfactual controls match their corresponding subject on all nuisance factors, but are always untreated or unexposed to the risk factor of interest.  Some of these methods enjoy a property known as {\em double robustness}, meaning that valid results are obtained if either the treatment assignment (confounding) relationship is correctly modeled, or if the relationship between the outcome and the treatment is correctly modeled, but not necessarily both.
+
+% \subsection{Brief overview of power analysis \label{power}}
+
+% Above we discussed threats to causal valiity that arise due to systematic issues with the data or analytic procedures.  The other reason that our results can be wrong is due to random errors in our estimated quantities.  To control the risk of this happening, most research studies undergo a power analysis before being undertaken.
+
+% Considered broadly, power analysis refers to any effort that aims to quantify the likelihood of a data analysis yielding a definitive result, before the data are in-hand.  It is important to note that ``definitive results'' does not mean ``positive'' or ``favorable'' results, only that the results are relatively conclusive.
+
+% An easy way to get started thinking about power analysis is through standard errors and confidence intervals.  Suppose that we wish to estimate a parameter $\theta$ of interest, and we will report the point estimate $\hat{\theta}$ and an approximate 95\% confidence interval $\hat{\theta} \pm 2\cdot{\rm SE}(\hat{\theta})$.  Your audience will generally have an opinion on how narrow this confidence interval must be in order to be useful, e.g.\ if $\hat{\theta}$ is a proportion, a useful confidence interval will generally be no wider than 0.1.  In a basic analysis focusing on the mean of independent and identically distributed data, the standard error is ${\rm SE}(\hat{\theta}) = \sigma / \sqrt{n}$, where $\sigma$ is the standard deviation of the data and $n$ is the sample size.  Even without any data in-hand, it is likely that we have a fairly strong sense of the values of $\sigma$, perhaps based on other related data, the scientific literature, or just intuition.  If we are not able to speculate on its value, we may be able to provide a reasonable (conservative) upper bound for it.  The desired power is characterized through the equation $4\sigma / \sqrt{n} = w$, where $w$ is the reasonable width for the confidence interval.  Solving this for $n$ yields $n = 16\sigma^2 / w^2$.  This illustrates how the sample size needed to achieve acceptable power can be inferred from assumed information about the target population, when the analysis is focused on point estimation and estimation precision.
+
+% The more conventional setting for power analysis is in the context of null hypothesis significance testing (NHST), which is the most common approach to statistical hypothesis testing.  This involves stating a null hypothesis and determining a test statistic that measures evidence against the null hypothesis. Commonly, the null hypothesis is a Z-score formed as the ratio of a point estimate to its standard error.  Suppose we wish to test the null hypothesis $\beta_j = 0$, where $\beta_j$ is a certain coefficient in a regression model. We can use the Z-score $Z_j = \hat{\beta}_j / {\rm SE}(\hat{\beta}_j)$ to test this hypothesis.  For large enough samples, the sampling distribution of $Z_j$ is approximately standard normal, while for small samples it is more appropriate to use a t-distribution with the appropriate degrees of freedom.
+
+% While widely available statistical software provides bespoke methods for obtaining power in a variety of specialized settings, here we discuss an approach that can be carried out without special code, and is widely applicable.  The derivation is slightly technical, but the result is intuitive and easy to remember. 
+
+% The power for a formal hypothesis test is the probability of rejecting the null hypothesis when the alternative hypothesis is true.  Suppose we wish to achieve 80\% power (a common but aribtrary convention) to detect a given effect size (we will discuss effect sizes more below).  For the common setting where type-1 error is to be controlled at the 5\% level, we reject the null hypothesis when the test statistic is larger than $2$.  In most settings, the alternative is composite, meaning that there are infinitely many alternative hypotheses.  Those alternative hypotheses that are very close to the null are almost impossible to detect, while those that are far from the null are easy to detect.  This is where the effect size comes in. Calculating probabilities under the alternative hypothesis, we have
+
+% \begin{eqnarray*}
+% P(Z_j > 2) &=& P(\hat{\beta}_j / {\rm SE}(\hat{\beta}_j) > 2)\\
+% &=& P((\hat{\beta}_j - \beta_j + \beta_j) / {\rm SE}(\hat{\beta}_j) > 2)\\
+% &=& P(Z > 2 - \beta_j / {\rm SE}(\hat{\beta}_j))\\
+% &=& P(Z > 2 - \beta_j \sqrt{n} / s)\\
+% \end{eqnarray*}
+
+% \noindent where $Z$ is standard normal, and we write ${\rm SE}(\hat{\beta}_j) = s / \sqrt{n}$ (in the case of ordinary least squares, $s = \sqrt{{\rm Var}(Y|X){\rm VIF}_j / {\rm Var}(X_j)}$).  The power is now given by
+
+% $$
+% P(Z > 2 - e \sqrt{n}),
+% $$
+
+% \noindent where $e = \beta_j / s$.  We will discuss the interpretation of $e$ below.
+
+% Recalling that we seek 80\% power, under normality of $Z$ we would need $2 - e \sqrt{n}  = -0.84$ (the constant $-0.84$ is the $20^{\rm th}$ percentile of the standard normal distribution).  This can be rearranged as 
+% $2.84 = e \sqrt{n}$.  We can now present this relationship in two different ways, for two different purposes.  One approach solves for $e$ yielding $e = 2.84 / \sqrt{n}$.  This gives us the detectable effect size in terms of the sample size.  Smaller detectable effect sizes are better, and we can see that the detectable effect size shrinks with $n$ at rate $1/\sqrt{n}$.  
+
+% Now we consider further how to interpret the effect size $e$ in the context of ordinary least squares. We can rewrite it as $e = \beta_j\cdot {\rm SD}(X_j) / ({\rm SD}(Y|X) \cdot {\rm VIF}_j^{1/2}) = \tilde{\beta}_j / {\rm VIF}_j^{1/2}$.  The factor $\tilde{\beta}_j = \beta_j \cdot {\rm SD}(X_j) / {\rm SD}(Y|X)$ is a very natural standardized effect size for $\beta_j$.  It represents the change in the expected outcome when increasing $X_j$ to $X_j + {\rm SD}(X_j)$, in units of ${\rm SD}(Y|X)$.  Thus, both $X$ and $Y$ are interpreted in standardized units.  Rearranging one last time, in the case of OLS we have $\tilde{\beta}_j = 2.84 \cdot{\rm VIF}_j^{1/2} / \sqrt{n}$.  
+
+% Interestingly, ${\rm VIF}_j^{1/2} / \sqrt{n}$ is the standard error for $\beta_j$ if we use standardized units.  This shows us that the detectable effect size at 80\% power is around 3 (rounding 2.84 up to 3) times the standard error.  We can reject the null hypothesis if the estimate is at least two times the standard error, but to have 80\% power, we need the population parameter to be almost three times the standard error.  This should not be surprising, because if the effect size is equal to the rejection threshold (2 in this case), we will only reject 50\% of the time, which is lower than our target power of 80\%. This logic turns out to be quite broadly applicable.  If we have a reasonable estimate (or projection) for the standard error of the estimator of our target parameter, a safe value to use for the detectable effect size is around three times this standard error.
+
+% A different way to use this result is to solve the equation $e = 2.84 / \sqrt{n}$ for $n$, which yields $n = 2.84^2\cdot{\rm VIF}_j / \tilde{\beta}_j^2$.  Rounding $2.84^2$ to $9$, we see that the sample size needed to detect a standardized effect of $\tilde{\beta}_j$, when the variance inflation factor is ${\rm VIF}_j$, is around $9\cdot{\rm VIF}_j / \tilde{\beta}_j^2$.  In practice, realistic effect sizes are usually much less than 1, so, for example, if the target effect size is $\tilde{\beta}_j = 1/2$, we would need a sample size of $n=36$, even in the ideal setting where the variance inflation factor is $1$.  To detect an effect size of $1/4$, we would need a sample size of 144 (again with VIF equal to 1). 
+
+% In summary, we have two methods for approaching power analysis in the setting where the primary data analysis will involve a null hypothesis significance test.  One approach gives you the effect size that can be detected at a given sample size, and the other gives you the sample size needed to detect a given effect size.  The constants (2 and 9) are specific to the setting where the type-1 error is to be controlled at 0.05 and the power is to be at least 80\%, and could be changed to other constants if different levels of control were desired.
+
+% The approach of determining the detectable effect size for a given sample size would typically be used when the sample size is constrained by external factors, and the goal is to demonstrate that it is worth investing resources into performing the analysis given the amount of accessible data.  The approach of determining the sample size that yields power to detect a given effect size would be useful if we intend to collect data, and there is a sense of what effect size might be plausible.  In this case, we can determine how large of a sample would be needed to detect the plausible effect size, and then we would need to decide if it is practical to obtain a sample of the given size.
+
+% \subsubsection{Power assessment for quantile regression analyses}
+
+% This is a more advanced topic and is provided for those who are interested.  Suppose we wish to conduct an analysis using quantile regression, at a given probability point $p$.  How can we assess the detectable effect size for our planned analysis, or determine the sample size needed to detect an effect of a given size? The situation is more difficult than in the case of ordinary least squares, but is still tractable.  For quantile regression targeting the $p^{\rm th}$ quantile of the distribution of $Y$ given $X$, the covariance matrix of $\hat{\beta}$ can be approximated as $p(1-p)S^{-1}HS^{-1}/n$, where $H = {\rm cov}(x)$ is readily estimated, and $S$ is the so-called quantile density matrix, which is defined as $E[f_u(0|x) xx^T]$, where $f_u$ is the density function of $y - Q_p(y | x)$.  This can be interpreted as a weighted covariance matrix of $x$, weighted by the quantile density $f_u$.  For extreme quantiles, the center of the distribution of the quantile residuals $y - Q_p(y | x)$ will be shifted far from zero, hence the density of quantile residuals at 0 will be small.  Since the quantile density matrix is to be inverted, this inflates the standard errors, especially for extreme quantiles.  
+
+% In a power analysis setting, it is often possible to posit a reasonable value for $H$, but it is more difficult to do so for $S$.  Under Gaussianity, we could set $S = \sigma^{-2} \cdot d\cdot H$, where $d = \exp(-y_p^2/2)/\sqrt{2\pi}$, the standard normal density function evaluated at its $p^{\rm th}$ quantile $y_p$ and $\sigma$ is the standard deviation of the residuals.  Other (non-Gaussian) distributions could be used if heavier tails are anticipated.  This calculation also assumes a location shift model in which $y - Q_p(y | x)$ is independent of $x$.  This assumption seems practically unavoidable in the power assessment, but the analysis itself would remain robust to violations of this condition.
+
+% The resulting expression for ${\rm cov}(\hat{\beta})$ in a quantile regression analysis is $p(1-p)\sigma^2 H^{-1} / (nd^2)$, which can be estimated as $p(1-p)\sigma^2(X^T X)^{-1} / d^2$.  This is similar to the case of ordinary least squares, which has covariance matrix $\sigma^2 (X^T X)^{-1}$.  When $p=1/2$ (median regression) and the regression errors are standard Gaussian, the covariance matrix for $\hat{\beta}$ is $2\pi/4 \approx 1.6$ times what we would have for OLS (so the standard errors are inflated by approximately 1.25).  This is the cost of using quantile regression to estimate the median -- while the conditional median is equal to the conditional mean for Gaussian errors, per the Gauss-Markov theorem, OLS achieves the minimum variance (at least for unbiased estimators), so it is anticipated that a non-least squares approach, while more robust, will be somewhat less efficient.
+
+% \subsection{Assessment instrument}
+
+% Conduct a minimal power assessment that supports the analytic plan that you wrote in section \ref{sec:3.2}.  Feel free to consider a simplified version of the analytic plan to make the power analysis more straightforward.  Then write a short memo to yourself, no more than half a page in length, that summarizes the results of your power analysis, as well as any other reasons unrelated to power that the findings resulting from implementing your analytic plan may be misleading or spurious.
+
+% \end{document}
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Unit 3: Rigorous Statistical Design}
@@ -21,7 +394,7 @@
 
 \textbf{Total Time: 5.5 hours}
 
-This is a practical introduction to conducting rigorous data-driven research in a health-science setting.  Our goal is that upon mastering this section, you to be able to use analytically sophisticated methods to obtain scientifically meaningful, reproducible, and innovative results in your research endeavors. We will focus here on methods for data analysis that can be utilized in the setting of population health research, leveraging official statistics or other systematically collected data with spatial and temporal structure.
+This is a practical introduction to conducting rigorous data-driven research in a health-science setting.  Our goal is that upon mastering this section, you will be able to use analytically sophisticated methods to obtain scientifically meaningful, reproducible, and innovative results in your research endeavors. We will focus here on methods for data analysis that can be utilized in the setting of population health research, leveraging official statistics or other systematically collected data with spatial and temporal structure.
 
 This document focuses on design, strategy, and interpretation, and includes no code or numerical results.  \href{https://github.com/kshedden/case_studies/blob/main/birthweight/birthweight.ipynb}{This} Python notebook provides some model analyses from which you can borrow ideas as you start to implement analyses informed by the principles covered here.
 
@@ -32,7 +405,7 @@ This document focuses on design, strategy, and interpretation, and includes no c
 
 In this subunit, we will consider how you can develop an understanding of the main ideas in a scientific domain in which you intend to conduct research, how to understand and communicate about the capacity of a given dataset for addressing research topics of interest, and how to develop a specific and tractable research aim.
 
-\subsection{Learning objectives}
+\subsection{Learning Objectives}
 
 \begin{enumerate}
 
@@ -40,9 +413,9 @@ In this subunit, we will consider how you can develop an understanding of the ma
 
 \item You will be able to rapidly internalize the structure and capacity of a dataset that can be used to conduct research on a specific health-related topic. This includes identifying the units of analysis (who is being measured) and the variables or attributes (what is being measured), understanding how the units of analysis were selected, what population they represent, how the variables were measured, and what types of measurement errors may be present.
 
-\item You  will be able to use appropriate terminology from epidemiology and biostatistics to discuss possible research studies relating to a given health-science domain, and that can be conducted using a provided dataset.
+\item You will be able to use appropriate terminology from epidemiology and biostatistics to discuss possible research studies relating to a given health-science domain, and that can be conducted using a provided dataset.
 
-\item You will be able to identify plausible exposures, outcomes, and control variables in a research design,
+\item You will be able to identify plausible exposures, outcomes, and control variables in a research design.
 
 \item You will be able to communicate in both speech and writing about a data-driven scientific inquiry in a health science setting. This will include strategies for effectively communicating to different audiences using precise but accessible language.
 
@@ -84,7 +457,7 @@ Each record (observation) in the dataset corresponds to one birth.  Many of the 
 
 Clinical researchers, including specialists from epidemiology and biostatistics, have developed terminology and principles to facilitate rapid and consistent understanding of study designs, encompassing issues relating to aims, data, and methods.  Here, we review some terms and concepts that apply specifically to the birthweight data.  
 
-The {\em unit of analysis} is one newborn baby.  Each observation in the dataset pertains to one such baby (mutiple births, such as twins, produce multiple observations, one for each newborn).  Each baby is characterized in terms of measured variables as discussed above.  Several of these variables are {\em quantitative}, and as such are measured in physical units (grams for birthweight, months for birth interval).  Several other variables are {\em ordinal} (plurality and birth order) -- they are represented as integer counts.  State and county are {\em nominal} (or {\em categorical}).  These variables are encoded as numbers, but the numbers convey no quantitative meaning, they are just labels for an unordered, finite collection of spatial entities.
+The {\em unit of analysis} is one newborn baby.  Each observation in the dataset pertains to one such baby (multiple births, such as twins, produce multiple observations, one for each newborn).  Each baby is characterized in terms of measured variables as discussed above.  Several of these variables are {\em quantitative}, and as such are measured in physical units (grams for birthweight, months for birth interval).  Several other variables are {\em ordinal} (plurality and birth order) -- they are represented as integer counts.  State and county are {\em nominal} (or {\em categorical}).  These variables are encoded as numbers, but the numbers convey no quantitative meaning, they are just labels for an unordered, finite collection of spatial entities.
 
 The data are a {\em census}, in that essentially all births are included -- thus our data constitute the entire population of interest. More commonly, data encountered in research are a subset of the population of interest (the subset can be various types of random sample, or a convenience sample).  Much of the field of statistics deals with the issue of inference from the {\em sample} to the {\em population}, which seems difficult to apply when the data are a census.  We can work around this difficulty as follows, and still have the opportunity to employ conventional statistical thinking in our approach.  We can take the point of view that the data we observed for a given year, although it is a complete census of all births, was a random sample from a superpopulation, and if we could (counterfactually) revisit that year from an independent vantage point, we would theoretically be able to obtain an independent census reflecting the same point in history.  From this point of view, the census becomes a sample from the superpopulation, and the conventional perspective of statistical inference from the sample to the population is maintained.  
 
@@ -100,7 +473,7 @@ The data are {\em administrative}, as they were collected due to the interest of
 
 The data are {\em clustered}, which means here that there is a grouping into subsets, determined by the county in which each baby was born, such that babies born in the same county will tend to have similar attributes.  This tendency may be weak for most factors, but there is still some such tendency.  Clustering likely reflects unavailable {\em stable covariates} that are constant for all births in a county, such as unmeasured social or environmental factors.  For rigorous analysis, clustered data should be analyzed using methods that account for the clustering, otherwise uncertainty is likely to be understated.
 
-Fortunately, the data at hand are unlikely to be subject to large {\em measurement errors}. Birth weights are recorded on birth certificates and constitute important vital records, so the clinicians collecting birth data are likely to be quite careful.  However in a dataset of over a million observations, obtained in an era when the data were likely initially recorded manually on paper, there are likely to be some transcriptional errors.  There could also be deliberate falsification of some data (e.g.\ a parent misreporting their age).  We have no way to quantify how frequently this occurs, but presumably it is quite rare.  By 1971, most births took place hospitals, and birthweight should usually be captured with a standard medical-grade scale, but since the data are obtained in thousands of facilities, there could be some issues with quantitative measurement errors, due to scales being miscalibrated or faulty, but again it is likely that most birthweight measurements are quite accurate.  
+Fortunately, the data at hand are unlikely to be subject to large {\em measurement errors}. Birth weights are recorded on birth certificates and constitute important vital records, so the clinicians collecting birth data are likely to be quite careful.  However in a dataset of over a million observations, obtained in an era when the data were likely initially recorded manually on paper, there are likely to be some transcriptional errors.  There could also be deliberate falsification of some data (e.g.\ a parent misreporting their age).  We have no way to quantify how frequently this occurs, but presumably it is quite rare.  By 1971, most births took place in hospitals, and birthweight should usually be captured with a standard medical-grade scale, but since the data are obtained in thousands of facilities, there could be some issues with quantitative measurement errors, due to scales being miscalibrated or faulty, but again it is likely that most birthweight measurements are quite accurate.  
 
 Parental races are available, although we will not use that data here.  Race is to a large extent a construct, and in 1971 attitudes about race were very different from what they are today.  Even with the best intentions, it is impossible to fully capture a person's ancestry in a categorical variable, and furthermore, differences associated with a race construct are unlikely to be due to the ancestry itself, but rather to social and cultural factors that co-occur with race.      
 
@@ -150,17 +523,17 @@ A scientifically grounded research aim should reflect at least a provisional not
 
 Our provisional causal diagram is shown in Figure \ref{bw-diagram}.  We explain the rationale behind some of our choices next.  To begin, all five of our predictors (maternal and paternal ages, birth order, plurality, and sex) have plausible causal effects on birthweight, so there is an arrow in the diagram from each of them to birthweight.  It is important to note that these are not all of the possible causes of birthweight, as there are many factors that we do not measure such as maternal nutrition and genetics.
 
-Perhaps the strongest single predictor of birthweight is plurality.  For obvious reasons, when multiple fetuses are gestated together, each will tend to be smaller than would be the case in a single birth.  While there is a larger random component to plurality, it is not fully exogeneous -- several of our other predictors, besides affecting birthweight directly, also affect plurality.  For example, it is known that older mothers are somewhat more likely to have multiple births, but no such association is known for older fathers. Also, infants born in plural births are more likely to be female, but it is unclear whether sex causes plurality or plurality causes sex, so we draw this as a bidirectional arrow in our causal diagram.  Due to the relationships discussed so far, maternal age is likely a confounder (a common cause) of the relationship between plurality and birthweight.
+Perhaps the strongest single predictor of birthweight is plurality.  For obvious reasons, when multiple fetuses are gestated together, each will tend to be smaller than would be the case in a single birth.  While there is a larger random component to plurality, it is not fully exogenous -- several of our other predictors, besides affecting birthweight directly, also affect plurality.  For example, it is known that older mothers are somewhat more likely to have multiple births, but no such association is known for older fathers. Also, infants born in plural births are more likely to be female, but it is unclear whether sex causes plurality or plurality causes sex, so we draw this as a bidirectional arrow in our causal diagram.  Due to the relationships discussed so far, maternal age is likely a confounder (a common cause) of the relationship between plurality and birthweight.
 
-Offspring sex is determined by whether the fertilizing sperm carries an X or a Y chromosome.  This is nearly random, although \href{https://www.science.org/doi/10.1126/sciadv.adu7402}{some research} has shown slight deviations from perfect randomness.  While it is unlikely that offspring sex causes maternal age, there could be small causal effects of maternal age on offspring sex.  Specifically, older mothers are found to have a slightly higher probability of having children of the same sex, but this sex could be either female or male, and there was little evidence of a directional bias in the offspring sex for individual births.  This is an example where, even in the context of observational data, mechanstic understanding allows us to rule out strong confounding.
+Offspring sex is determined by whether the fertilizing sperm carries an X or a Y chromosome.  This is nearly random, although \href{https://www.science.org/doi/10.1126/sciadv.adu7402}{some research} has shown slight deviations from perfect randomness.  While it is unlikely that offspring sex causes maternal age, there could be small causal effects of maternal age on offspring sex.  Specifically, older mothers are found to have a slightly higher probability of having children of the same sex, but this sex could be either female or male, and there was little evidence of a directional bias in the offspring sex for individual births.  This is an example where, even in the context of observational data, mechanistic understanding allows us to rule out strong confounding.
 
-Offspring sex causally influences birthweight, with girl babies being around 100-200 grams lighter than boy babies (as with many mean differences, individual variability is far larger than the mean difference, so many boy babies will be lighter than the average girl baby, and vice versa).  Arguably, as offspring sex is nearly independent of other factors, it is an important precision variable, but could only be a very weak confounder of other relationships in our causal diagram.
+Offspring sex causally influences birthweight, with girl babies being around 100--200 grams lighter than boy babies (as with many mean differences, individual variability is far larger than the mean difference, so many boy babies will be lighter than the average girl baby, and vice versa).  Arguably, as offspring sex is nearly independent of other factors, it is an important precision variable, but could only be a very weak confounder of other relationships in our causal diagram.
 
-Maternal age is commonly discussed as a predictor of birthweight, and in particular it has an ``inverse U-shaped'' in which mothers of intermediate age (around 35 years) have the heaviest babies on average.  Paternal age is also a plausible causal predictor of birthweight, although the mechanisms behind this relationship are largely different from those for maternal age -- they are potentially less direct, and are likely of smaller magnitude.  Due to the relationships between maternal age, plurality, and birthweight, plurality is a possible mediator of the relationship between maternal age and birthweight (it would almost certainly be a partial mediator rather than a full mediator).
+Maternal age is commonly discussed as a predictor of birthweight, and in particular it has an ``inverse U-shaped'' relationship in which mothers of intermediate age (around 35 years) have the heaviest babies on average.  Paternal age is also a plausible causal predictor of birthweight, although the mechanisms behind this relationship are largely different from those for maternal age -- they are potentially less direct, and are likely of smaller magnitude.  Due to the relationships between maternal age, plurality, and birthweight, plurality is a possible mediator of the relationship between maternal age and birthweight (it would almost certainly be a partial mediator rather than a full mediator).
 
 Paternal age is positively associated with maternal age, although it is unclear whether this relationship is causal, so we draw the arrow between maternal and paternal age as bidirectional.  Complicating matters, paternal age is sometimes missing (maternal age is never missing), and is unlikely to be {\em missing at random}, introducing yet another source of bias into the analysis if we choose to pursue {\em complete case analysis}.  We could add another variable ``paternal age observed'' to our diagram, to reflect the possibility that there is information in the missingness status of the paternal age variable. Since paternal age is predictive of maternal age, and is a causal predictor of birthweight, it is likely a confounder of the relationship between maternal age and birthweight (and conversely, maternal age is likely a confounder of the relationship between paternal age and birthweight).  
 
-Finally, birth order is causally impacted by maternal age.  It is assocated with paternal age (through the association of paternal with maternal age), but it seems unlikely that paternal age causes birth order.  Birth order likely has its own causal effect on birthweight, but since it is collinear with maternal age, it might be somewhat difficult to distinguish these two effects in the data.
+Finally, birth order is causally impacted by maternal age.  It is associated with paternal age (through the association of paternal with maternal age), but it seems unlikely that paternal age causes birth order.  Birth order likely has its own causal effect on birthweight, but since it is collinear with maternal age, it might be somewhat difficult to distinguish these two effects in the data.
 
 \begin{figure}
 \begin{center}
@@ -188,18 +561,21 @@ Finally, birth order is causally impacted by maternal age.  It is assocated with
 \caption{Causal diagram illustrating possible causal relationships among predictors of birthweight. \label{bw-diagram}}
 \end{figure}
 
-\subsection{Assessment instrument}
+\subsection{Assessment Instrument}
 
-In one or two sentences, state a research aim that can be addressed using the NCHS birthweight data discussed above.  Then write a roughly half-page memo to yourself providing a broader consideration of the dataset, study design, and research domain that provides the foundation for your research aim.
+\begin{itemize}
+    \item In one or two sentences, state a research aim that can be addressed using the NCHS birthweight data discussed above. Your aim should be grounded in the current state of knowledge, have a limited and explicitly defined scope, and reflect a clear conceptual framework. Avoid framing the aim purely in terms of prediction accuracy or statistical methods.
+    \item Write a roughly half-page memo to yourself providing a broader consideration of the dataset, study design, and research domain that provides the foundation for your research aim. Your memo should address: the capacity and limitations of the NCHS data for your aim; the relevant causal or mechanistic relationships (referencing the causal diagram where appropriate); the key exposures, outcomes, and potential confounders in your design; and any data quality or missingness concerns that may affect your study.
+\end{itemize}
 
 %================================================================
-\section{Developing an analytic plan}
+\section{Developing an Analytic Plan}
 \label{sec:3.2}
 %================================================================
 
-In this subsection, we will discuss how to develop a precise and actionable analytic plan.
+In this section, we will discuss how to develop a precise and actionable analytic plan.
 
-\subsection{Learning objectives}
+\subsection{Learning Objectives}
 
 \begin{enumerate}
 
@@ -215,7 +591,7 @@ In this subsection, we will discuss how to develop a precise and actionable anal
 
 \end{enumerate}
 
-\subsubsection{Analytic methods}
+\subsection{Analytic methods}
 
 Now that your research aim is stated, we can consider how to approach it analytically.  We are using here a dataset that is freely available, which allows us to immediately propose methods for our analytic plan.  But it is important to note that in many cases where new data are to be collected or purchased, or if significant obstacles to data access are in place, you would need to provide explicit data collection protocols, and have your analytic plan approved, as well as obtain funding.  These are extremely important issues, so to at least partially acknowledge this reality, we will engage here in a discussion of analytic methods without allowing ourselves to immediately jump into exploring the data.  That is, we allow ourselves basic information about the data structure, sample size, and measurement units, but do not immediately perform any preliminary analyses, and instead will put ourselves in the position of devising an analytic plan without having access to any data.
 
@@ -231,9 +607,9 @@ The median sex difference, while likely important, is much smaller than variatio
 
 Any summary statistic that aims to quantify the magnitude and/or direction of a relationship can be viewed as an effect size.  We will not provide a comprehensive review of descriptive statistics and effect sizes here, but wish to introduce this concept now due to the important role that it will play later.  Effect sizes play a major role in scientific communication, and also are important in assessing statistical power.  The two examples provided above should serve to illustrate descriptive statistics and effect sizes in the context of this research domain.
 
-\subsubsection{Regression analysis that focuses on the conditional mean}
+\subsection{Regression analysis that focuses on the conditional mean}
 
-A natural staring point would be to focus on the conditional mean of birth weight given some risk factors as predictors.  The most common approach for achieving this goal is to use generalized linear modeling, which includes linear regression fit with least squares as a special case.  As a simple starting point, suppose that we plan to use linear regression fit with ordinary least squares (OLS) to model birthweight in terms of maternal age.  Linear regression posits a linear mean structure, and a basic mean structure model would be $E[Y|A_m] = b_0 + b_1A_m$, where $Y$ is birthweight and $A_m$ is maternal age.  However there is strong prior knowledge that low birthweight is more common for very young and older mothers, and less common for mothers of intermediate age.  A basic way to accommodate this nonlinearity is to posit the mean structure model $E[Y|A_m] = b_0 + b_1A_m + b_2A_m^2$, which is a technique known as {\em polynomial regression}. Polynomial regression has been used for 100 years or more, but since the 1980's a more general perspective of using basis functions in regression has emerged.  While polynomials are one type of basis function, other types such as splines have more favorable properties.
+A natural starting point would be to focus on the conditional mean of birth weight given some risk factors as predictors.  The most common approach for achieving this goal is to use generalized linear modeling, which includes linear regression fit with least squares as a special case.  As a simple starting point, suppose that we plan to use linear regression fit with ordinary least squares (OLS) to model birthweight in terms of maternal age.  Linear regression posits a linear mean structure, and a basic mean structure model would be $E[Y|A_m] = b_0 + b_1A_m$, where $Y$ is birthweight and $A_m$ is maternal age.  However there is strong prior knowledge that low birthweight is more common for very young and older mothers, and less common for mothers of intermediate age.  A basic way to accommodate this nonlinearity is to posit the mean structure model $E[Y|A_m] = b_0 + b_1A_m + b_2A_m^2$, which is a technique known as {\em polynomial regression}. Polynomial regression has been used for 100 years or more, but since the 1980's a more general perspective of using basis functions in regression has emerged.  While polynomials are one type of basis function, other types such as splines have more favorable properties.
 
 It is important to note that polynomial regression is still considered to be a linear model, since the mean structure is linear in the unknown parameters $b_0, b_1, b_2$.  This simple example illustrates how people often mis-state the way in which linear regression is linear -- linear regression does not assume that the conditional mean of the response is a linear function of the predictors, but rather that the mean structure model (or more precisely their estimating equations) are linear in the parameters.  This latter type of linearity greatly simplifies estimation and uncertainty assessment of our estimates of the unknown parameters $b_0, b_1, b_2$.  
 
@@ -245,7 +621,7 @@ While our research questions here relate to the conditional mean structure, we s
 
 Covariance structure refers to the possibility that birthweights for two different infants can be correlated.  Formally, the covariance could be written ${\rm Cov}(Y_1, Y_2 | X_1, X_2)$, where $Y_1, X_1$ and $Y_2, X_2$ refer to two different births.  One natural source of covariance structure is sibling relationships, but the NCHS data does not provide that information.  Another source of covariance structure would be where due to unobserved covariates, two newborns are likely to share factors in common that we have not measured.  For example, two newborns in the same county in the same year are likely to share similar exposures that we have not measured, so their birthweights will be more similar than those of two newborns from different years and/or locations. 
 
-\subsubsection{Regression analysis that focuses on low birth weight}
+\subsection{Regression analysis that focuses on low birth weight}
 
 While mean structure differences are of genuine scientific interest, they do not directly address questions about low birth weight, which is the central interest in many studies of birthweight.  There are many regression approaches that target the low (or high) birthweights instead of the conditional mean birthweight, and it is quite interesting to consider the possibility that the causal architecture of the extreme birthweights may differ from that of the conditional mean.  Some powerful tools like expectile and expected shortfall regression have been applied in this setting, but here we will focus on the most direct and familiar approach which is quantile regression.
 
@@ -253,18 +629,22 @@ Quantile regression aims to estimate the $p^{\rm th}$ conditional quantile of $Y
 
 Quantile regression is not a GLM, and an important point of contrast between quantile regression and linear regression fit with OLS is that the estimating equations for the unknown parameters are not linear in the parameters, even when the quantile itself is modeled as a linear function of the parameters (as in the example above).  This substantially complicates estimation and inference.  Although these important technical details are largely handled by available software, it is important to be aware of these complications, especially regarding how inference is conducted as this will have implications for the power analyses to be discussed later in section \ref{power}.  Another challenging aspect of quantile regression that is important to be aware of is that statistical power, and the ability to conduct valid inference, becomes more challenging as the probability point $p$ approaches $0$ or $1$, which is exactly our regime of interest.  This challenge is partially offset by the very large sample sizes that we have available for this study.
 
-We will briefly comment on an analysis approach that while natural, is not further developed here, which would be to categorize every birth into a group such as very low birthweight ($<1500$ grams), low birthweight ($1500-2500$ grams), or normal weight ($>2500$ grams).  This would lead to using regression approaches such as logistic or ordinal logistic regression (although many other methods are available).  On the one hand, this seems to directly address questions around low birthweight, whereas the conditional mean and quantile regression approaches yield results that are more indirect.  On the other hand, these category-based approaches are heavily dependent on numerical thresholds which, while widely used, are somewhat arbitrary.  Two newborns of weights 1499 and 1501 are treated as completely different, whereas two newborns of weights 1501 and 2499 are treated as the same.  A related issue is that much of the information in the data is thrown out by recoding the data into these categories.  While you are welcome to use these methods in your work for this unit, we encourage you to carefully consider these drawbacks.
+We will briefly comment on an analysis approach that while natural, is not further developed here, which would be to categorize every birth into a group such as very low birthweight ($<1500$ grams), low birthweight ($1500$--$2500$ grams), or normal weight ($>2500$ grams).  This would lead to using regression approaches such as logistic or ordinal logistic regression (although many other methods are available).  On the one hand, this seems to directly address questions around low birthweight, whereas the conditional mean and quantile regression approaches yield results that are more indirect.  On the other hand, these category-based approaches are heavily dependent on numerical thresholds which, while widely used, are somewhat arbitrary.  Two newborns of weights 1499 and 1501 are treated as completely different, whereas two newborns of weights 1501 and 2499 are treated as the same.  A related issue is that much of the information in the data is thrown out by recoding the data into these categories.  While you are welcome to use these methods in your work for this unit, we encourage you to carefully consider these drawbacks.
 
-\subsection{Assessment instrument}
+\subsection{Assessment Instrument}
 
-Develop a brief analytic plan (approximately one half page in length), that addresses the research question that you posed in assessment 1, using the NCHS birthweight data.  The analytic plan should be specific enough that the results would be reproducible if implemented by different researchers.  You should not only document what is to be done, but also briefly motivate the selection of approaches to be employed.  
+\begin{itemize}
+    \item Develop a brief analytic plan (approximately one half page in length) that addresses the research aim you posed in Assessment~1, using the NCHS birthweight data. The analytic plan should be specific enough that the results would be reproducible if implemented by different researchers.
+    \item Your plan should include: the specific regression or analytic method(s) you will employ and the rationale for selecting them; the outcome variable, key exposures, and any control or precision variables; how you will handle potential confounders, effect modification, or clustering in the data; and at least one descriptive statistic or effect size that provides initial insight into your research question, including both absolute and relative quantifications where appropriate.
+    \item Briefly discuss any limitations of the proposed analytic approach, including assumptions that may not hold and how violations might affect your conclusions.
+\end{itemize}
 
 %================================================================
-\section{Bias, causal interpretation, and statistical power}
+\section{Bias, Causal Interpretation, and Statistical Power}
 \label{sec:3.3}
 %================================================================
 
-\subsection{Learning objectives}
+\subsection{Learning Objectives}
 
 \begin{enumerate}
     
@@ -289,7 +669,7 @@ A parameter estimate is a function of the data, and since the data are random, t
 
 Put in more intuitive terms, bias reflects {\em systematic error} -- the tendency of an estimator to be wrong in the same direction on average over all samples of data from the population.  Precision reflects {\em random error} -- the tendency of an estimator to be wrong in different ways for every sample of data that is analyzed, so that these errors average to zero over many independent replications.  These two sources of error can be combined to obtain the {\em total error}, often quantified as the {\em mean squared error} (MSE), which is ${\rm bias}^2 + {\rm SE}^2$.  For communicating findings, it is more natural to use the {\em root mean squared error} (RMSE), which is  $\sqrt{{\rm bias}^2 + {\rm SE}^2}$, since this has the same units as the data. Below we will discuss in more detail what factors may lead to greater bias and variance in a research study.
 
-Our focus here is on regression analyses, and we can first consider a linear regression model fit with ordinary least squares (OLS).  Statistical software will always provide the standard errors for you when you are performing a regression analysis, but it is important to appreciate that that statistical uncertainty in a regression analysis arises from four orthogonal factors, as expressed in the relationship
+Our focus here is on regression analyses, and we can first consider a linear regression model fit with ordinary least squares (OLS).  Statistical software will always provide the standard errors for you when you are performing a regression analysis, but it is important to appreciate that the statistical uncertainty in a regression analysis arises from four orthogonal factors, as expressed in the relationship
 
 \begin{eqnarray*}
 {\rm SE}(\hat{\theta}_j) &=& \sqrt{{\rm VIF}_j \cdot {\rm Var}(Y|X) / (n \cdot {\rm var}(X_j))}\\
@@ -322,15 +702,15 @@ Apart from the models and estimation procedures, the data themselves can sometim
 
 \subsection{Targeted methods of causal inference}
 
-To overcome the challenges of fully non-parametric analysis while retaining their advantages in terms of bias, a number of techniques have been developed that exploit the fact that in many research studies, only one or a small number of explanatory variables is a priority for causal interpretation, with other factors being secondary,  These secondary factors are sometimes called {\em nuisance factors}.  For example, we may have a demographically diverse population of subjects in terms of age, sex, and race, but our interest is only whether on average those subjects who are treated have better outcomes than those who are not treated.  To rigorously assess the treatment effect, we need to account for confounding and effect modification by the demographic factors, but all parameters related to the demographic factors are {\em nuisance parameters} and hence not of primary interest.
+To overcome the challenges of fully non-parametric analysis while retaining their advantages in terms of bias, a number of techniques have been developed that exploit the fact that in many research studies, only one or a small number of explanatory variables is a priority for causal interpretation, with other factors being secondary.  These secondary factors are sometimes called {\em nuisance factors}.  For example, we may have a demographically diverse population of subjects in terms of age, sex, and race, but our interest is only whether on average those subjects who are treated have better outcomes than those who are not treated.  To rigorously assess the treatment effect, we need to account for confounding and effect modification by the demographic factors, but all parameters related to the demographic factors are {\em nuisance parameters} and hence not of primary interest.
 
-In this situation, rather than attempting to model all factors non-para\-metrically to the same extent, it is possible to use more targeted techniques that focus only on establishing the causal role of one particular factor of interest.  One early example of this type of approach was {\em propensity score analysis}.  We will not provide a full treatment of this method, here, but briefly, it involves modeling the propensity (probability) for a subject to be treated, which is not constant when there is confounding.  It is then possible to match, adjust, or weight an analysis that compares the outcome between treated and untreated subjects.  Accounting for the propensity scores in one of these three ways can reduce or eliminate the confounding without jointly modeling all relationships among the measured variables.
+In this situation, rather than attempting to model all factors non-parametrically to the same extent, it is possible to use more targeted techniques that focus only on establishing the causal role of one particular factor of interest.  One early example of this type of approach was {\em propensity score analysis}.  We will not provide a full treatment of this method here, but briefly, it involves modeling the propensity (probability) for a subject to be treated, which is not constant when there is confounding.  It is then possible to match, adjust, or weight an analysis that compares the outcome between treated and untreated subjects.  Accounting for the propensity scores in one of these three ways can reduce or eliminate the confounding without jointly modeling all relationships among the measured variables.
 
 Other methods for targeted causal inference include g-computation and synthetic controls.  Roughly speaking, g-computation uses a model fit to the controls to synthesize a counterfactual control for each of the treated cases.  These counterfactual controls match their corresponding subject on all nuisance factors, but are always untreated or unexposed to the risk factor of interest.  Some of these methods enjoy a property known as {\em double robustness}, meaning that valid results are obtained if either the treatment assignment (confounding) relationship is correctly modeled, or if the relationship between the outcome and the treatment is correctly modeled, but not necessarily both.
 
 \subsection{Brief overview of power analysis \label{power}}
 
-Above we discussed threats to causal valiity that arise due to systematic issues with the data or analytic procedures.  The other reason that our results can be wrong is due to random errors in our estimated quantities.  To control the risk of this happening, most research studies undergo a power analysis before being undertaken.
+Above we discussed threats to causal validity that arise due to systematic issues with the data or analytic procedures.  The other reason that our results can be wrong is due to random errors in our estimated quantities.  To control the risk of this happening, most research studies undergo a power analysis before being undertaken.
 
 Considered broadly, power analysis refers to any effort that aims to quantify the likelihood of a data analysis yielding a definitive result, before the data are in-hand.  It is important to note that ``definitive results'' does not mean ``positive'' or ``favorable'' results, only that the results are relatively conclusive.
 
@@ -340,7 +720,7 @@ The more conventional setting for power analysis is in the context of null hypot
 
 While widely available statistical software provides bespoke methods for obtaining power in a variety of specialized settings, here we discuss an approach that can be carried out without special code, and is widely applicable.  The derivation is slightly technical, but the result is intuitive and easy to remember. 
 
-The power for a formal hypothesis test is the probability of rejecting the null hypothesis when the alternative hypothesis is true.  Suppose we wish to achieve 80\% power (a common but aribtrary convention) to detect a given effect size (we will discuss effect sizes more below).  For the common setting where type-1 error is to be controlled at the 5\% level, we reject the null hypothesis when the test statistic is larger than $2$.  In most settings, the alternative is composite, meaning that there are infinitely many alternative hypotheses.  Those alternative hypotheses that are very close to the null are almost impossible to detect, while those that are far from the null are easy to detect.  This is where the effect size comes in. Calculating probabilities under the alternative hypothesis, we have
+The power for a formal hypothesis test is the probability of rejecting the null hypothesis when the alternative hypothesis is true.  Suppose we wish to achieve 80\% power (a common but arbitrary convention) to detect a given effect size (we will discuss effect sizes more below).  For the common setting where type-1 error is to be controlled at the 5\% level, we reject the null hypothesis when the test statistic is larger than $2$.  In most settings, the alternative is composite, meaning that there are infinitely many alternative hypotheses.  Those alternative hypotheses that are very close to the null are almost impossible to detect, while those that are far from the null are easy to detect.  This is where the effect size comes in. Calculating probabilities under the alternative hypothesis, we have
 
 \begin{eqnarray*}
 P(Z_j > 2) &=& P(\hat{\beta}_j / {\rm SE}(\hat{\beta}_j) > 2)\\
@@ -370,7 +750,7 @@ In summary, we have two methods for approaching power analysis in the setting wh
 
 The approach of determining the detectable effect size for a given sample size would typically be used when the sample size is constrained by external factors, and the goal is to demonstrate that it is worth investing resources into performing the analysis given the amount of accessible data.  The approach of determining the sample size that yields power to detect a given effect size would be useful if we intend to collect data, and there is a sense of what effect size might be plausible.  In this case, we can determine how large of a sample would be needed to detect the plausible effect size, and then we would need to decide if it is practical to obtain a sample of the given size.
 
-\subsubsection{Power assessment for quantile regression analyses}
+\subsection{Power assessment for quantile regression analyses}
 
 This is a more advanced topic and is provided for those who are interested.  Suppose we wish to conduct an analysis using quantile regression, at a given probability point $p$.  How can we assess the detectable effect size for our planned analysis, or determine the sample size needed to detect an effect of a given size? The situation is more difficult than in the case of ordinary least squares, but is still tractable.  For quantile regression targeting the $p^{\rm th}$ quantile of the distribution of $Y$ given $X$, the covariance matrix of $\hat{\beta}$ can be approximated as $p(1-p)S^{-1}HS^{-1}/n$, where $H = {\rm cov}(x)$ is readily estimated, and $S$ is the so-called quantile density matrix, which is defined as $E[f_u(0|x) xx^T]$, where $f_u$ is the density function of $y - Q_p(y | x)$.  This can be interpreted as a weighted covariance matrix of $x$, weighted by the quantile density $f_u$.  For extreme quantiles, the center of the distribution of the quantile residuals $y - Q_p(y | x)$ will be shifted far from zero, hence the density of quantile residuals at 0 will be small.  Since the quantile density matrix is to be inverted, this inflates the standard errors, especially for extreme quantiles.  
 
@@ -378,8 +758,245 @@ In a power analysis setting, it is often possible to posit a reasonable value fo
 
 The resulting expression for ${\rm cov}(\hat{\beta})$ in a quantile regression analysis is $p(1-p)\sigma^2 H^{-1} / (nd^2)$, which can be estimated as $p(1-p)\sigma^2(X^T X)^{-1} / d^2$.  This is similar to the case of ordinary least squares, which has covariance matrix $\sigma^2 (X^T X)^{-1}$.  When $p=1/2$ (median regression) and the regression errors are standard Gaussian, the covariance matrix for $\hat{\beta}$ is $2\pi/4 \approx 1.6$ times what we would have for OLS (so the standard errors are inflated by approximately 1.25).  This is the cost of using quantile regression to estimate the median -- while the conditional median is equal to the conditional mean for Gaussian errors, per the Gauss-Markov theorem, OLS achieves the minimum variance (at least for unbiased estimators), so it is anticipated that a non-least squares approach, while more robust, will be somewhat less efficient.
 
-\subsection{Assessment instrument}
+\subsection{Assessment Instrument}
 
-Conduct a minimal power assessment that supports the analytic plan that you wrote in section \ref{sec:3.2}.  Feel free to consider a simplified version of the analytic plan to make the power analysis more straightforward.  Then write a short memo to yourself, no more than half a page in length, that summarizes the results of your power analysis, as well as any other reasons unrelated to power that the findings resulting from implementing your analytic plan may be misleading or spurious.
+\begin{itemize}
+    \item Conduct a minimal power assessment that supports the analytic plan you wrote in Section~\ref{sec:3.2}. You may consider a simplified version of the analytic plan to make the power analysis more straightforward. Your assessment should include: the target parameter(s) and the effect size(s) you aim to detect; the assumed or estimated values for key quantities (e.g., residual variance, sample size, VIF); and the resulting detectable effect size or required sample size, with an interpretation of whether the available data are adequate for your aims.
+    \item Write a short memo to yourself, no more than half a page in length, that summarizes the results of your power analysis, as well as any other reasons unrelated to power that the findings resulting from implementing your analytic plan may be misleading or spurious. Consider: potential sources of bias (e.g., confounding, informative missingness, measurement error); threats to causal interpretation given the observational nature of the data; and any limitations of the statistical methods you have chosen (e.g., model misspecification, sensitivity to distributional assumptions).
+\end{itemize}
 
-\end{document}
+\begin{landscape}
+
+    \section{Evaluation Rubric}
+
+    {\footnotesize
+
+    \begin{longtable}{%
+        >{\RaggedRight\arraybackslash}p{2.5cm}   % Component
+        >{\RaggedRight\arraybackslash}p{4.5cm}   % Excellent
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Good
+        >{\RaggedRight\arraybackslash}p{4.2cm}   % Satisfactory
+        >{\RaggedRight\arraybackslash}p{4.5cm}}  % Needs Improvement
+
+    \toprule
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
+    \midrule
+    \endfirsthead
+
+    \toprule
+    \textbf{Component} &
+    \textbf{Excellent (90--100\%)} &
+    \textbf{Good (80--89\%)} &
+    \textbf{Satisfactory (70--79\%)} &
+    \textbf{Needs Improvement ($<$70\%)} \\
+    \midrule
+    \endhead
+
+    \midrule
+    \multicolumn{5}{r}{\textit{Continued on next page}} \\
+    \endfoot
+
+    \bottomrule
+    \endlastfoot
+
+    % Row 1
+    \textbf{1.\ Research Aim Formulation}
+    \newline\textbf{(10\%)}
+    &
+    Research aim is clearly stated, scientifically grounded, and specific;
+    reflects mechanistic or causal thinking rather than pure prediction;
+    scope is well-defined and feasible given the NCHS data; connects
+    to identified gaps in the current state of knowledge.
+    &
+    Research aim is clearly stated and mostly grounded in the scientific
+    domain; scope is reasonable but could be more precisely defined;
+    some connection to causal or mechanistic thinking is evident.
+    &
+    Research aim is present but vague or overly broad; limited grounding
+    in the scientific domain; framed primarily in terms of prediction
+    or statistical methods rather than scientific questions.
+    &
+    Research aim is missing, poorly articulated, or not addressable with
+    the NCHS data; no evidence of engagement with the scientific domain
+    or causal thinking.
+    \\
+    \midrule
+
+    % Row 2
+    \textbf{2.\ Dataset \& Study Design Understanding}
+    \newline\textbf{(15\%)}
+    &
+    Memo demonstrates thorough understanding of the dataset's structure,
+    capacity, and limitations; correctly characterizes the data as
+    observational, administrative, clustered, and partially observed;
+    identifies units of analysis, variable types, and population
+    represented; discusses data quality and missingness concerns
+    with specificity.
+    &
+    Memo addresses most key features of the dataset and study design;
+    correctly identifies most data characteristics; data quality and
+    missingness discussed with minor gaps or imprecision.
+    &
+    Memo acknowledges some dataset features but treatment is incomplete
+    or superficial; several important characteristics (e.g., clustering,
+    informative missingness) overlooked or incorrectly described.
+    &
+    Memo is missing or shows little understanding of the dataset's
+    structure, design, or limitations; key characteristics incorrectly
+    described or absent.
+    \\
+    \midrule
+
+    % Row 3
+    \textbf{3.\ Causal \& Mechanistic Thinking}
+    \newline\textbf{(15\%)}
+    &
+    Correctly identifies plausible exposures, outcomes, confounders, and
+    precision variables; references the causal diagram appropriately;
+    demonstrates nuanced understanding of mediation, moderation, or
+    collider bias as relevant to the research aim; acknowledges
+    limitations of causal inference from observational data.
+    &
+    Identifies key exposures, outcomes, and confounders with reasonable
+    justification; references the causal diagram; understanding of
+    causal concepts is mostly sound with minor gaps.
+    &
+    Some exposures and outcomes identified but confounders or mediators
+    are overlooked or incorrectly classified; causal diagram referenced
+    superficially or not at all; limited engagement with causal reasoning.
+    &
+    Fails to identify appropriate exposures, outcomes, or confounders;
+    no engagement with causal or mechanistic thinking; causal diagram
+    ignored.
+    \\
+    \midrule
+
+    % Row 4
+    \textbf{4.\ Analytic Plan: Methods \& Justification}
+    \newline\textbf{(20\%)}
+    &
+    Analytic plan is specific, reproducible, and well-motivated;
+    selects appropriate regression or analytic methods with clear
+    rationale; addresses confounding, effect modification, and/or
+    clustering; identifies outcome, key exposures, and control
+    variables; discusses limitations and assumptions of the chosen
+    approach.
+    &
+    Analytic plan is mostly specific and reproducible; methods are
+    appropriate with reasonable justification; most analytic
+    considerations (confounding, clustering) addressed with minor
+    gaps; limitations acknowledged.
+    &
+    Analytic plan is present but lacks specificity or reproducibility;
+    methods chosen without adequate justification; some analytic
+    considerations addressed superficially; limitations mentioned
+    but not developed.
+    &
+    Analytic plan is missing, vague, or infeasible; methods inappropriate
+    or unjustified; key analytic considerations (confounding, clustering,
+    variance structure) absent; no discussion of limitations.
+    \\
+    \midrule
+
+    % Row 5
+    \textbf{5.\ Descriptive Statistics \& Effect Sizes}
+    \newline\textbf{(10\%)}
+    &
+    Proposes at least one well-chosen descriptive statistic or effect
+    size that provides genuine initial insight; includes both absolute
+    and relative quantifications where appropriate; interprets the
+    effect size in context and connects it to the research aim.
+    &
+    Proposes a reasonable descriptive statistic or effect size;
+    interpretation is mostly clear; one of absolute or relative
+    quantification may be missing or underdeveloped.
+    &
+    A descriptive statistic is mentioned but poorly chosen or
+    inadequately interpreted; connection to the research aim is weak;
+    no distinction between absolute and relative effect sizes.
+    &
+    No descriptive statistics or effect sizes proposed; or proposed
+    statistics are irrelevant, incorrectly computed, or uninterpreted.
+    \\
+    \midrule
+
+    % Row 6
+    \textbf{6.\ Power Analysis \& Uncertainty}
+    \newline\textbf{(15\%)}
+    &
+    Power assessment is correctly structured and clearly presented;
+    target parameters and assumed quantities are explicitly stated
+    and justified; detectable effect size or required sample size is
+    calculated and interpreted; conclusion about data adequacy is
+    well-reasoned; demonstrates understanding of the relationship
+    between sample size, effect size, and precision.
+    &
+    Power assessment is mostly correct with reasonable assumptions;
+    key quantities identified; interpretation is sound with minor
+    gaps in justification or precision.
+    &
+    Power assessment is attempted but contains errors in setup or
+    calculation; assumptions are stated but poorly justified;
+    interpretation is superficial or partially incorrect.
+    &
+    Power assessment is missing, fundamentally flawed, or demonstrates
+    misunderstanding of core concepts (e.g., effect size, standard
+    error, sample size relationships).
+    \\
+    \midrule
+
+    % Row 7
+    \textbf{7.\ Bias, Validity \& Limitations}
+    \newline\textbf{(10\%)}
+    &
+    Memo identifies multiple specific threats to validity beyond power,
+    including at least two of: confounding, informative missingness,
+    measurement error, model misspecification, or threats to causal
+    interpretation; discussion is concrete and tied to the specific
+    research aim and dataset.
+    &
+    Identifies at least two threats to validity with reasonable
+    specificity; discussion is mostly tied to the research context
+    with minor gaps.
+    &
+    Acknowledges that bias or limitations exist but discussion is
+    generic or lists threats without connecting them to the specific
+    study; only one substantive threat identified.
+    &
+    Threats to validity are missing or incorrectly described; no
+    meaningful engagement with potential sources of bias or limitations
+    of the analysis.
+    \\
+    \midrule
+
+    % Row 8
+    \textbf{8.\ Overall Quality, Communication \& Integration}
+    \newline\textbf{(5\%)}
+    &
+    All three assessments are coherent and build logically on each
+    other; writing is clear, precise, and uses appropriate terminology
+    from epidemiology and biostatistics; demonstrates thorough command
+    of course concepts across the full unit.
+    &
+    Assessments are mostly coherent and well-integrated; writing is
+    clear with minor lapses in terminology or precision; good command
+    of course concepts throughout.
+    &
+    Assessments are partially coherent; some components feel disconnected;
+    writing is adequate but terminology is sometimes imprecise or
+    inconsistent; course concepts applied unevenly.
+    &
+    Assessments are incoherent or largely incomplete; components do not
+    build on each other; writing is unclear or misuses key terminology;
+    limited evidence of course concept mastery.
+    \\
+
+    \end{longtable}
+
+    } % end \footnotesize
+
+\end{landscape}
