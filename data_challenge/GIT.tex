@@ -1,0 +1,762 @@
+% ============================================================
+\chapter{Get Code from Online Repositories. How to Use GitHub}
+\label{ch:cli-scripting}
+% ============================================================
+
+% ============================================================
+\section{Configuring SSH Authentication for GitHub on Linux}
+% ============================================================
+% ------------------------------------------------------------
+\subsection{Configuring SSH Authentication for GitHub on Linux}
+% ------------------------------------------------------------
+GitHub no longer supports password authentication for Git operations over HTTPS. 
+Instead, authentication must be performed using either a Personal Access Token or 
+an SSH key. The recommended method for Linux environments is SSH authentication.
+
+The following procedure generates an SSH key and configures Git to authenticate
+with GitHub.
+
+\subsubsection{Generate an SSH Key}
+
+Create a new SSH key using the \texttt{ed25519} algorithm:
+
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+ssh-keygen -t ed25519 -C "your_email@example.com"
+\end{lstlisting}
+
+When prompted for the file location, press \texttt{Enter} to accept the default:
+
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+~/.ssh/id_ed25519
+\end{lstlisting}
+
+Optionally provide a passphrase for additional security.
+
+\subsubsection{Start the SSH Agent}
+
+Start the SSH agent and add the newly created key:
+
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+\end{lstlisting}
+
+\subsubsection{Add the Public Key to GitHub}
+
+Display the public key:
+
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+cat ~/.ssh/id_ed25519.pub
+\end{lstlisting}
+
+Copy the entire output and add it to GitHub:
+
+\begin{enumerate}
+\item Navigate to \texttt{GitHub → Settings → SSH and GPG keys}
+\item Click \texttt{New SSH key}
+\item Paste the copied key and save
+\end{enumerate}
+
+\subsubsection{Verify the Connection}
+
+Test the authentication:
+
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+ssh -T git@github.com
+\end{lstlisting}
+
+A successful configuration will display a message similar to:
+
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+Hi <username>! You've successfully authenticated.
+\end{lstlisting}
+
+\subsection{Clone a Repository Using SSH}
+
+Repositories must be cloned using the SSH URL:
+
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+git clone git@github.com:USER/REPOSITORY.git
+\end{lstlisting}
+
+Using SSH avoids credential prompts and enables secure automated
+Git operations.
+
+% ============================================================
+\section{Python Virtual Environments}
+\label{sec:venvs}
+% ============================================================
+
+Before we write any scripts, we need to understand \emph{what} those scripts
+will manage: Python virtual environments.
+
+\textbf{The Problem: Package Conflicts}. 
+Imagine you have two projects on your computer. Project~A uses version~1.5
+of a library called \texttt{numpy}; Project~B requires version~2.0. If you
+install both versions globally, they will conflict. The last one installed
+wins, and one of your projects will break.
+
+\textbf{The Solution: Virtual Environments}.  
+A \textbf{virtual environment} (or \emph{venv}) is an isolated copy of
+Python with its own set of installed packages, completely separate from
+every other environment on your machine. Think of it as a self-contained
+bubble around your project.
+
+\begin{itemize}
+  \item Each project gets its own environment
+  \item Packages installed in one environment cannot interfere with another
+  \item You can recreate an environment exactly from a list of packages
+        (\texttt{requirements.txt})
+  \item Deleting an environment is safe and clean
+\end{itemize}
+
+\subsection{Creating a Virtual Environment}
+
+\subsubsection{Windows (CMD or PowerShell)}
+
+\begin{lstlisting}[style=windowsStyle, caption={Creating a venv on Windows}]
+:: Navigate to your project folder
+cd C:\Projects\DAIR3
+
+:: Create the environment (Python must be installed globally)
+python -m venv C:\penv\DAIR3
+\end{lstlisting}
+
+\subsubsection{Linux / WSL}
+
+\begin{lstlisting}[style=linuxStyle, caption={Creating a venv on Linux/WSL}]
+# Navigate to your project folder
+cd ~/DAIR3
+
+# Create the environment
+python3 -m venv ~/penv/DAIR3
+\end{lstlisting}
+
+In both cases, \texttt{C:\textbackslash penv\textbackslash DAIR3} or
+\texttt{\textasciitilde/penv/DAIR3} is where the environment will be stored.
+Keeping all environments in a single folder (\texttt{penv} stands for
+``Python environments'') makes them easy to find and manage.
+
+\subsection{Activating a Virtual Environment}
+
+Activating an environment modifies your current shell session so that
+\texttt{python} and \texttt{pip} refer to the isolated copies inside the
+venv, not the global ones.
+
+\subsubsection{Windows}
+
+\begin{lstlisting}[style=windowsStyle, caption={Activating a venv on Windows}]
+C:\penv\DAIR3\Scripts\activate.bat
+\end{lstlisting}
+
+After activation, your prompt will change to show the environment name:
+\begin{lstlisting}[style=windowsStyle]
+(DAIR3) C:\Projects\DAIR3>
+\end{lstlisting}
+
+\subsubsection{Linux / WSL}
+
+\begin{lstlisting}[style=linuxStyle, caption={Activating a venv on Linux/WSL}]
+source ~/penv/DAIR3/bin/activate
+\end{lstlisting}
+
+After activation:
+\begin{lstlisting}[style=linuxStyle]
+(DAIR3) drg@machine:~/DAIR3$
+\end{lstlisting}
+
+\begin{warningbox}
+Note the \texttt{source} keyword in the Linux command. This is critical and
+is explained in detail in Section~\ref{sec:source-vs-execute}.
+\end{warningbox}
+
+\subsection{Installing Packages}
+
+Once the environment is active, use \texttt{pip} to install packages.
+The syntax is identical on both platforms:
+
+\begin{lstlisting}[style=inlineStyle, caption={Installing packages with pip}]
+pip install numpy pandas matplotlib openai langchain
+\end{lstlisting}
+
+To save a list of all installed packages (so you or a colleague can
+recreate the environment later):
+
+\begin{lstlisting}[style=inlineStyle]
+pip freeze > requirements.txt
+\end{lstlisting}
+
+To recreate an environment from such a list:
+
+\begin{lstlisting}[style=inlineStyle]
+pip install -r requirements.txt
+\end{lstlisting}
+
+\subsection{Deactivating}
+
+To leave the environment and return to the global shell (identical on
+both platforms):
+
+\begin{lstlisting}[style=inlineStyle]
+deactivate
+\end{lstlisting}
+
+% ============================================================
+\section{Level 1 --- Script Files}
+\label{sec:level1}
+% ============================================================
+
+Now that we understand virtual environments, we can write scripts to
+activate them automatically. The goal is to create two scripts:
+
+\begin{enumerate}
+  \item \textbf{\texttt{ActivateEnv}} --- A reusable script that accepts
+        two parameters (environment name and project directory), activates
+        the environment, and opens VS Code.
+  \item \textbf{\texttt{DAIR3}} --- A project-specific one-liner that calls
+        \texttt{ActivateEnv} with the correct parameters for the DAIR3
+        project.
+\end{enumerate}
+
+\subsection{The Windows Solution: Batch Files}
+
+\subsubsection{ActivateEnv.bat}
+
+The Windows version, \texttt{ActivateEnv.bat}, is stored in
+\texttt{C:\textbackslash penv} and placed on the system \texttt{PATH}.
+It accepts two parameters: \texttt{\%1} (environment name) and
+\texttt{\%2} (project directory).
+
+\begin{lstlisting}[style=windowsStyle, basicstyle=\footnotesize\ttfamily, caption={\texttt{ActivateEnv.bat} --- Reusable environment launcher (Windows)}]
+@echo off
+setlocal
+
+:: Read parameters
+set "ENV_NAME=%~1"
+set "BASE_DIR=%~2"
+echo Starting activation of environment '\%ENV_NAME%'...
+
+:: Validate input
+if "%ENV_NAME%"=="" (
+    echo [ERROR] Environment name not specified.
+    goto :eof
+)
+if "%BASE_DIR%"=="" (
+    echo [ERROR] Base directory not specified.
+    goto :eof
+)
+
+:: Check if base directory exists
+if not exist "%BASE_DIR%" (
+    echo [ERROR] Directory not found: %BASE_DIR%
+    goto :eof
+)
+
+:: Change to working directory
+cd /d "%BASE_DIR%"
+
+:: Define activation script path
+set "VENV_ROOT=C:\penv"
+set "VENV_ACTIVATE=%VENV_ROOT%\%ENV_NAME%\Scripts\activate.bat"
+
+:: Activate the environment
+if exist "%VENV_ACTIVATE%" (
+    echo Activating...
+    call "%VENV_ACTIVATE%"
+    echo Activation complete.
+) else (
+    echo [ERROR] Not found: %VENV_ACTIVATE%
+    goto :eof
+)
+
+:: Open VS Code in the project directory
+echo Launching VS Code...
+code .
+
+endlocal
+\end{lstlisting}
+
+
+Key Windows-specific elements:
+\begin{itemize}
+  \item \texttt{@echo off} suppresses the echoing of each command to the
+        screen.
+  \item \texttt{setlocal} ensures that variable changes are local to this
+        script.
+  \item \texttt{\%\textasciitilde1} strips surrounding quotes from the first
+        argument.
+  \item \texttt{call} is used to invoke another batch file and return
+        control afterward.
+  \item \texttt{goto :eof} jumps to the end of the file (a clean exit).
+\end{itemize}
+
+\subsubsection{DAIR3.bat}
+
+This file lives in the DAIR3 project directory. It simply calls
+\texttt{ActivateEnv.bat} with the correct arguments:
+
+\begin{lstlisting}[style=windowsStyle, caption={\texttt{DAIR3.bat} --- Project launcher (Windows)}]
+ActivateEnv DAIR3 "C:\Projects\DAIR3"
+\end{lstlisting}
+
+Because \texttt{C:\textbackslash penv} is on the system \texttt{PATH},
+Windows finds \texttt{ActivateEnv.bat} automatically. You can run
+\texttt{DAIR3.bat} by double-clicking it or typing \texttt{DAIR3} in any
+CMD window.
+
+\subsection{The Linux Solution: Shell Scripts}
+\label{subsec:linux-scripts}
+
+\subsubsection{Understanding Shell Script Syntax}
+
+A Linux shell script is a plain text file containing Bash commands. Every
+script should begin with a \textbf{shebang line}---a special first line that
+tells the system which interpreter to use:
+
+\begin{lstlisting}[style=linuxStyle]
+#!/bin/bash
+\end{lstlisting}
+
+Parameters passed to a script are accessed as \texttt{\$1}, \texttt{\$2},
+\texttt{\$3}, etc. The script's own name is \texttt{\$0}.
+
+\subsubsection{ActivateEnv.sh}
+
+\begin{lstlisting}[style=linuxStyle, basicstyle=\footnotesize\ttfamily, caption={\texttt{ActivateEnv.sh} --- Reusable environment launcher (Linux/WSL)}]
+#!/bin/bash
+# ActivateEnv.sh
+# Usage: source ~/penv/ActivateEnv.sh <ENV_NAME> <PROJECT_DIR>
+# Note: Must be *sourced*, not executed. See explanation below.
+
+ENV_NAME="$1"
+BASE_DIR="$2"
+
+echo "Starting activation of environment '${ENV_NAME}'..."
+
+# Validate input
+if [ -z "$ENV_NAME" ]; then
+    echo "[ERROR] Environment name not specified."
+    return 1
+fi
+
+if [ -z "$BASE_DIR" ]; then
+    echo "[ERROR] Base directory not specified."
+    return 1
+fi
+
+# Check if the project directory exists
+if [ ! -d "$BASE_DIR" ]; then
+    echo "[ERROR] Directory not found: ${BASE_DIR}"
+    return 1
+fi
+
+# Change to the project directory
+cd "$BASE_DIR" || return 1
+
+# Build the path to the activation script
+VENV_ROOT="$HOME/penv"
+VENV_ACTIVATE="${VENV_ROOT}/${ENV_NAME}/bin/activate"
+
+# Activate the environment
+if [ -f "$VENV_ACTIVATE" ]; then
+    echo "Activating..."
+    # shellcheck source=/dev/null
+    source "$VENV_ACTIVATE"
+    echo "Activation complete."
+else
+    echo "[ERROR] Not found: ${VENV_ACTIVATE}"
+    return 1
+fi
+
+# Open VS Code in the project directory (WSL-aware)
+echo "Launching VS Code..."
+code .
+\end{lstlisting}
+
+Notice several differences from the Windows version:
+\begin{itemize}
+  \item \texttt{-z} tests whether a string is empty (zero length).
+  \item \texttt{-d} tests whether a path is a directory.
+  \item \texttt{-f} tests whether a path is a regular file.
+  \item \texttt{\$HOME} is the Linux equivalent of
+        \texttt{\%USERPROFILE\%} --- it expands to your home directory.
+  \item \texttt{return 1} exits the script with an error code (we use
+        \texttt{return} rather than \texttt{exit} for a reason explained in
+        the next section).
+\end{itemize}
+
+\subsubsection{DAIR3.sh}
+
+\begin{lstlisting}[style=linuxStyle, caption={\texttt{DAIR3.sh} --- Project launcher (Linux/WSL)}]
+#!/bin/bash
+# DAIR3.sh
+# Usage: source ~/DAIR3/DAIR3.sh
+# Launches the DAIR3 project environment.
+
+source ~/penv/ActivateEnv.sh DAIR3 "$HOME/DAIR3"
+\end{lstlisting}
+
+\subsection{Making a Script Executable}
+\label{sec:chmod}
+
+On Linux, creating a file does not automatically make it executable. You
+must grant execute permission using the \texttt{chmod} command:
+
+\begin{lstlisting}[style=linuxStyle]
+chmod +x ~/penv/ActivateEnv.sh
+chmod +x ~/DAIR3/DAIR3.sh
+\end{lstlisting}
+
+\texttt{chmod} stands for \emph{change mode}. The \texttt{+x} flag adds
+execute (\texttt{x}) permission. Linux permissions are organized around
+three roles---owner, group, and others---but for personal scripts,
+\texttt{chmod +x} is almost always all you need.
+
+\subsection{Adding Your Scripts to PATH}
+
+On Windows, you added \texttt{C:\textbackslash penv} to the system
+\texttt{PATH} so that \texttt{ActivateEnv.bat} could be found from
+anywhere. On Linux, you do the same by editing your shell configuration
+file.
+
+\begin{lstlisting}[style=linuxStyle, caption={Adding \textasciitilde/penv to PATH in \textasciitilde/.bashrc}]
+# Open your bashrc file in a text editor
+nano ~/.bashrc
+
+# Add this line at the bottom:
+export PATH="$HOME/penv:$PATH"
+
+# Save and reload the configuration
+source ~/.bashrc
+\end{lstlisting}
+
+After this, the shell can find \texttt{ActivateEnv.sh} from any directory.
+
+% ============================================================
+\section{The Critical Difference: Executing vs.\ Sourcing}
+\label{sec:source-vs-execute}
+% ============================================================
+
+This section explains one of the most important---and most
+misunderstood---concepts in Linux shell scripting, especially for
+developers coming from Windows.
+
+\subsection{Child Shells}
+
+Every time you run a script with \texttt{./script.sh} or just
+\texttt{script.sh}, Linux launches a \textbf{child shell}: a new,
+separate shell process that inherits a copy of your environment, runs
+the script, and then \emph{terminates}. Any changes the script makes to
+the environment---activating a venv, changing directory, setting a
+variable---exist only in that child shell. When the child terminates,
+those changes disappear. Your original terminal is completely unaffected.
+
+This is why running \texttt{./ActivateEnv.sh} would seem to do
+nothing useful: the venv gets activated inside the child, then the child
+exits, and your terminal is still pointing at the global Python.
+
+\subsection{Sourcing: Running in the Current Shell}
+
+The \texttt{source} command (or its shorthand, a single dot \texttt{.})
+runs a script \emph{in the current shell}---no child is created. Every
+command executes as if you had typed it directly at the prompt. This means:
+
+\begin{itemize}
+  \item \texttt{source ~/penv/DAIR3/bin/activate} activates the venv
+        in \emph{your} terminal.
+  \item \texttt{cd} changes \emph{your} working directory.
+  \item Variables set by the script persist in \emph{your} session.
+\end{itemize}
+
+\begin{lstlisting}[style=linuxStyle]
+# These two are equivalent:
+source ActivateEnv.sh DAIR3 ~/DAIR3
+. ActivateEnv.sh DAIR3 ~/DAIR3
+
+# This does NOT work for venv activation:
+./ActivateEnv.sh DAIR3 ~/DAIR3    # child shell; changes are lost
+\end{lstlisting}
+
+\subsection{The Windows Parallel}
+
+Windows does not have this distinction in quite the same way. The
+\texttt{call} command in a batch file runs another \texttt{.bat} in the
+same CMD session and returns, which is why the Windows version works
+as expected. Linux's default behavior of spawning a child process is
+actually the \emph{safer} design---it prevents scripts from accidentally
+modifying your environment---but it requires you to opt in to the
+shared-session behavior with \texttt{source}.
+
+\begin{notebox}
+This is also why \texttt{ActivateEnv.sh} uses \texttt{return} instead of
+\texttt{exit} for error handling. When a script is sourced, \texttt{exit}
+would close your entire terminal. \texttt{return} exits only the script,
+leaving your session intact.
+\end{notebox}
+
+% ============================================================
+\section{Level 2 --- Shell Functions: The Elegant Linux Approach}
+\label{sec:level2}
+% ============================================================
+
+Sourcing scripts is powerful, but it requires typing \texttt{source}
+or \texttt{.} every time. It also means your launcher script must live
+somewhere on the \texttt{PATH} and the user must remember the exact
+invocation. Linux offers a more elegant solution: \textbf{shell functions}.
+
+\subsection{What Is a Shell Function?}
+
+A shell function is like a script, but it is defined directly inside
+your shell configuration file (\texttt{\textasciitilde/.bashrc}).
+Because it is part of the shell itself---not a separate file---it
+automatically runs in the current session without requiring
+\texttt{source}. You call it just by typing its name.
+
+\subsection{Defining the ActivateEnv Function}
+
+Add the following to the bottom of \texttt{\textasciitilde/.bashrc}:
+
+\begin{lstlisting}[style=linuxStyle, basicstyle=\footnotesize\ttfamily, caption={Shell function version of \texttt{ActivateEnv} in \textasciitilde/.bashrc}]
+# -------------------------------------------------------
+# ActivateEnv: Activate a Python venv and open VS Code
+# Usage: ActivateEnv <ENV_NAME> <PROJECT_DIR>
+# -------------------------------------------------------
+ActivateEnv() {
+    local ENV_NAME="$1"
+    local BASE_DIR="$2"
+
+    echo "Starting activation of environment '${ENV_NAME}'..."
+
+    # Validate input
+    if [ -z "$ENV_NAME" ]; then
+        echo "[ERROR] Environment name not specified."
+        return 1
+    fi
+
+    if [ -z "$BASE_DIR" ]; then
+        echo "[ERROR] Base directory not specified."
+        return 1
+    fi
+
+    if [ ! -d "$BASE_DIR" ]; then
+        echo "[ERROR] Directory not found: ${BASE_DIR}"
+        return 1
+    fi
+
+    local VENV_ACTIVATE="$HOME/penv/${ENV_NAME}/bin/activate"
+
+    if [ ! -f "$VENV_ACTIVATE" ]; then
+        echo "[ERROR] Virtual environment not found: ${VENV_ACTIVATE}"
+        return 1
+    fi
+
+    # Change directory, activate, and open VS Code
+    cd "$BASE_DIR" || return 1
+    source "$VENV_ACTIVATE"
+    echo "Environment '${ENV_NAME}' activated."
+    code .
+}
+\end{lstlisting}
+
+The keyword \texttt{local} restricts variables to the function's scope,
+so they do not pollute your shell session.
+
+\subsection{Defining the DAIR3 Function}
+
+Now add a one-line function that calls \texttt{ActivateEnv} for the
+DAIR3 project:
+
+\begin{lstlisting}[style=linuxStyle, caption={Project-specific function for DAIR3 in \textasciitilde/.bashrc}]
+# -------------------------------------------------------
+# DAIR3: Launch the DAIR3 project environment
+# Usage: DAIR3
+# -------------------------------------------------------
+DAIR3() {
+    ActivateEnv "DAIR3" "$HOME/DAIR3"
+}
+\end{lstlisting}
+
+\subsection{Activating the New Functions}
+
+After editing \texttt{\textasciitilde/.bashrc}, reload it:
+
+\begin{lstlisting}[style=linuxStyle]
+source ~/.bashrc
+\end{lstlisting}
+
+Now, from \emph{any directory}, simply type:
+
+\begin{lstlisting}[style=linuxStyle]
+DAIR3
+\end{lstlisting}
+
+The shell will change to your DAIR3 project directory, activate the
+virtual environment, and open VS Code---all in one word, with no
+\texttt{source} prefix required.
+
+\subsection{Why Windows Has No Clean Equivalent}
+
+Windows batch files always run as child processes; there is no
+\texttt{source} command in CMD. PowerShell comes closest: you can define
+functions in your PowerShell profile (\texttt{\$PROFILE}), and they
+behave similarly to Bash functions. However, PowerShell's profile is
+disabled by default for security reasons and requires changing the
+execution policy. For Windows users who want this one-command experience
+natively, configuring PowerShell profiles is the path forward---but it
+involves more administrative overhead than editing
+\texttt{\textasciitilde/.bashrc}. This is one of the practical reasons
+many developers on Windows adopt WSL.
+
+% ============================================================
+\section{Putting It All Together}
+\label{sec:together}
+% ============================================================
+
+Figure~\ref{fig:workflow} summarizes the complete workflow on each platform.
+
+\begin{table}[h]
+\centering
+\caption{Complete workflow comparison: Windows vs.\ Linux/WSL}
+\label{fig:workflow}
+\begin{tabular}{@{}p{0.15\textwidth}p{0.38\textwidth}p{0.38\textwidth}@{}}
+\toprule
+\textbf{Step} & \textbf{Windows} & \textbf{Linux / WSL} \\
+\midrule
+Create venv
+  & \texttt{python -m venv C:\textbackslash penv\textbackslash DAIR3}
+  & \texttt{python3 -m venv \textasciitilde/penv/DAIR3} \\[4pt]
+Reusable launcher
+  & \texttt{ActivateEnv.bat} in \texttt{C:\textbackslash penv}
+  & Function \texttt{ActivateEnv()} in \texttt{\textasciitilde/.bashrc} \\[4pt]
+Project launcher
+  & \texttt{DAIR3.bat} in project folder
+  & Function \texttt{DAIR3()} in \texttt{\textasciitilde/.bashrc} \\[4pt]
+Make available globally
+  & Add \texttt{C:\textbackslash penv} to system PATH
+  & Functions in \texttt{.bashrc} are always available \\[4pt]
+Launch project
+  & Type \texttt{DAIR3} in any CMD window
+  & Type \texttt{DAIR3} in any terminal \\[4pt]
+Result
+  & venv active, VS Code opens in project folder
+  & venv active, VS Code opens in project folder (WSL mode) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The Full WSL Experience}
+
+When you type \texttt{DAIR3} in your WSL terminal:
+
+\begin{enumerate}
+  \item Bash looks up \texttt{DAIR3} in its list of known functions.
+  \item \texttt{DAIR3()} calls \texttt{ActivateEnv "DAIR3" "\$HOME/DAIR3"}.
+  \item \texttt{ActivateEnv()} changes to the project directory.
+  \item The virtual environment is activated in your current shell.
+  \item \texttt{code .} launches VS Code with the WSL extension,
+        connecting your Windows VS Code interface to your Linux backend.
+  \item You are now working in a fully configured development environment
+        with one word.
+\end{enumerate}
+
+% ============================================================
+\section{Quick Reference Cheat Sheet}
+\label{sec:cheatsheet}
+% ============================================================
+
+\begin{table}[h]
+\centering
+\caption{Shell scripting and virtual environment cheat sheet}
+\label{tab:cheatsheet}
+\begin{tabular}{@{}p{0.35\textwidth}p{0.28\textwidth}p{0.28\textwidth}@{}}
+\toprule
+\textbf{Task} & \textbf{Windows (CMD)} & \textbf{Linux / WSL (Bash)} \\
+\midrule
+Create virtual environment
+  & \texttt{python -m venv C:\textbackslash penv\textbackslash NAME}
+  & \texttt{python3 -m venv \textasciitilde/penv/NAME} \\[4pt]
+Activate environment
+  & \texttt{C:\textbackslash penv\textbackslash NAME\textbackslash Scripts\textbackslash activate}
+  & \texttt{source \textasciitilde/penv/NAME/bin/activate} \\[4pt]
+Deactivate environment
+  & \texttt{deactivate}
+  & \texttt{deactivate} \\[4pt]
+Install a package
+  & \texttt{pip install pkg}
+  & \texttt{pip install pkg} \\[4pt]
+Save package list
+  & \texttt{pip freeze > req.txt}
+  & \texttt{pip freeze > req.txt} \\[4pt]
+Restore from list
+  & \texttt{pip install -r req.txt}
+  & \texttt{pip install -r req.txt} \\[4pt]
+Make script executable
+  & (not required; extension handles it)
+  & \texttt{chmod +x script.sh} \\[4pt]
+Run a script
+  & \texttt{script.bat}
+  & \texttt{./script.sh} \\[4pt]
+Source a script
+  & \texttt{call script.bat}
+  & \texttt{source script.sh} \\[4pt]
+Edit shell config
+  & (no equivalent in CMD)
+  & \texttt{nano \textasciitilde/.bashrc} \\[4pt]
+Reload shell config
+  & (restart CMD)
+  & \texttt{source \textasciitilde/.bashrc} \\[4pt]
+Open VS Code (WSL)
+  & \texttt{code .}
+  & \texttt{code .} \\[4pt]
+Script parameter~1
+  & \texttt{\%\textasciitilde1}
+  & \texttt{\$1} \\[4pt]
+Check if variable empty
+  & \texttt{if "\%VAR\%"==""}
+  & \texttt{if [ -z "\$VAR" ]} \\[4pt]
+Check if directory exists
+  & \texttt{if exist "DIR\textbackslash"}
+  & \texttt{if [ -d "DIR" ]} \\[4pt]
+Exit a script/function
+  & \texttt{goto :eof}
+  & \texttt{return} (in function/sourced script) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Summary}
+\label{sec:summary}
+% ============================================================
+
+This chapter introduced the command-line interface as a text-based,
+scriptable, and automatable way to interact with your operating system.
+We covered:
+
+\begin{itemize}
+  \item The fundamental differences between Windows and Linux CLIs,
+        including path conventions, executability, and the \texttt{PATH}
+        variable.
+  \item How WSL brings a full Linux environment to Windows users, and
+        how the VS Code WSL extension creates a unified, professional
+        development experience.
+  \item Python virtual environments: what they are, why they matter, and
+        how to create, activate, populate, and deactivate them on both
+        platforms.
+  \item \textbf{Level~1} scripting: writing \texttt{ActivateEnv.bat} /
+        \texttt{ActivateEnv.sh} and \texttt{DAIR3.bat} / \texttt{DAIR3.sh}
+        as reusable launchers.
+  \item The critical \texttt{source} vs.\ execute distinction on Linux,
+        and why virtual environment activation requires the former.
+  \item \textbf{Level~2} scripting: shell functions defined in
+        \texttt{\textasciitilde/.bashrc} that provide a one-word launch
+        command from any directory, with no \texttt{source} prefix
+        required.
+\end{itemize}
+
+The \texttt{DAIR3} command you built in this chapter is a small but
+meaningful example of a broader principle: the CLI lets you encode your
+workflow into repeatable, shareable, and improvable scripts. Every
+tedious setup step you eliminate today is cognitive load freed up for the
+work that actually matters.
+

@@ -23,7 +23,6 @@
 \usepackage{wrapfig}
 \usepackage{listings} 
 
-
 %\setpapersize{letterpaper}
 \setmargins{3.5cm}%		% left edge
 		{1.5cm}%     	% top edge
@@ -52,6 +51,10 @@
 %********** Enabling landscape orientation *******
 \usepackage{rotating}
 \usepackage{pdflscape}
+
+\usepackage{tcolorbox}
+\usepackage{fontawesome5}   % optional, for icons
+
 
 %********** Enybeling Hyperlinks *******
 \usepackage[pdftex=true]{hyperref}% this enables jumping from a reference and table of content in the pdf file to its target % pdfborder=000,
@@ -239,3 +242,77 @@
 % \usepackage{draftwatermark}
 % \SetWatermarkText{DRAFT}
 % \SetWatermarkScale{5}
+
+
+% ---- Listing style definitions ----
+\lstdefinestyle{windowsStyle}{
+  language=,
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{white!90},
+  keywordstyle=\color{cyan},
+  commentstyle=\color{green!60!black},
+  stringstyle=\color{yellow!80},
+  frame=single,
+  rulecolor=\color{gray!50},
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+  showstringspaces=false,
+  captionpos=b,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+}
+
+\lstdefinestyle{linuxStyle}{
+  language=bash,
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{white!85},
+  keywordstyle=\color{green!70!white},
+  commentstyle=\color{gray!80},
+  stringstyle=\color{orange!80},
+  frame=single,
+  rulecolor=\color{green!30},
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+  showstringspaces=false,
+  captionpos=b,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+}
+
+\lstdefinestyle{inlineStyle}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  rulecolor=\color{gray!40},
+  breaklines=true,
+  showstringspaces=false,
+}
+
+% ---- Tip/Note box ----
+\tcbuselibrary{skins,breakable}
+\newtcolorbox{tipbox}[1][]{
+  enhanced,
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  fonttitle=\bfseries,
+  title=Tip,
+  #1
+}
+\newtcolorbox{notebox}[1][]{
+  enhanced,
+  colback=orange!8!white,
+  colframe=orange!60!black,
+  fonttitle=\bfseries,
+  title=Note,
+  #1
+}
+\newtcolorbox{warningbox}[1][]{
+  enhanced,
+  colback=red!5!white,
+  colframe=red!50!black,
+  fonttitle=\bfseries,
+  title=Warning,
+  #1
+}

@@ -1,0 +1,239 @@
+% ============================================================
+%  Chapter: Command-Line Interfaces, Virtual Environments,
+%           and Shell Scripting for Windows and Linux
+% ============================================================
+%  Dependencies (add to your preamble if not already present):
+%    \usepackage{listings}
+%    \usepackage{xcolor}
+%    \usepackage{booktabs}
+%    \usepackage{hyperref}
+%    \usepackage{tcolorbox}
+%    \usepackage{fontawesome5}   % optional, for icons
+% ============================================================
+
+
+% ============================================================
+\chapter{Command-Line Interfaces, Virtual Environments,
+         and Shell Scripting}
+\label{ch:cli-scripting}
+% ============================================================
+
+\begin{quote}
+\textit{``The command line is the most powerful interface ever invented.
+It is also the most intimidating. This chapter aims to change that.''}
+\end{quote}
+
+% ============================================================
+\section{Introduction: What Is a Command-Line Interface?}
+\label{sec:cli-intro}
+% ============================================================
+
+When you use a computer, you almost certainly interact with it through a
+\textbf{Graphical User Interface} (GUI)---windows, icons, menus, and
+buttons that you click with a mouse. GUIs are intuitive and visually rich,
+but they have a fundamental limitation: every action you can take must first
+be anticipated and implemented as a button or menu item by the software
+developer. If you need to do something the GUI was not designed for, you are
+stuck.
+
+A \textbf{Command-Line Interface} (CLI) solves this by letting you
+communicate with the computer in \emph{text}. You type a command; the
+computer executes it and responds in text. This is not a step backward---it
+is a different, and in many contexts more powerful, mode of interaction.
+
+\subsection{A Concrete Analogy}
+
+Think of the difference between a restaurant with a fixed menu and a
+restaurant where you can describe exactly what you want to the chef. A GUI
+is the fixed menu: fast, friendly, and good enough for most customers. A CLI
+is talking directly to the chef: it requires more knowledge of ingredients,
+but the results can be precisely what you need, and you can combine them in
+ways the menu never anticipated.
+
+\subsection{Why Developers and Researchers Use the CLI}
+
+\begin{itemize}
+  \item \textbf{Automation.} A sequence of commands can be saved in a file
+        (called a \emph{script}) and replayed perfectly every time.
+  \item \textbf{Precision.} Every option and parameter is explicit and
+        readable.
+  \item \textbf{Remote access.} Servers in the cloud rarely have a graphical
+        desktop; the CLI is often the only way in.
+  \item \textbf{Speed.} Renaming 10{,}000 files takes one command; doing it
+        by hand in a GUI might take hours.
+  \item \textbf{Reproducibility.} You can share a script with a colleague
+        and know they will get exactly the same result.
+\end{itemize}
+
+\subsection{The Two Major CLI Worlds}
+
+This chapter focuses on two CLI environments:
+
+\begin{description}
+  \item[Windows Command Prompt / PowerShell] The native CLI tools in
+        Microsoft Windows. Batch files (\texttt{.bat}) and PowerShell
+        scripts (\texttt{.ps1}) automate tasks here.
+  \item[Bash (Linux / macOS)] The dominant CLI on Linux systems and macOS.
+        Shell scripts (\texttt{.sh}) automate tasks here.
+\end{description}
+
+These two worlds use different syntax, different path conventions
+(backslash \texttt{\textbackslash} vs.\ forward slash \texttt{/}), and
+different scripting philosophies. A key goal of this chapter is to help you
+move fluidly between them.
+
+\subsection{Your First Commands}
+
+The best way to demystify the CLI is to try it. Table~\ref{tab:first-commands}
+shows equivalent commands in both environments.
+
+\begin{table}[h]
+\centering
+\caption{Equivalent CLI commands: Windows vs.\ Linux/macOS}
+\label{tab:first-commands}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Task} & \textbf{Windows (CMD)} & \textbf{Linux / macOS (Bash)} \\
+\midrule
+Print current directory  & \texttt{cd}              & \texttt{pwd}             \\
+List files               & \texttt{dir}             & \texttt{ls -la}          \\
+Change directory         & \texttt{cd foldername}   & \texttt{cd foldername}   \\
+Go up one level          & \texttt{cd ..}           & \texttt{cd ..}           \\
+Create a folder          & \texttt{mkdir myfolder}  & \texttt{mkdir myfolder}  \\
+Delete a file            & \texttt{del file.txt}    & \texttt{rm file.txt}     \\
+Copy a file              & \texttt{copy a.txt b.txt}& \texttt{cp a.txt b.txt}  \\
+Print text to screen     & \texttt{echo Hello}      & \texttt{echo Hello}      \\
+Clear the screen         & \texttt{cls}             & \texttt{clear}           \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{tipbox}
+In both environments, pressing the \textbf{Up arrow} key recalls your
+previous commands, and pressing \textbf{Tab} auto-completes file and
+directory names. These two habits alone will dramatically speed up your
+work at the CLI.
+\end{tipbox}
+
+% ============================================================
+\section{Two Worlds: Windows and Linux}
+\label{sec:two-worlds}
+% ============================================================
+
+Before writing any scripts, it helps to understand the philosophical
+differences between how Windows and Linux handle the command line. These
+differences are not arbitrary---they reflect decades of divergent design
+history.
+
+\subsection{Paths and Separators}
+
+Windows uses \emph{backslashes} and drive letters to describe file
+locations:
+\begin{lstlisting}[style=windowsStyle]
+C:\Users\DrG\Documents\DAIR3\main.py
+\end{lstlisting}
+
+Linux uses \emph{forward slashes} and a single unified file tree rooted
+at \texttt{/}:
+\begin{lstlisting}[style=linuxStyle]
+/home/drg/DAIR3/main.py
+\end{lstlisting}
+
+\subsection{Scripts and Executability}
+
+On Windows, the file extension determines whether a file is executable.
+Files ending in \texttt{.bat}, \texttt{.cmd}, or \texttt{.exe} are treated
+as programs.
+
+On Linux, the extension is irrelevant. Executability is a \emph{permission}
+stored on the file itself. A file must be explicitly granted execute
+permission before the system will run it. This is done with the
+\texttt{chmod} command, which we cover in Section~\ref{sec:chmod}.
+
+\subsection{Environment Variables and PATH}
+
+Both systems use an environment variable called \texttt{PATH} to find
+programs. When you type a command, the shell searches each directory listed
+in \texttt{PATH} in order and runs the first match it finds.
+
+\begin{itemize}
+  \item \textbf{Windows:} PATH is managed through System Properties $\to$
+        Environment Variables, or via the \texttt{setx} command.
+  \item \textbf{Linux:} PATH is set in configuration files such as
+        \texttt{\textasciitilde/.bashrc} (for the Bash shell) or
+        \texttt{\textasciitilde/.zshrc} (for Zsh), which are read every time
+        a new terminal session starts.
+\end{itemize}
+
+% ============================================================
+\section{WSL: A Linux Environment Inside Windows}
+\label{sec:wsl}
+% ============================================================
+
+For Windows users who want the power of Linux scripting without leaving their
+familiar environment, Microsoft provides the
+\textbf{Windows Subsystem for Linux} (WSL). WSL is not an emulator or a
+virtual machine in the traditional sense; it is a compatibility layer built
+into Windows that runs a real Linux kernel alongside the Windows kernel.
+
+\subsection{What WSL Gives You}
+
+\begin{itemize}
+  \item A full Bash shell (or Zsh, Fish, etc.)
+  \item A complete Ubuntu (or other distribution) file system
+  \item Access to thousands of Linux command-line tools via \texttt{apt}
+  \item The ability to read and write Windows files from Linux
+        (your Windows \texttt{C:} drive appears at \texttt{/mnt/c/})
+  \item GPU access for machine learning workloads
+\end{itemize}
+
+\subsection{Installing WSL}
+
+Open PowerShell or CMD \emph{as Administrator} and run:
+
+\begin{lstlisting}[style=windowsStyle, caption={Installing WSL from PowerShell}]
+wsl --install
+\end{lstlisting}
+
+This installs WSL 2 and the Ubuntu distribution by default. After a
+restart, a Ubuntu terminal will open and ask you to create a username and
+password. That account is independent of your Windows login.
+
+\begin{notebox}
+Throughout the remainder of this chapter, all Linux instructions apply
+equally to WSL on Windows and to a native Linux machine. Treat them as the
+same environment.
+\end{notebox}
+
+\subsection{The Elegant Solution: Visual Studio Code and the WSL Extension}
+\label{subsec:vscode-wsl}
+
+One of the most powerful aspects of WSL is its integration with
+\textbf{Visual Studio Code} (VS Code), Microsoft's free code editor.
+Installing the \textbf{WSL extension} in VS Code creates a seamless bridge
+between your Windows desktop and your Linux environment:
+
+\begin{itemize}
+  \item You open VS Code from within the WSL terminal by typing \texttt{code .}
+  \item VS Code runs its interface on Windows but executes all code,
+        terminal commands, extensions, and debuggers \emph{inside Linux}
+  \item The file explorer shows your Linux file system
+  \item The integrated terminal is a Bash shell
+  \item Python environments, linters, and formatters all resolve to their
+        Linux versions
+\end{itemize}
+
+This means you never have to choose between the Linux scripting ecosystem
+and the Windows desktop experience---you get both simultaneously. From this
+point forward, when we say ``open VS Code,'' we mean launching it from
+the WSL terminal with \texttt{code .}
+
+\begin{tipbox}
+To install the WSL extension, open VS Code, press
+\texttt{Ctrl+Shift+X} to open the Extensions panel, and search for
+``WSL'' (publisher: Microsoft). One click installs it.
+\end{tipbox}
+
+% ============================================================
+% End of chapter
+% ============================================================

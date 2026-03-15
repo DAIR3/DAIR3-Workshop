@@ -1,3 +1,7 @@
+# local files and folders
+specs/*
+.claude
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
