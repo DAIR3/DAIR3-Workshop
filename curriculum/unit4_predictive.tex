@@ -5,113 +5,94 @@
 
 \textbf{Total Time: 5 hours} \\
 \textbf{Instructional Time: 3.5 hours} \\
-\textbf{Unit Project Work Time: 1.5 hours}
+\textbf{Assessment Time: 1.5 hours}
 
-This unit will introduce the foundations of supervised machine learning models, with a focus on interpretability and communicating decision-making.
-
-%================================================================
-\section{Pre-reading Materials}
-\label{sec:4.0}
-%================================================================
-
-These pre-reading materials focus on foundational concepts in statistics and machine learning.
-
-\subsection{Learning Objectives}
-
-Learners will be able to:
-\begin{enumerate}
-    \item Understand ideas from introductory statistics, including measures of central tendency and variability, visualization techniques, and lines of best fit.
-    \item Understand how to fit a basic machine learning model in Python using sklearn and real data.
-    \item Understand TRIPOD guidelines pertinent to this session.
-\end{enumerate}
-
-\subsection{Assessment Instrument}
-
-Learners will be asked to load a dataset into sklearn, fit a linear regression model, and report the model's mean squared error.
+This unit introduces the foundations of supervised machine learning models, with a focus on interpretability and communicating modeling decisions.
 
 %================================================================
-\section{Foundations of Supervised Learning}
+\section{Foundations of Predictive Modeling}
 \label{sec:4.1}
 %================================================================
 
-\textbf{Time: 1.5 hours (Instructional: 70 minutes)}
+\textbf{Time: 1.5 hours (Instructional: 70 minutes, Assessment: 20 minutes)}
 
-We will start by providing a broad overview of the landscape of machine learning, and practice the general workflow for building a model, starting from raw data.
+\noindent This lesson introduces supervised learning through the workflow that students will use throughout the rest of the unit: selecting a prediction target, choosing features, fitting an interpretable baseline model, and evaluating it on held-out data. The emphasis is on understanding what the model is doing, not only on obtaining a good score.
 
 \subsection{Learning Objectives}
 
 \begin{enumerate}
-    \item Understand the landscape of possible machine learning models (supervised vs. unsupervised, regression vs. classification).
-    \item Build a linear regression model, understanding how its optimal parameters were chosen and how they can be interpreted.
-    \item Practice the workflow for performing a train-test split, training a model on training data, evaluating a model on held-out test data, and the role of cross-validation.
-    \item Understand the risks of overfitting and data leakage.
+    \item Distinguish supervised learning from other common data analysis tasks, and distinguish regression from classification.
+    \item Build a linear regression model as an interpretable baseline and explain what its coefficients represent.
+    \item Practice the workflow for performing a train-test split, training a model on training data, evaluating it on held-out test data, and understanding how cross-validation works in practice.
+    \item Identify common risks in predictive modeling, including overfitting and data leakage.
 \end{enumerate}
 
 \subsection{Assessment Instrument (20 minutes)}
 
-Learners will build a basic linear regression model using the Vital Statistics dataset, which will serve as a baseline for future work.
+Students will build a baseline linear regression model using the Vital Statistics dataset. They will document the outcome variable, list the features used, report one test-set performance metric such as RMSE or MAE, and write a brief note identifying two ways data leakage or overfitting could occur in this workflow.
 
 %================================================================
-\section{Feature Engineering}
+\section{Interpretable Feature Engineering and Pipelines}
 \label{sec:4.2}
 %================================================================
 
-\textbf{Time: 1 hour (Instructional: 60 minutes)}
+\textbf{Time: 1 hour (Instructional: 40 minutes, Assessment: 20 minutes)}
 
-Next, we will cover how linear regression can be extended to a variety of other tasks, and how to create new features that capture trends in the data.
+\noindent This lesson focuses on interpretable feature engineering: creating features that better reflect patterns in the data while preserving interpretability. Students will use plots and domain knowledge to motivate simple transformations, encodings, and interactions, and will organize these steps within a small \verb|sklearn| Pipeline.
 
 \subsection{Learning Objectives}
 
 \begin{enumerate}
-    \item Practice interpreting the coefficients of fit models.
-    \item Use visualizations to spot patterns in the data that inform feature engineering decisions, while keeping in mind the risks of overfitting.
-    \item Understand the differences between encoding strategies (one hot encoding vs. ordinal encoding).
+    \item Use visualizations to spot patterns in the data that may motivate feature engineering, such as nonlinearity, thresholds, and group differences.
+    \item Understand when to use simple transformations, interaction terms, and common encoding strategies such as one-hot encoding.
+    \item Build a small preprocessing and modeling Pipeline in \verb|sklearn| and explain how the resulting features affect model interpretability.
 \end{enumerate}
 
 \subsection{Assessment Instrument (20 minutes)}
 
-Learners will be given a practical task and will need to build a small feature engineering Pipeline in sklearn and be asked to document their decision-making process.
+Students will continue working with the Vital Statistics dataset and will add two or three engineered features in a small \verb|sklearn| Pipeline. They will submit the pipeline structure and a short written justification for each added feature, including why it may improve model fit or interpretability.
 
 %================================================================
-\section{Feature Selection and Model Explainability}
+\section{Feature Justification, Multicollinearity, and Model Diagnostics}
 \label{sec:4.3}
 %================================================================
 
-\textbf{Time: 1.5 hours (Instructional: 60 minutes)}
+\textbf{Time: 1.5 hours (Instructional: 60 minutes, Assessment: 30 minutes)}
 
-Building upon Section~\ref{sec:4.2}, students will gain an understanding of the statistical approaches involved in selecting features.
+\noindent Building upon Section~\ref{sec:4.2}, students will learn how to decide whether a feature should remain in a model. The emphasis is on practical diagnostics and justification using correlations, multicollinearity checks, variance inflation factors, coefficient stability, and residual plots.
 
 \subsection{Learning Objectives}
 
 \begin{enumerate}
-    \item Understand mutual information as a feature selection criterion.
-    \item Understand how to apply statistically appropriate techniques to select and justify features, e.g., Pearson, Spearman, and Cram\'er's V correlations, Variance Inflation Factor, multiple $R^2$.
-    \item Understand the role of interaction terms.
+    \item Use simple quantitative tools such as Pearson and Spearman correlation, multiple $R^2$, and variance inflation factor to identify useful, redundant, or unstable features and to recognize multicollinearity.
+    \item Use residual plots and side-by-side model comparison to assess whether added complexity is justified.
+    \item Explain why a feature was kept, transformed, or removed based on predictive performance, interpretability, and stability.
 \end{enumerate}
 
 \subsection{Assessment Instrument (30 minutes)}
 
-Learners will practice generating feature importance analyses and documenting their feature selection rationale.
+Students will compare two candidate models, such as a baseline model and an expanded feature-engineered model. They will decide which model they would keep and justify the decision using at least three pieces of evidence drawn from performance metrics, multicollinearity checks, coefficient stability, or residual diagnostics.
 
 %================================================================
-\section{Model Evaluation, Comparison, and Reporting}
+\section{Model Reporting and Stakeholder Communication}
 \label{sec:4.4}
 %================================================================
 
-\textbf{Time: 1 hour (Instructional: 30 minutes)}
+\textbf{Time: 1 hour (Instructional: 30 minutes, Assessment: 30 minutes)}
 
-Finally, students will practice communicating the performance and design decisions behind a model to external stakeholders.
+\noindent This lesson focuses on communicating model performance and design decisions to external stakeholders. The goal is to turn the analytic work from Section~\ref{sec:4.3} into a clear written summary that reports model results responsibly and in a form that aligns with the broader reporting expectations introduced earlier in the curriculum.
 
 \subsection{Learning Objectives}
 
 \begin{enumerate}
-    \item Understand how to report and compare different models on the same task (e.g., MSE/RMSE/MAE for regression models, accuracy vs. precision vs. recall vs. ROC-AUC vs. F1 for classification models).
-    \item Practice communicating modeling choices and model behavior.
+    \item Understand how to report and compare interpretable predictive models using appropriate regression metrics such as MSE, RMSE, and MAE.
+    \item Summarize model design choices, strengths, and limitations in language appropriate for a non-technical audience.
+    \item Practice connecting model reporting to broader ideas of transparency and reproducibility, including the spirit of TRIPOD-style reporting.
 \end{enumerate}
 
 \subsection{Assessment Instrument (30 minutes)}
 
-Students will write a short report documenting and comparing the performances of two models, including relevant visualizations.
+Students will write a short report for a stakeholder describing their final model. The report should identify the prediction target, summarize the features included, report one or two performance metrics, and explain at least one important limitation or caveat in plain language.
 
 % Required packages (add to your preamble if not already there):
 % \usepackage{longtable}
@@ -159,33 +140,14 @@ Students will write a short report documenting and comparing the performances of
     \endlastfoot
 
     % Row 1
-    \textbf{1.\ Pre-Reading Foundations}
-    \newline\textbf{(10\%)}
-    &
-    Demonstrates clear understanding of core statistical concepts (central
-    tendency, variability, visuals, best-fit lines); correctly loads data,
-    fits sklearn linear regression, and accurately reports MSE; strong grasp
-    of TRIPOD-relevant principles.
-    &
-    Minor errors in interpretation or MSE reporting; overall understanding
-    solid; TRIPOD concepts mostly correct.
-    &
-    Basic understanding demonstrated; errors in implementation or conceptual
-    explanation; shaky grasp of TRIPOD elements.
-    &
-    Incorrect or incomplete implementation; misunderstanding of statistical
-    foundations; missing or incorrect MSE.
-    \\
-    \midrule
-
-    % Row 2
-    \textbf{2.\ Supervised Learning Foundations}
-    \newline\textbf{(20\%)}
+    \textbf{1.\ Foundations of Predictive Modeling}
+    \newline\textbf{(25\%)}
     &
     Clearly distinguishes supervised vs.\ unsupervised, regression
-    vs.\ classification; correctly performs train-test split, trains model,
-    evaluates it, and explains cross-validation; demonstrates strong
-    understanding of overfitting and data leakage.
+    vs.\ classification; correctly performs a train-test split, trains an
+    interpretable baseline model, evaluates it on held-out data, and explains
+    how cross-validation works; demonstrates strong understanding of
+    overfitting and data leakage.
     &
     Good workflow with minor errors in reasoning or terminology;
     overfitting/data leakage described but not deeply.
@@ -198,86 +160,70 @@ Students will write a short report documenting and comparing the performances of
     \\
     \midrule
 
-    % Row 3
-    \textbf{3.\ Generalized Linear \& Non-Parametric Models}
-    \newline\textbf{(15\%)}
+    % Row 2
+    \textbf{2.\ Interpretable Feature Engineering \& Pipelines}
+    \newline\textbf{(20\%)}
     &
-    Accurately explains and applies linear, logistic, and Poisson regression;
-    correctly interprets coefficients; demonstrates understanding of
-    assumptions; incorporates tree-based ideas if relevant.
+    Insightfully uses visualizations to identify meaningful patterns;
+    appropriately applies simple transformations, encoding strategies, and
+    interaction terms; builds a clear \verb|sklearn| Pipeline; thoroughly documents
+    the rationale for each feature added.
     &
-    Mostly correct application and interpretation; minor gaps in assumptions
-    or coefficient explanations.
-    &
-    Partial understanding; misinterprets coefficients or uses GLMs
-    incorrectly; assumptions' role unclear.
-    &
-    Major misunderstandings of regression types, assumptions, or
-    interpretations; incomplete or incorrect analysis.
-    \\
-    \midrule
-
-    % Row 4
-    \textbf{4.\ Feature Engineering}
-    \newline\textbf{(15\%)}
-    &
-    Insightfully uses visualizations to identify trends; appropriately applies
-    encoding, scaling, and interaction terms; builds a clear sklearn Pipeline;
-    thoroughly documents decisions and rationales.
-    &
-    Good feature engineering with minor justification gaps; Pipeline mostly
+    Good feature construction with minor justification gaps; Pipeline mostly
     correct; documentation adequate.
     &
     Basic feature creation with limited insight; Pipeline incomplete or
     justification superficial.
     &
-    Poor or incorrect feature engineering; missing Pipeline; unclear or
+    Poor or incorrect feature construction; missing Pipeline; unclear or
     unjustified decisions.
     \\
     \midrule
 
+    % Row 3
+    \textbf{3.\ Feature Justification, Multicollinearity \& Diagnostics}
+    \newline\textbf{(25\%)}
+    &
+    Correctly applies feature justification tools such as correlation checks,
+    multiple $R^2$, variance inflation factor, and residual diagnostics;
+    correctly identifies multicollinearity concerns; compares models
+    thoughtfully and gives a clear, evidence-based rationale for keeping the
+    preferred model.
+    &
+    Most diagnostics applied correctly; model comparison reasonable but with
+    minor gaps in interpretation or justification.
+    &
+    Partial or inconsistent use of diagnostics; model choice weakly
+    justified.
+    &
+    Incorrect or missing diagnostic evidence; model choice unsupported or
+    inconsistent with results.
+    \\
+    \midrule
+
+    % Row 4
+    \textbf{4.\ Model Reporting \& Stakeholder Communication}
+    \newline\textbf{(20\%)}
+    &
+    Accurately computes and interprets regression metrics such as MSE, RMSE,
+    and MAE; report is clear, well-structured, and communicates model design
+    decisions, performance, and limitations appropriately for the intended
+    audience.
+    &
+    Metrics computed correctly with minor errors; report mostly clear and
+    appropriately framed.
+    &
+    Metrics included but inconsistently computed or interpreted; explanation
+    limited or too technical.
+    &
+    Metrics missing or incorrect; report unclear, incomplete, or not aligned
+    with results.
+    \\
+    \midrule
+
     % Row 5
-    \textbf{5.\ Feature Selection \& Explainability}
-    \newline\textbf{(20\%)}
-    &
-    Correctly applies correlation measures (Pearson/Spearman/Cram\'er's V),
-    VIF, R\textsuperscript{2}; thoughtfully justifies feature selection;
-    generates accurate SHAP explanations and interprets them clearly for model
-    behavior.
-    &
-    Most statistical techniques applied correctly; SHAP computed with minor
-    interpretation issues.
-    &
-    Partial or inconsistent application of selection methods; SHAP produced
-    but poorly interpreted.
-    &
-    Incorrect statistical methods; missing or incorrect SHAP analysis; no
-    justification of selected features.
-    \\
-    \midrule
-
-    % Row 6
-    \textbf{6.\ Model Evaluation, Comparison \& Reporting}
-    \newline\textbf{(20\%)}
-    &
-    Accurately computes and compares regression/classification metrics
-    (MSE/RMSE/MAE, accuracy, precision, recall, ROC-AUC, F1); report is
-    clear, well-structured, and communicates model design decisions and
-    behavior with professional visuals.
-    &
-    Metrics computed correctly with minor errors; comparison and explanation
-    clear; visuals mostly appropriate.
-    &
-    Metrics included but inconsistently computed or interpreted; limited
-    explanation; visuals basic or unclear.
-    &
-    Metrics missing or incorrect; report unclear or incomplete; explanations
-    not aligned with results.
-    \\
-    \midrule
-
-    % Row 7
-    \textbf{7.\ Overall Professionalism, Clarity, and Documentation}
+    \textbf{5.\ Overall Professionalism, Clarity, and Documentation}
+    \newline\textbf{(10\%)}
     &
     Writing polished and well-organized; notebooks/scripts clean,
     reproducible, and well-commented; outputs easy to interpret.
