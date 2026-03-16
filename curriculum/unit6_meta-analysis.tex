@@ -1,194 +1,315 @@
+\documentclass[12pt]{book}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+
+\usetikzlibrary{shapes,decorations,arrows,calc,arrows.meta,fit,positioning}
+\tikzset{
+    -Latex,auto,node distance =1 cm and 1 cm,semithick,
+    state/.style ={ellipse, draw, minimum width = 0.7 cm},
+    point/.style = {circle, draw, inner sep=0.04cm,fill,node contents={}},
+    bidirected/.style={Latex-Latex,dashed},
+    el/.style = {inner sep=2pt, align=left, sloped}
+}
+
+\begin{document}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Unit 6: Meta-analysis}
+\chapter{Unit 6: Data integration and Meta-analysis}
 \label{chap:unit6}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \textbf{Total Time: 3.5 hours}
 
 %================================================================
-\section{Key Concepts in Research Synthesis}
+\section{Key Concepts in Data Integration}
 \label{sec:6.1}
 %================================================================
 
-This lesson provides an introduction to meta-analysis as a tool for quantitative research synthesis, with the initial goal being to estimate robust consensus effects and statistical significance levels across methodologically diverse but independent research studies. We will focus on the setting of population health science research, using data sources with a longitudinal and temporal structure. We will consider how independent data reflecting similar or identical outcomes on different populations, potentially collected with disparate measurement methods and/or varying sampling designs can be integrated to improve precision and to uncover heterogeneity and effect modifiers.
+This lesson provides an introduction to meta-analysis as a tool for quantitative data integration and research synthesis.  {\em Data integration} arises when either raw data or summary statistics are available for many subpopulations, for the same or a similar set of outcomes and predictors.  In this setting, the goal is to understand the common and distinct ways that the predictors and outcomes are distributed and are related to each other across the subpopulations.  {\em Research synthesis} arises when results from a collection of research studies considering similar or identical research questions are available.  The studies may differ in the populations assessed, in the study designs, or in the methods used.  Combining evidence across diverse studies can yield a more accurate consensus estimate of the relationships of interest and can reveal whether there is heterogeneity among the subpopulations in how these relationships are structured.
+
+This document focuses on design, analysis, and interpretation. It includes no code or numerical results.  \href{https://github.com/kshedden/case_studies/blob/main/birthweight/birthweight_meta.ipynb}{This} Python notebook provides some model analyses from which you can borrow ideas as you start to implement analyses informed by the principles covered here.
 
 \subsection{Learning Objectives}
 
 \begin{enumerate}
-    \item Learners will understand how meta-analysis can be seen as a form of evidence combination.
-    \item Learners will be able to apply methods for evidence integration when complete data are available.
-    \item Learners will understand the basic mathematics behind pooling p-values, standard errors, and confidence intervals from independent sources.
-    \item Learners will be able to weight estimates with different precisions to produce an optimal pooled estimate.
-    \item Learners will be exposed to newer approaches for pooling evidence including E-values and empirical likelihood methods.
+    \item Learners will be able to identify settings where data integration is possible and likely to be informative.
+    \item Learners will be able to explain the principle of inverse variance weighting and why it is more effective than simple averaging.
+    \item Learners will be able to explain the difference between uncertainty and estimation imprecision in individual studies or subpopulation-specific results, and contrast this type of variation with the idea of heterogeneity in the true values of a parameter in different studies or subpopulations.
+    \item Learners will be able to explain and contrast error control via the false positive rate, the family-wise error rate, and the false discovery rate, and will be able to explain the key ideas behind the local false discovery rate approach.
+    \item Learners will be able to explain the basic mathematics behind methods for pooling estimates, pooling standard errors, and combining p-values from independent sources, and will be able to identify methods for combining p-values that are robust to some forms of dependence.
 \end{enumerate}
+
+\subsection{Introduction to key concepts}
+
+Although data integration and meta-analysis have many distinct features, at a conceptual level they also share important similarities. We will first focus on these similarities.  As is usual in empirical research, we have some notion of a population that we wish to study and a parameter of interest $\theta$.  When the population is large and complex, there are many meaningful ways to partition it into simpler and presumably more homogeneous subpopulations.  While we typically think of a parameter such as mean birthweight as having a single fixed value, upon partitioning the population, the value $\theta$ of the parameter may now be specific to each subpopulation $i$, and we denote it by $\theta_i$.  Thus we can consider the distribution of values $\theta_i$ for $i=1, \ldots, m$, where $m$ is the number of subpopulations.
+
+In the setting of data integration, we often have complete data for all individuals, including their value for the outcome being studied (e.g.\ birthweight) and the identity of the subpopulation to which they belong.  Alternatively, we may only have aggregated data, such as the sample mean birthweight per subpopulation, hopefully accompanied by the number of observations and sample standard deviation for each subpopulation (the reason that this ancillary information is important will become clear later).  The latter situation may arise if public individual-level data are not accessible due to privacy concerns.  In the NCHS birth data, complete individual-level data for years up to 1988 are available, but we can aggregate it to emulate the situation where only summary data are available.
+
+Meta-analysis usually refers to the setting where we are trying to learn about a population by integrating information from many research studies that nominally study the same population.  Almost inevitably, these research studies will effectively target different subpopulations of the overall population of interest, either intentionally or inadvertently.  For example, many researchers draw their human subjects from the local population, so each study will be set in a distinct demographic context.  Moreover, studies almost always have inclusion criteria that define the population being studied, e.g.\ if one study excludes children and another does not. 
+
+In a meta-analysis, we usually rely on summarized results reported in the scientific literature.  It is almost inevitable that different methods will be used in different published studies.  These methodological choices will influence the population being studied, but there will also be methodological differences that are unrelated to the population structure.  Studies may differ in the instruments used for measurement, or in the statistical methods used for data analysis.
+
+While it is useful to note the underlying similarities between data integration and meta analysis, so that the same theoretical and practical tools can be utilized in both settings, it is not necessary to draw a bright line between them.  Some situations will be hard to place uniquely under one heading or the other. For example, some people may speak of {\em complete data meta-analysis}, where one aims to do a research synthesis in a setting where the raw data for all studies are available.  In this case, one has the choice to proceed as in a data integration, or as in a meta-analysis, or adopting some hybridization of the two.
+
+At a high level, there are two main analytic goals that we discuss here.  One important goal is to leverage the power in many related datasets, or many distinct publications, to provide a more accurate estimate of population parameters of interest.  To do this, we must acknowledge that the value of the parameter of interest within the subpopulations varies, but the focus in this case is not on this variation, rather it is on the consensus value that can be obtained by pooling evidence across many sources.  The other major analytic goal that we will explore here takes essentially the opposite perspective -- that the variation in the parameter across subpopulations, or across methodologies, is of direct interest, and we wish to quantify and interpret the extent to which such heterogeneity is present.
+
+\subsection{Pooling evidence from tests}
+
+One common setting for data integration occurs when statistical tests of the same null hypothesis are carried out within many subpopulations.  One analytic goal could be to assess the {\em global null hypothesis} asserting that the null hypothesis is true in every subpopulation.  This task might be more properly referred to as {\em evidence integration}, since the goal is to pool the evidence obtained from different subpopulations, instead of pooling the data itself.
+
+In the most conventional setting, we have a properly calibrated p-value $p_i$ for each subpopulation.  Here by ``properly calibrated'' we mean that $p_i$ follows a uniform distribution on $[0, 1]$ if the null hypothesis is true for subpopulation $i$.  There are a number of so-called {\em combining rules} that allow us to assess evidence against the global null hypothesis using a collection of numerical statistics, one for each subpopulation.
+
+If the tests, and hence the p-values, are statistically independent, then the classical {\em Fisher combination test} can be applied.  This approach proceeds by transforming each of the $m$ p-values to have an exponential distribution when the null is true, taking advantage of the fact that $-\log(p)$ follows an exponential distribution with mean $1$ when $p$ is uniform on $[0, 1]$. Since the sum of independent exponentially distributed random variables follows a $\chi^2$ distribution, we obtain the test statistic $F = -2\sum_{i=1}^m \log(p_i)$, which follows a $\chi^2$ distribution with $2m$ degrees of freedom when the global null hypothesis is true.  When the p-values are not independent the second step fails, and the $\chi^2$ distribution is no longer the correct reference distribution.
+
+In recent years, interest has centered on the case where the tests (and hence the p-values) may not be statistically independent.  One simple but ineffective approach is to use the largest p-value (the weakest evidence) as a summary of all the p-values -- this is a valid statistic (it stochastically dominates the uniform distribution on $[0, 1]$) but is very conservative.  This led to the introduction of {\em combining rules} that produce valid p-values under dependence, which was studied \href{https://arxiv.org/pdf/1212.4966}{here}.  A natural source of combining rules are the classical ``Pythagorean means''.  It turns out that (i) the arithmetic mean of p-values multiplied by 2 is a valid p-value, (ii) the geometric mean of p-values multiplied by $e$ is a valid p-value, and (iii) the harmonic mean of p-values multiplied by $\log(m)$ is a p-value. 
+
+The statistical power of these procedures depends on the nature of the alternative hypotheses.  For example, since the harmonic mean is most sensitive to the presence of one or a few very small values, it will be most powerful in a sparse situation where most of the null hypotheses are approximately true, while a few of the populations present strong evidence against the null and yield very small p-values.  In contrast, the arithmetic mean would be most powerful in certain ``dense'' situations where the evidence against the null is of a similar level in all subpopulations.  Of course the structure of the alternative hypotheses is not known ahead of time, and the test to be used must be selected before seeing the data -- it is invalid to try multiple approaches and select the one that gives the smallest p-value.  Nevertheless there are situations where there is good reason to suspect ahead of time that the alternative hypothesis is either sparse or dense, and to select an {\em a priori} approach accordingly.
+
+Another class of approaches for pooling p-values begins by transforming them to a given probability distribution represented by a cumulative distribution function (CDF) $F$.  If $U$ is uniformly distributed on $[0, 1]$, then $F^{-1}(U)$ is a random variable whose CDF is $F$ -- this is known as the ``CDF transformation method''.  After transforming the p-values in this way, they are averaged, and then back-transformed to the uniform scale.  
+
+This approach proves to be most effective when the distribution $F$ belongs to a family that is closed under summation, and that are heavy-tailed.  For example, the sum of Cauchy random variables also follows a Cauchy distribution, hence $m^{-1}\sum_i \tan(\pi(1/2 - p_i))$ follows a Cauchy distribution.  This is called the \href{https://arxiv.org/pdf/1808.09011}{Cauchy combination test}, and a related approach involving the Pareto distribution is known as the \href{https://arxiv.org/abs/2509.12066}{Pareto combination test}.  Transforming the distributions to have heavy tails lies mitigates most dependence that may exist among the p-values.
+
+\subsection{Evidence pooling in large scale inference}
+
+In the last 30 years, major advances in methodology for integrating disparate forms of statistical evidence have been made.  A subfield of statistics termed \href{https://www.cambridge.org/core/books/largescale-inference/A0B183B0080A92966497F12CE5D12589}{large scale inference} has developed around these new methods.  The new techniques in this area are motivated by modern applications made possible by new ways of taking measurements, with genomic and biological imaging applications being most prototypical, although applications exist in many other areas.  The common theme is that evidence is collected about a large number of parameters, and while the total volume of data is large, the information about any particular parameter under study is small.  It turns out that ideas from {\em empirical Bayes} methodology can play a very useful role.
+
+We will discuss one method from large scale inference here, known as the {\em local false discovery rate}, or local FDR, introduced \href{https://www.efron.ckirby.su.domains/papers/2005LocalFDR.pdf}{here}.  At a surface level, the local FDR is a refinement of an earlier approach to bounding false discovery rates known simply as the {\em false discovery rate approach}, usually attributed to \href{https://www.jstor.org/stable/2346101}{Benjamini and Hochberg} or to \href{https://www.jstor.org/stable/pdf/3448445.pdf}{Storey}.  We briefly introduce those earlier ideas here first.  Suppose we are testing a large number, say $m$ of hypotheses, and we have statistics $T_i$, $i=1, \ldots, m$, such that the larger the value of $T_i$, the stronger the evidence against the $i^{\rm th}$ null hypothesis.  Assume that all the test statistics are on the same scale, so that it makes since to employ a single threshold $t$ to decide when to reject each null hypothesis.  We reject the $i^{\rm th}$ null hypothesis if $T_i > t$.
+
+As always, there is a tradeoff in that greater values of $t$ will yield more specificity and lower sensitivity, and lesser values of $t$ will yield more sensitivity and greater specificity.  In the setting of classical multiple hypothesis testing, we might aim to control the {\em family-wise error rate}, which would involve setting $t$ so that the under the global null hypothesis (where all null hypotheses are true), the probability of any $T_i$ exceeding $t$ is controlled, say at $\alpha = 0.05$.  A practical way to do this that does not impose any constraints on the dependence between the tests is the Bonferroni approach (also known as the union bound approach), which sets $t$ sufficiently large so that $P(T_i > t) < \alpha/m$.
+
+To define the false discovery rate, let $H_i=1$ if the $i^{\rm th}$ null hypothesis is true.  The FDR is $E[\sum_i {\cal I}(T_i > t)\cdot {\cal I}(H_i = 1) / \sum_i {\cal I}(T_i>t)]$.  The key observation here is that the FDR looks at the false rejection rate among all rejected null hypotheses, not among all tests (which is what FWER controls).  A test that is more permissive will have a larger numerator for the FDR but will also have a larger denominator, at least in settings where many of the null hypotheses are false, so that the ratio may remain small.  In practice, the FDR is useful when the costs of false positives and false negatives are relatively equal, and it is desirable to make a large number of claims that are ``mostly right''.  On the other hand, FWER control is desirable when even a single false positive has severe consequences.   
+
+The local FDR is related to the traditional FDR, but provides a different understanding of it based on empirical Bayes thinking.  Local FDR is usually approached using Z-scores of the form $Z_i = \hat{\theta}_i / \widehat{\rm SE}_i$.  Suppose we have a large number of such Z-scores, some of which correspond to true null hypotheses.  The distribution of the ``null'' Z-scores should follow a standard normal distribution.  The non-null Z-scores, if any, would follow a distribution $F$ whose structure would depend on the effect sizes.  We do not know which Z-scores are null and which are not, so we observe a mixture distribution $\pi N(0, 1) + (1-\pi)F$, where $\pi \in [0, 1]$ and $F$ are both unknown.
+
+As reflected in its name, the local FDR focuses on densities, whereas the traditional FDR focuses on cumulative probabilities.  The local FDR considers the ratio $\pi f_0/f$, where $f_0$ is the null distribution and $f$ is the density of all test statistics.  We usually know $f_0$ from the theory governing our Z-scores, e.g.\ in many cases $f_0$ will be standard normal.  The density function $f$ can be empirically estimated from the observed test statistics.  The value of $\pi$ is difficult to estimate, and in cases where it is anticipated that most null hypotheses are true, it can be replaced with its upper bound which is $1$. If we use the simplified form $f_0/\hat{f}$ to estimate local FDR values, we are simply asking whether near a particular Z-score $z$, is the density of observed Z-scores large relative to what would be expected under the global null hypothesis? 
+
+As a practical matter, densities are difficult to estimate, especially in the tails of the distribution, which is exactly where we are operating here.  In the standard local FDR approach, a method known as Lindsey's method is used to obtain a stable estimate of $\hat{f}$.  
+
+A variant of the local FDR procedure uses a data-driven version of $f_0$ known as the {\em empirical null} instead of the theory-driven approach, which is usually based on the central limit theorem.  This allows us to use the data to inform us of the behavior of the test statistic under the null, possibly providing a more robust analysis.
+
+\subsection{Pooling estimates}
+
+Classical tests of significance continue to play an important role in modern statistics, but there is a wide sense that they are over-used and fail to address some important points.  A test statistic or test decision tells you something about whether a particular null hypothesis is consistent with the data.  One concern about hypothesis testing approaches is that if the null hypothesis is not consistent with the data, i.e.\ if your decision is to reject the null hypothesis you are provided little indication of what hypothesis actually is consistent with the data.  This may lead to people seeking to reject ``straw man'' null hypothesis, the falsity of which provides little insight into the true state of nature.
+
+A parameter estimate provides insight into the direction and magnitude of an effect, and can indirectly be used for assessing uncertainty and statistical significance.  In many cases a parameter estimate along with a statement of precision about the estimate is more informative than evidence regarding a null hypothesis.  Here we will discuss some approaches that can be used to integrate effect estimates to achieve this goal.
+
+Consider first the fundamental goal in data integration in which we  take a large collection of point estimates, and consolidate them into a single point estimate that provides a consensus estimate for the data represented by the overall population.  We will discuss heterogeneity later, but we note now that this consensus estimate could be interpreted as the parameter that holds for all observations in the overall population if there is no heterogeneity, or it could be interpreted as the marginalized version of a collection of heterogeneous subpopulation-specific effects. 
+
+\subsubsection{Pooling estimates by averaging}
+
+One somewhat naive way to form a consensus estimate is by averaging the point estimates.  Let $\hat{\theta}_{\rm avg} = (\hat{\theta}_1 + \cdots + \hat{\theta}_m)/m$ denote this consensus estimate.  Its standard error can be written
+
+$$
+{\rm SE}(\hat{\theta}_a) = \sqrt{m^{-1}\sum_j {\rm SE}_j^2} / \sqrt{m}.
+$$
+
+\noindent The numerator of this expression is just the square root of the average of the sampling variances.  The denominator $\sqrt{m}$ reflects the fact that we gain precision as we pool a larger number of point estimates.
+
+The pooled estimate $\hat{\theta}_a$ has some good properties, but it is not {\em efficient}, that is, it does not make full use of the information in the data.  Inverse variance weighting allows us to obtain a fully efficient pooled estimate.  The theoretically optimal weight for the $i^{\rm th}$ point estimate is $w_i \propto 1/{\rm SE}_i^2$.  This assigns lower weight to the point estimates with greater variance.  The inverse variance weighted point estimate is $\hat{\theta}_{\rm ivw} = \sum_i w_i \hat{\theta}_i / \sum_i w_i$.  The standard error of this estimator is $H^{1/2} / \sqrt{m}$, where $H = m/(1/{\rm SE}_1^2 + \cdots 1/{\rm SE}_m^2)$ is the harmonic mean of the variances of the individual point estimates.
+
+Note the close connection between the standard errors for $\hat{\theta}_{\rm avg}$ and $\hat{\theta}_{ivw}$.  They both have the form $A^{1/2} / \sqrt{m}$, where $A$ represents a mean of the ${\rm SE}_i^2$.  For simple averaging, the mean that appears in the standard error is the arithmetic mean, while for inverse variance weighted averaging, the harmonic mean appears.  Since the harmonic mean is always less than or equal to the arithmetic mean, the inverse variance weighted average $\hat{\theta}_{\rm ivw}$ is always the more efficient of the two.
+
+\subsubsection{Accounting for uncertainty in the standard errors}
+
+In much of statistics, we often downplay the reality that standard errors are estimated rather than exact.  For sufficiently large samples this may be fine, but in some settings where data integration is to be carried out, the individual estimates may be based on small samples, and/or the number of estimates to be integrated may be small.  For this reason, it is appropriate to consider the consequences of using plug-in variance estimates in the procedures discussed above.  
+
+A common way to quantify estimation imprecision in a standard error is through the degrees of freedom, which we denote $k_i$ here.  As the degrees of freedom increases, the estimated standard error becomes more accurate.  It turns out that an expression of the form $\widetilde{\rm SE}_{\rm ivw} = \sqrt{H(1+F)}/\sqrt{m}$ can be used as an approximate standard error for $\hat{\theta}_{\rm ivw}$ that reflects the additional uncertainty resulting from estimation of per-parameter variances.  Here, $F$ is the inflation term
+
+$$
+F = 4m^{-2}H^{2}\sum_j w_j(m/H - w_j)/k_j^\prime,
+$$
+
+\noindent where $k^\prime_j = k_j - 4(m-2)/(m-1)$. Since $m/H = \sum w_i$, $F$ is non-negative.  When using $\hat{\theta}_{\rm ivw}$ and this ``second order'' standard error, the analysis can be conducted using degrees of freedom $1 / \sum_j (w_j^2/k_j)$, i.e.\ $\hat{\theta}_{\rm ivw} / \widetilde{\rm SE}_{\rm ivw}$ can be taken to approximately follow a Student's t-distribution with this degrees of freedom.
+
+\subsubsection{Pooling estimates that cannot be averaged}
+
+For most estimators, averaging is a sensible way to combine evidence from multiple sources, but there are a few cases where this is not a meaningful way to proceed.  One example of this would be when the statistics of interest are quantiles.  Suppose we have $m$ subpopulations and $\theta_i$ is the $p^{\rm th}$ quantile of the outcome in the $i^{\rm th}$ subpopulation.  The average of the $\theta_i$ does not correspond to a meaningful pooled estimate, since it is not the $p^{\rm th}$ quantile of the pooled population.  
+
+In fact it turns out that in order to pool the quantiles, we need the subpopulation-specific quantiles $\theta_i(p^\prime)$ at every probability point $p^\prime$, not only at $p^\prime = p$.  To pool quantiles, we exploit the fact that the solution to the following equation, as a function of $q$, yields the pooled $p^{\rm th}$ quantile.
+
+$$
+\int m^{-1}\sum_i {\cal I}(\theta_i(r) \le q) dr = p
+$$
+
+To implement this approach, we replace the population quantiles $\theta_i(r)$ with their estimates $\hat{\theta}_i(r)$.  It would not be possible in practice to estimate these quantiles at all values of $r$, so the integral is approximated with a finite sum, e.g.\ using the trapezoidal method, to obtain an estimating equation that can evaluated in practice.
 
 \subsection{Assessment Instrument}
 
-The assessment will be centered on birth outcomes (pre-term birth, underweight birth, and infant mortality), in the United States and internationally, using official statistics or other sources of population-level data. Learners will be guided to appropriate sources of data, and will begin by estimating event rates at local spatial and temporal scales, and providing uncertainty assessments for all point estimates. For the purposes of this assessment, we will treat evidence sources as independent and homogeneous, even if this is unlikely to be the case.
+\begin{itemize}
+
+\item In one or two sentences, define a research aim that could be addressed using subpopulation estimates of birthweights, where the subpopulations are defined in a way that you specify.
+
+\item Write a roughly half-page memo to yourself identifying one or two key challenges that would arise when attempting to resolve your research aim, and indicating how these challenges could be overcome using methods discussed in this unit.
+    
+\end{itemize}
 
 %================================================================
-\section{Accounting for Heterogeneity}
+\section{Assessing Heterogeneity}
 \label{sec:6.2}
 %================================================================
 
-Students will learn to separate effect size variability into statistical noise (imprecision) and true heterogeneity. We will discuss several summary measures for unexplained effect heterogeneity, and discuss how stratification and regression methods can be used to understand heterogeneity that can be attributed to known factors.
+{\em Heterogeneity} in statistics is mainly used to refer to situations where the structural relationships among measured or latent quantities vary across the subpopulations being assessed.  This is not variation in the observations themselves, which vary according to a probability distribution determined by measurement errors and intrinsic variation.  Instead, it refers to a deeper level of variation that is governed by all of the underlying factors, often unknown, that characterize the different subpopulations.
+
+In this subunit, we will discuss ways to define heterogeneity in different settings, and how to estimate it from data.  The major challenge will be to distinguish the variation of the two types discussed above -- the inter-individual variation driven by measurement error and individual differences, and the heterogeneity driven by structural subpopulation differences.
 
 \subsection{Learning Objectives}
 
 \begin{enumerate}
-    \item Students will understand how variation in measured effect sizes can be partitioned into the component attributable to statistical variation, and the component attributable to heterogeneity in the true effects.
-    \item Students will understand how the level of heterogeneity in true effects can be partitioned into a component that is attributable to known factors, and a component that is unexplained by known factors.
+    \item Students will be able to identify opportunities to apply visualization methods from applied statistics to the settings of meta-analysis and data integration.
     \item Students will be able to articulate the difference between statistical uncertainty and effect heterogeneity.
-    \item Students will be able to utilize stratification and regression to estimate a consensus effect size and significance level from studies with heterogeneous designs and/or effect heterogeneity.
+    \item Students will be able to explain the basis and purpose for the intraclass correlation coefficient, and will be able to contrast it with $\tau^2$, the variance of true parameter values across subpopulations.
+    \item Students will be able to explain how the law of total variation partitions total variation into the explained and unexplained fractions of variability.
+    \item Students will be able to identify at least one setting where pooling by weighted averaging is inappropriate, and explain a more appropriate way to pool evidence in this setting.
 \end{enumerate}
+
+\subsection{Visualization-based approaches to exploring heterogeneity}
+
+The main distinguishing feature of aggregated data is that some of the variation is due to structural variation among the subpopulations, and some is due to imprecision in the subpopulation-specific estimates.   But it is also important to remember that aggregated data are just data, and we do not always have to use specialized methods for data integration that focus on distinguishing the multiple levels of variation.  Many descriptive and graphical approaches can be productively applied for understanding aggregated data.
+
+We discuss just one possibility here, aiming to incorporate as much information as possible into a two-dimensional graph.  Suppose we have two summary statistics $S_i$ and $T_i$ computed from the observations in the $i^{\rm th}$ subpopulation.  A basic example would be to let $S_i$ be the sample mean and $T_i$ be the sample standard deviation.  Technically these values are estimates with a non-zero standard error, but we ignore this fact here.  Each subpopulation can be identified with the point $(S_i, T_i)$ in the two-dimensional plane.  
+
+The $i^{\rm th}$ subpopulation is characterized by a set of categorical factors, for each level $L_{jk}$ of factor $j$, we can consider all the subpopulations $i$ that have this level, take the weighted centroid of their $(S_i, T_i)$ values, and plot the label for $L_{jk}$ at this coordinate.  This is a type of dimension reduction or variable scaling that allows us to see how the subpopulations with specific attributes (defined through the factors) are distinct in terms of the outcome variable (defined through the two summary statistics).
+
+\subsection{A two-level model for subpopulation variation}
+
+Suppose that we have data $y_{ij}$ grouped into subpopulations, where $i$ indexes the subpopulations and $j$ indexes the units within a subpopulation.  The subpopulations may be unbalanced, so that $j=1, \ldots, n_i$ where $n_i$ is the number of observations sampled from the $i^{\rm th}$ subpopulation, with the $n_i$ varying.  As an example, in the NCHS birthweight data $y_{ij}$ could represent the birthweight of the $j^{\rm th}$ baby born in the $i^{\rm th}$ county.
+
+A generative model for this situation is the one-way random effects model $y_{ij} = \mu + a_i + \epsilon_{ij}$, where $a_1, \ldots, a_m$ are random effects following a distribution with mean 0 and variance $\tau^2$, and the $\epsilon_{ij}$ follow a distribution with mean 0 and variance $\sigma^2$.  The scalar parameter $\mu$ is the overall mean, and the $\{a_i\}$ and $\{\epsilon_{ij}\}$ are mutually independent.
+
+\subsubsection{Relative measures of heterogeneity}
+
+In the one-way random effects model, $\tau^2$ represents the heterogeneity, i.e.\ the variation between subpopulations, while $\sigma^2$ represents measurement error and other forms of inter-individual variation that differs from person to person.  The ratio $\tau^2 / (\tau^2 + \sigma^2)$ is called the {\em intraclass correlation coefficient}, or ICC.  It falls between 0 and 1, and represents the fraction of the overall variation that is between rather than within subpopulations.  The ICC is equivariant (it is invariant to rescaling the data) and hence is dimension-free.
+
+A simple but natural way to estimate the ICC is to estimate $\tau^2$ as the sample variance of the subpopulation means, i.e.\ $\widehat{\rm var}(\{\bar{y}_{i\cdot}\})$.  This will tend to overestimate $\tau^2$, since it conflates random errors in the sample means with structural variation in the $a_i$.  If the subpopulation sample sizes are large relative to the within-subpopulation variance, this overestimation is minor.  A more sophisticated approach for estimating the ICC uses linear mixed effects regression.  While this approach has some advantages, it also has disadvantages, and we will not discuss it further here.
+
+The notion of the ICC can be generalized to any statistic $\theta_i$
+that can be defined at the level of the subpopulations.  Suppose that corresponding to the true $\theta_i$, we also have unbiased estimates $\hat{\theta}_i$ and estimated standard errors $\widehat{\rm SE}_i$.  In the case of the ICC, $\theta_i = E[y_{ij}]$ (for any $j$), $\hat{\theta}_i = \bar{y}_{i\cdot}$, and $\widehat{\rm SE}_i = \widehat{\rm SD}(\{y_{ij}\})/\sqrt{n_i}$, but here we allow the statistic to be essentially anything, not exclusively the sample mean.
+
+\subsubsection{Absolute measures of heterogeneity}
+
+The law of total variation is a powerful tool for isolating the structural variation of a statistic from the variation attributable to other factors.  If the statistics are unbiased so that $E\hat{\theta}_i = \theta_i$, then we have
+
+\begin{eqnarray*}
+{\rm Var}(\hat{\theta}_i) &=& {\rm var} E[\hat{\theta}_i | \theta_i] + E {\rm var}(\hat{\theta}_i | \theta_i)\\
+&=& {\rm var}(\theta_i) + E[{\rm SE}(\hat{\theta}_i)^2].
+\end{eqnarray*}
+
+\noindent This relationship shows us that the variance among the estimates $\hat{\theta}_i$ is the sum of the variance among the true statistics and the average estimation variance.  As long as our statistics are unbiased and we can calculate their standard errors, this result can be directly applied.
+
+Applying this result to the setting of subpopulation means, we have that the variance of the $\theta_i$ can be estimated as
+
+$$
+\hat{\tau}^2 = \widehat{\rm var}(\bar{y}_{i\cdot}) - {\rm Avg}_i \widehat{\rm SE}_i^2.
+$$
+
+\noindent This is an unbiased method of moments estimate of $\tau^2 = {\rm var}(\theta_i) \ge 0$.  However the estimator $\hat{\tau}^2$ can be negative, in fact no unbiased estimator exists that is always non-negative.  This is not a major problem in most cases, as a negative estimate indicates that $\tau^2$ is very small.  The value of $\hat{\tau} = \sqrt{\hat{\tau}^2 \vee 0}$ has the same units as the data $y_{ij}$, making it more interpretable, but as such it is not equivariant.  This is not always a problem, but this ``corrected'' estimate can be used to form a corrected ICC, which is equivariant, by plugging it into the expression $\tau^2 / (\tau^2 + \sigma^2)$.
 
 \subsection{Assessment Instrument}
 
-Building on the work done for Section~\ref{sec:6.1}, learners will be asked to consider how and why spatially and temporally local point estimates may be heterogeneous, and to quantify this heterogeneity. They will then identify scales at which partial pooling may be appropriate, calculate statistically efficient pooled estimates of evidence, and assess the extent to which precision was improved. Finally, they will be asked to identify potential explanatory factors for any observed heterogeneity, and to quantify the extent to which the heterogeneity can be attributed to these factors.
+\begin{itemize}
+
+\item In one or two sentences, propose a brief research aim for the NCHS data centering on heterogeneity.
+
+\item Write a brief reflection to yourself discussing the approach you would employ to resolve your research aim, and discussing at least one potential challenge that is likely to arise and how you would overcome it.
+
+\end{itemize}
 
 %================================================================
-\section{Accounting for Non-independence and Network Effects}
+\section{Modern and robust approaches to evidence combination}
 \label{sec:6.3}
 %================================================================
 
-Grounded in the setting of population health outcomes assessed at different spatial and temporal scales, we will discuss how and why disparate sources of statistical evidence may be non-independent, and how this non-independence presents both obstacles and possibilities.
+In this section we discuss some more modern and advanced methods for data integration.  These approaches are more conceptually advanced than the methods discussed earlier, but may yield deeper results, especially in more challenging settings.
 
 \subsection{Learning Objectives}
 
 \begin{enumerate}
-    \item Learners will understand how non-independence of research results impacts research synthesis in terms of bias, uncertainty, and statistical power, and will be able to identify possible sources of non-independence.
-    \item Learners will revisit the task of combining p-values, Z-scores and other sources of summary evidence from Section~\ref{sec:6.1}, considering extensions that accommodate non-independent evidence measures.
-    \item Learners will be able to employ marginal and multilevel regression techniques to account for and leverage the presence of non-independence.
-    \item Learners will be exposed to modern methods of evidence summarization such as E-values that are robust to non-independence.
+    \item Learners will be able to articulate the purpose and main idea behind the jackknife empirical likelihood approach in a data integration setting.
+    \item Learners will be able to explain and contrast the definitions of p-values and E-values, and identify some advantages and effective uses for each.    
+    \item Learners will be be able to explain the rationale for partitioning variance using estimated variance components in a meta-analysis setting, and will be able to explain the meanings of explained variation, random main effects, and idiosyncratic variation.
 \end{enumerate}
+
+\subsection{Empirical likelihood approaches to heterogeneity}
+
+The method of moments approach to quantifying heterogeneity is simple to apply if the estimators are unbiased ($E\hat{\theta}_i = \theta_i)$ and if we have a good way to calculate standard errors for the $\hat{\theta}_i$.  If these conditions are difficult to meet, an alternative approach based on jackknifing can be employed.  We illustrate the approach for estimation and inference of the between-subpopulation variance $\tau^2$, but the idea would work for other estimands as well.  Let $\hat{\tau}^2_{-i}$ denote the estimate of $\tau^2$ excluding all observations in subpopulation $i$.  The quantity $\eta_i \equiv m\hat{\tau}^2 - (m - 1)\hat{\tau}_{-i}^2$ is known as the {\em pseudo-observation} for the $i^{\rm th}$ subpopulation.  It approximately captures the unique contribution of the $i^{\rm th}$ cluster to the estimate $\hat{\tau}^2$.
+
+An {\em empirical likelihood} on the $\{\theta_i\}$ is a discrete probability distribution that places probability mass $p_i$ on $\theta_i$, where all $p_i \ge 0$ and $\sum_i p_i = 1$.  Suppose we wish to test the null hypothesis that $\tau^2 = \theta$, for a given value $\theta$.  We can fit an empirical likelihood subject to the constraint $\sum_i p_i\eta_i = \theta$.  We now have two equality constraints on the $p_i$, which is not sufficient to uniquely identify them, so we proceed by finding the distribution with maximum log-likelihood $\sum_i \log(p_i)$ that satisfies the two constraints. The objective function is concave and the constraints are linear, so this optimization problem has a unique solution 
+$\hat{p}_i(\theta)$ for each $\theta$.
+
+We now proceed to consider how uncertainty assessments can be obtained in this setting.  Let $L(\theta) = \sum_i \log(\hat{p}_i(\theta))$ denote the maximized likelihood value at $\theta$, and let $\theta^*$ denote the argmax of this function.  We can refer to $L(\theta)$ as the {\em profile likelihood}.  In most cases, $\theta^*$ will be identical to or close to the full data estimator, which in our case is $\hat{\tau}^2$.  To construct a confidence region for this estimate, we use test inversion.  Since $D(\theta) \equiv -2(L(\theta) - L(\theta^*))$ follows a $\chi^2$ distribution with 1 degree of freedom, we can include $\theta$ in the 95\% confidence region iff $D(\theta) < Q$, where $Q$ is the 0.95 quantile of the $\chi^2_1$ distribution.
+
+\subsection{E-values}
+
+``Expectation values'', referred to as E-values, are an emerging way to conduct statistical inference that aims to overcome some of the shortcomings of the dominant inferential approaches based on p-values. E-values have particular relevance in meta-analysis and data integration, since they allow meaningful pooling of evidence under broader conditions that p-values. At the present time, E-values are still a rather new idea, and are not yet fully developed.  E-values require a fairly distinct way of thinking compared to p-values, and there are not yet default or automatic ways to use E-values in all settings where p-values can be used.  It is not realistic to view E-values as a replacement for p values at the present time, but it is valuable to be aware of this new and promising framework. Here we will give an introduction and some elementary examples of inference using E-values, focusing on applications in data integration and meta-analysis. For more information, here are links to a comprehensive \href{https://stat.cmu.edu/~aramdas/ebook-final.pdf}{ebook} and an \href{https://www.pnas.org/doi/10.1073/pnas.2302098121#st7}{overview paper}.
+
+Like other approaches to statistical inference based on p-values, Z-scores, and false discovery rates, E-values are used in the setting where we have an explicit null hypothesis, and a statistic used to measure evidence against the null hypothesis. The definition of an E-value is straightforward -- it is a non-negative statistic whose expected value when the null hypothesis is true is less than or equal to 1. Analogously, a p-value is a statistic that follows a uniform distribution on $[0, 1]$ when the null hypothesis is true, and a Z-score is a statistic that follows a standard normal distribution when the null hypothesis is true. Placing a condition on the expectation is much weaker than placing a condition on the distribution, therefore E-values by definition are less constrained than p-values and Z-scores. In many cases, this makes it easier to construct E-values, and the E-values are generally more robust to assumptions because the requirements imposed on them are weaker.
+
+When the null hypothesis is not true, it is desirable for E-values to tend to be larger than 1, and as more data are obtained, we can construct an E-process that meaningfully reflects the aggregation of evidence with increasing sample size. Thresholds on any evidence scale are somewhat arbitrary, but for E-values, one can take $1/E$ as an upper bound on the p-value, so it is reasonable to take $E\approx 20$ as minimal evidence against the null, roughly comparable to $p < 0.05$, and $E \approx 100$ as strong evidence against the null, equivalent to or stronger than $p < 0.01$.
+
+An easy way to get started with E-values is to use a ``p-to-e calibrator'', which converts p-values to E-values. The E-values constructed this way are usually not optimal so this tends not to be used much in practice, but it is a way to start building intuition.  A basic calibrator is $(1 - p + p\log(p)) / (p  \log(p)^2)$, which converts any valid p-value $p$ to a valid E-value.
+
+A common way to construct optimal E-values is using likelihood ratios.  The simplest case is where we have a simple null hypothesis and a simple alternative hypothesis (recall that a simple hypothesis is one which contains a single probability distribution).  In this case, the likelihood ratio is an E-value.  If the null hypothesis is composite, we can simply plug in the MLE (under the null) of the nuisance parameters, just as in traditional likelihood ratio analysis.  If the alternative hypothesis is composite, a somewhat more complex approach known as {\em reverse information projection} is used, but we will not discuss that further here.
+
+Given a test statistic that is a Z-score, i.e.\ that follows a standard normal distribution when the null hypothesis is true, we can construct an E-value as $E = \exp(bZ)/c$.  The parameters $b$ and $c$ are chosen so that the expected $E$ value is no greater than 1 when the null hypothesis is true.  Since $Z$ is standard Gaussian, $\exp(bZ)$ is log-normal with mean equal to $\exp(b^2/2)$.  Thus, $\exp(bZ - b^2/2)$ is an E-value.  This approach can be used to produce E-values from many non-parametric procedures that yield asymptotically normal reference distributions when the null hypothesis is true.
+
+Just as there are many ways of constructing a valid p-value for a given null hypothesis, there are many ways to construct valid E-values.  In fact, since E-values are less restrictive than p-values, there are more ways to construct E-values than p-values for any given setting.  To compare different E-values, we need a notion of power, analogous to the traditional notion of statistical power in hypothesis testing.  In the context of E-values, people speak of ``growth rates'', to refer to the rate at which the E-process grows as the sample size increases.  If one E-process always dominates another in terms of its growth, the latter is viewed as inadmissible.  In the context of E-values constructed using the form $\exp(bZ)/c$, where $Z$ is a Z-score, the constant $c$ is used to impose the constraint that the expected E-value is $1$.  The constant $b$ can be used to tune the power of the E-value.  The value of  $b$ can be seen as determining the skewness of the E-value's null distribution, with larger values of $b$ resulting in greater right skewness.  We do not have a simple way to optimally set the value of $b$, but from experimentation it seems that neither perfect symmetry nor very strong right skew are optimal.  Strong but not excessive right skew in the E-value's null distribution seems to perform best.
+
+One of the important features of an E-value is that it allows ``anytime valid inference''.  This is not directly applicable for the NCHS data, which as administrative data are available to us in entirety.  But imagine a situation where we must collect data to assess the null hypothesis, and we wish to periodically check whether the data we have collected so far yield strong evidence against the null.  In classical hypothesis testing, this introduces many challenges due to the bias introduced when stopping in a data-dependent manner.  But with E-values it is perfectly valid to sequentially collect data until we reach a threshold, say $E \ge 20$, and stop collecting data at that point.  We may still report our E-value as is we had planned ahead of time to stop at that particular point.  
+
+In meta-analysis, where researchers frequently re-assess the literature incorporating newer works along with the older evidence, anytime valid inference resolves potential concerns about the continuous reassessment of evidence and overly-optimistic assessment of effects.  Furthermore, as indicated at the outset, E-values are only required to meet a fairly weak expectation constraint, which is much more robust to dependence compared to p-values.  Network and cluster effects are well-documented in the scientific literature, so this is another reason that E-values may eventually become a powerful tool for meta-analysis and data integration, even if they are not widely used in practice today.
+
+\subsection{Stable and idiosyncratic variation}
+
+Variance component analysis is a special type of multilevel modeling that arises when all explanatory variables are categorical.  We can use variance components analysis to gain insight into data that have been partitioned into subpopulations, especially when the subpopulations are defined through the intersection of several factors (e.g.\ year, sex, maternal race, location).  This methodology allows us to rigorously and quantitatively assess the relationships between the factors defining subpopulations (e.g.\ year) and a quantitative response such as birthweight.  
+
+One way to approach variance components analysis is through fully-specified ``generative'' probability models, but the notation and language for describing more complex multilevel models gets quite complex.  Most variance components analysis is conducted using restricted maximum likelihood (RMLE) methods that are supported in statistical packages such as the lme4 package in R, and in SAS, Stata, and Julia.  Although the Python Statsmodels package can fit certain types of linear multilevel models, it lacks capabilities comparable to R.  Moreover, there are reasons to consider alternative estimators to the common RMLE approach, since, among other issues, RMLE takes the random effects to be Gaussian, and it is unclear how violation of this modeling assumption impacts the results.  In addition, it is difficult to account for complex patterns of heteroscedasticity using existing implementations such as lme4 in R.  There are a number of alternative estimators for variance components models, including the MINQUE approach, as well as Bayesian approaches.  Here we focus on one of these alternatives.
+
+We will demonstrate how complex variance components parameters can be estimated using a method of moments approach based on U statistics. An advantage of this approach is that it allows us to directly target variance parameters of interest without explicitly specifying a complete model for the data.  Also, it can accommodate arbitrary known heteroscedasticity.  These estimates can be obtained quickly using just a few lines of code.
+
+For illustration, suppose we have subpopulation means for subpopulations defined by location $i$, sex $j$, and maternal race $k$, with race coded as four levels.  We can consider the following model
+
+\begin{equation}
+y_{ijk} = \mu + \beta_{2j} + \beta_{3k} + \theta_i + \theta_{ij} + \theta_{ik} + \epsilon_{ijk}, \label{vcm1}
+\end{equation}
+
+\noindent where $\mu$, the $\beta_{2j}$, and the $\beta_{3k}$ are all {\em fixed effects}, while the $\theta_i$, the $\theta_{ij}$, and the $\theta_{ik}$ are all random effects, and the $\epsilon_{ijk}$ represent unexplained variation.  Since the data are actually averages rather than individual observations, the $\epsilon_{ijk}$ are anticipated to be strongly heteroscedastic with (approximately) known variances, ${\rm var}(\epsilon_{ijk}) = \sigma_{ijk}^2 / n_{ijk}$, where $\sigma_{ijk}^2$ is the variance within subpopulation $ijk$ (which can be estimated in the usual way), and $n_{ijk}$ is the sample size of subpopulation $ijk$.  All random effects in model \ref{vcm1} are constrained to have expected value zero.  As usual when fitting regression models with categorical explanatory variables, one level of each variable is treated as the reference level and its coefficient set to zero, e.g.\ $\beta_{21} = 0$ and $\beta_{31} = 0$.  Importantly, this is done for the fixed effects but not for the random effects.
+
+The model expressed in \ref{vcm1} is a specific example of an ANOVA-type decomposition.  Its marginal mean structure is
+
+\begin{equation}
+E[y_{ijk}] = \mu + \beta_{2j} + \beta_{3k}. \label{vcm2}
+\end{equation}
+
+\noindent This mean structure allows for stable differences between sexes, captured through the $\beta_{2j}$, and stable differences between races captured by the $\beta_{3k}$.  By ``stable difference'' we mean a difference that is present on average across the random effects, holding the covariates responsible for fixed effects at specific values.  For example,  if $j=2$ corresponds to female babies, then $\beta_{22} - \beta_{21}$ is the marginal mean difference in birthweights between female and male babies, holding race fixed (at any level), and averaging over the locations. 
+
+The mean structure \ref{vcm2} is not {\em saturated}, for example we do not include sex by race interactions.  Specifically, it is {\em additive}, which means, for example, that the contrast $\beta_{22} - \beta_{21}$ is the marginal mean difference between female and male babies of the same race, regardless of what this race is.  To allow the marginal mean sex differences to differ by race, we would need to include a sex by race interaction in the mean structure, but we do not pursue that direction here since we want to focus on the variance components structure.  Since there are no interactions in our marginal mean structure, the $\beta_{2j}$ and the $\beta_{3k}$ can be referred to as {\em fixed main effects} for sex and maternal race, respectively.
+
+We also note that we do not include fixed effects for location $i$.  One reason for this is practical, as there are thousands of locations and the model would have a lot of parameters.  On the other hand, a lot of modern statistical methodology considers high dimensional models with many parameters, so this is no longer a technical obstacle, and a modern computer could easily fit a model with fixed main effects for the thousands of locations.  Another commonly expressed perspective is that we use random effects when the levels of a group are a random sample from a superpopulation, or when we don't ``care about'' specific levels of the variable.  But these considerations are quite subjective.  We take the perspective here that this is a modeling choice, and do not concern ourselves now with further justification for which variables are included as fixed effects.
+
+The emphasis here is on the random effects, specifically the $\theta_i$, the $\theta_{ij}$, and the $\theta_{ik}$.  These are required to have mean zero, since any nonzero mean structure in the random effects would not be identifiable relative to the fixed effects.  They are also required to be mutually independent.  In terms of terminology, we can refer to the $\theta_i$ as random location ``main effects'', while the $\theta_{ij}$ are ``idiosyncratic sex differences'' within locations, and the $\theta_{ik}$ are ``idiosyncratic race differences'' within locations.  The term ``idiosyncratic'' here emphasizes that, e.g.\ $\theta_{i2} - \theta_{i1}$ represents the female-to-male contrast uniquely within location $i$, after removing the marginal female-to-male contrast.  To make the female-to-male mean difference $\beta_{22} - \beta_{11}$ identified and meaningful, we need the $\theta_{i2} - \theta_{i1}$ to have expected value zero, which follows from the fact that all random effects have zero population expectation.
+
+Let $y_{ijk}$ denote the sample mean of the residuals from an ordinary least squares fit of the mean structure model \ref{vcm2}.  Let $\hat{\sigma}_{ijk}^2$ denote the sample variance of these residuals, and let $n_{ijk}$ denote the number of observations in cell $ijk$. For any $j\nme j^\prime$, 
+
+\begin{equation}
+E[(y_{ijk} - y_{ij^\prime k})^2] = 2{\rm var}(\theta_{ij}) + \sigma_{ijk}^2/n_{ijk} + \sigma_{ij^\prime k}^2/n_{ij^\prime k}.
+\end{equation}
+
+\noindent Thus
+
+$$
+U_{ijj^\prime k} \equiv ((y_{ijk} - y_{ij^\prime k})^2 - \sigma_{ijk}^2/n_{ijk} - \sigma_{ij^\prime k}^2/n_{ij^\prime k})/2
+$$
+
+\noindent is an unbiased estimate of ${\rm var}(\theta_{ij})$.  The final estimator of ${\rm var}(\theta_{ij})$ is ${\rm Avg}_{i,j,j^\prime, k} U_{ijj^\prime k}$.  One could use inverse variance weighting to improve the precision of the estimate, but we do not pursue that here.
+
 
 \subsection{Assessment Instrument}
 
-Continuing the work from Sections~\ref{sec:6.1} and~\ref{sec:6.2}, students will reconsider the precision of partially pooled estimates of event rates in light of possible non-independence. Then they will consider whether and how explained and unexplained heterogeneity should be re-evaluated if the evidence sources are non-independent.
+\begin{itemize}
 
-% Required packages (add to your preamble if not already there):
-% \usepackage{longtable}
-% \usepackage{booktabs}
-% \usepackage{ragged2e}
-% \usepackage{array}
-% \usepackage{pdflscape}
+\item Choose one of the three approaches discussed in this unit, and write a persuasive paragraph addressed to a clinical researcher, aiming to explain in a non-technical way the basis of the approach, and proposing a possible way for them to take advantage of this newer and more advanced methodology in their research.
 
-\begin{landscape}
+\end{itemize}
 
-    \section{Evaluation Rubric}
-
-    {\footnotesize
-
-    \begin{longtable}{%
-        >{\RaggedRight\arraybackslash}p{2.5cm}   % Component
-        >{\RaggedRight\arraybackslash}p{4.5cm}   % Excellent
-        >{\RaggedRight\arraybackslash}p{4.2cm}   % Good
-        >{\RaggedRight\arraybackslash}p{4.2cm}   % Satisfactory
-        >{\RaggedRight\arraybackslash}p{4.5cm}}  % Needs Improvement
-
-    \toprule
-    \textbf{Component} &
-    \textbf{Excellent (90--100\%)} &
-    \textbf{Good (80--89\%)} &
-    \textbf{Satisfactory (70--79\%)} &
-    \textbf{Needs Improvement ($<$70\%)} \\
-    \midrule
-    \endfirsthead
-
-    \toprule
-    \textbf{Component} &
-    \textbf{Excellent (90--100\%)} &
-    \textbf{Good (80--89\%)} &
-    \textbf{Satisfactory (70--79\%)} &
-    \textbf{Needs Improvement ($<$70\%)} \\
-    \midrule
-    \endhead
-
-    \midrule
-    \multicolumn{5}{r}{\textit{Continued on next page}} \\
-    \endfoot
-
-    \bottomrule
-    \endlastfoot
-
-    % Row 1
-    \textbf{1.\ Evidence Combination \& Pooled Estimation}
-    \newline\textbf{(30\%)}
-    &
-    Accurately estimates event rates for birth outcomes (pre-term birth,
-    underweight birth, infant mortality) at local spatial and temporal scales;
-    provides thorough uncertainty assessments for all point estimates; correctly
-    pools p-values, standard errors, and confidence intervals from independent
-    sources; applies precision-weighted pooling to produce an optimal combined
-    estimate; clearly justifies assumptions of independence and homogeneity.
-    &
-    Estimates event rates with mostly correct uncertainty assessments; pools
-    evidence from independent sources with minor errors; weighting approach
-    is reasonable with minor gaps in justification.
-    &
-    Estimates event rates but uncertainty assessments are incomplete or
-    partially incorrect; pooling approach is basic or inconsistently applied;
-    limited justification for assumptions made.
-    &
-    Event rate estimates missing or incorrect; uncertainty assessments absent
-    or flawed; little to no evidence of understanding pooling methods or
-    independence assumptions.
-    \\
-    \midrule
-
-    % Row 2
-    \textbf{2.\ Heterogeneity Quantification \& Partial Pooling}
-    \newline\textbf{(35\%)}
-    &
-    Clearly identifies and quantifies spatial and temporal heterogeneity in
-    point estimates; correctly partitions effect size variability into
-    statistical noise and true heterogeneity; identifies appropriate scales
-    for partial pooling and calculates statistically efficient pooled
-    estimates; demonstrates improved precision; identifies and quantifies
-    explanatory factors for observed heterogeneity using stratification
-    and/or regression.
-    &
-    Heterogeneity identified and mostly quantified correctly; partial pooling
-    applied at reasonable scales with minor errors; some explanatory factors
-    identified, though quantification of their contribution may be incomplete.
-    &
-    Heterogeneity acknowledged but quantification is superficial or
-    incomplete; partial pooling attempted but scale selection or efficiency
-    poorly justified; explanatory factors noted but not rigorously assessed.
-    &
-    Heterogeneity not meaningfully addressed; no attempt at partial pooling
-    or efficiency assessment; explanatory factors absent or incorrectly
-    handled; conflates statistical uncertainty with true heterogeneity.
-    \\
-    \midrule
-
-    % Row 3
-    \textbf{3.\ Non-Independence \& Network Effects}
-    \newline\textbf{(35\%)}
-    &
-    Clearly identifies possible sources of non-independence among evidence
-    sources; accurately reassesses precision of partially pooled estimates
-    in light of non-independence; correctly revisits heterogeneity findings
-    under non-independence; applies marginal or multilevel regression
-    techniques appropriately; demonstrates nuanced understanding of how
-    non-independence affects bias, uncertainty, and statistical power.
-    &
-    Sources of non-independence identified with minor gaps; reassessment of
-    pooled estimates mostly correct; regression techniques applied with minor
-    errors; understands impact on uncertainty and power, though depth may
-    be limited.
-    &
-    Non-independence acknowledged but sources poorly identified; reassessment
-    of estimates or heterogeneity is superficial; regression techniques
-    attempted but with notable errors or limited justification.
-    &
-    Non-independence not meaningfully addressed; no reassessment of pooled
-    estimates or heterogeneity; regression techniques absent or incorrectly
-    applied; little understanding of implications for bias or power.
-    \\
-
-    \end{longtable}
-
-    } % end \footnotesize
-
-\end{landscape}
+\end{document}
