@@ -213,18 +213,18 @@ Command & Effect \\
 \midrule
 \texttt{git remote -v} &
   List all remotes with their fetch and push URLs. \\
-\texttt{git remote add <name> <url>} &
+\texttt{git remote add <n> <url>} &
   Register a new remote under the given name. \\
-\texttt{git remote remove <name>} &
+\texttt{git remote remove <n>} &
   Delete a remote entry from the local configuration. \\
 \texttt{git remote rename <old> <new>} &
   Rename a remote without changing its URL. \\
-\texttt{git remote set-url <name> <url>} &
+\texttt{git remote set-url <n> <url>} &
   Update the URL of an existing remote. \\
-\texttt{git remote get-url <name>} &
+\texttt{git remote get-url <n>} &
   Print the URL of a named remote; exits with an error if
   the remote does not exist (useful in scripts). \\
-\texttt{git remote show <name>} &
+\texttt{git remote show <n>} &
   Display detailed information about a remote, including
   tracked branches and push configuration. \\
 \bottomrule
@@ -379,6 +379,215 @@ both platforms):
 \begin{lstlisting}[style=inlineStyle]
 deactivate
 \end{lstlisting}
+
+% ============================================================
+\section{Modern Package Management: \texttt{uv}}
+\label{sec:uv}
+% ============================================================
+
+\subsection{Why \texttt{uv} Matters Today}
+
+The tools introduced in the previous section---\texttt{python -m venv}
+for environment creation and \texttt{pip} for package
+installation---are the established, stable foundation of Python package
+management. They are maintained by the Python Packaging Authority
+(PyPA) under the umbrella of the Python Software Foundation (PSF), a
+non-profit organisation with a long-term governance structure and no
+commercial dependency. Every Python installation includes \texttt{pip}
+by default, and knowing how to use it remains an essential skill
+regardless of what other tools you adopt.
+
+A newer tool called \texttt{uv} has emerged and is rapidly gaining
+adoption in professional environments. Understanding both tools is
+important precisely because the landscape is in transition.
+
+\begin{infobox}
+\textbf{A note on governance.} \texttt{pip} is maintained by the
+Python Packaging Authority under the Python Software Foundation---a
+non-profit with a community governance model and no commercial
+dependency. \texttt{uv} is an open-source tool developed and
+maintained by Astral, a venture-capital funded commercial company.
+Astral has been an excellent steward of the tool and has contributed
+meaningfully to the broader Python packaging ecosystem. Nevertheless,
+its long-term trajectory depends on business outcomes in a way that
+foundation-backed projects do not. Until the ecosystem stabilises
+around a clear community standard, knowing both \texttt{pip} and
+\texttt{uv} is the prudent professional position.
+\end{infobox}
+
+\subsection{What \texttt{uv} Offers}
+
+\texttt{uv} is a drop-in replacement for \texttt{pip} and
+\texttt{python -m venv}, rewritten in Rust for performance. Its
+principal advantages over the traditional toolchain are:
+
+\begin{itemize}
+  \item \textbf{Speed.} Package resolution and installation are
+        10--100 times faster than \texttt{pip} due to a Rust
+        implementation and aggressive parallel downloading.
+  \item \textbf{A central cache.} Downloaded packages are stored once
+        in a global cache and reused across environments. On the same
+        filesystem, \texttt{uv} uses hardlinks so that multiple
+        environments sharing a package consume no additional disk space
+        beyond the first copy.
+  \item \textbf{Lockfiles.} \texttt{uv} produces a \texttt{uv.lock}
+        file that records the complete, resolved dependency graph with
+        cryptographic hashes. This is a significant improvement over
+        \texttt{pip freeze > requirements.txt}, which records only
+        installed package names and versions without distinguishing
+        direct dependencies from transitive ones, and without hash
+        verification.
+  \item \textbf{\texttt{pyproject.toml} integration.} \texttt{uv}
+        works natively with \texttt{pyproject.toml}, the modern
+        standard for declaring project dependencies, replacing the
+        older \texttt{requirements.txt} workflow.
+  \item \textbf{Python version management.} \texttt{uv} can download
+        and manage multiple Python versions independently, removing the
+        need for separate tools such as \texttt{pyenv}.
+\end{itemize}
+
+\subsection{Installing \texttt{uv}}
+
+\subsubsection{Windows (PowerShell)}
+
+\begin{lstlisting}[style=windowsStyle, caption={Installing \texttt{uv} on Windows}]
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+\end{lstlisting}
+
+\texttt{uv} installs itself to
+\texttt{\%USERPROFILE\%\textbackslash.local\textbackslash bin} and
+adds itself to your user \texttt{PATH} automatically. Close and reopen
+your terminal, then verify:
+
+\begin{lstlisting}[style=windowsStyle]
+uv --version
+\end{lstlisting}
+
+\subsubsection{Linux / WSL}
+
+\begin{lstlisting}[style=linuxStyle, caption={Installing \texttt{uv} on Linux/WSL}]
+curl -LsSf https://astral.sh/uv/install.sh | sh
+\end{lstlisting}
+
+\texttt{uv} installs to \texttt{\textasciitilde/.local/bin}. Reload
+your shell configuration and verify:
+
+\begin{lstlisting}[style=linuxStyle]
+source ~/.bashrc
+uv --version
+\end{lstlisting}
+
+\subsection{Creating and Managing Environments with \texttt{uv}}
+
+The environment structure produced by \texttt{uv venv} is identical to
+a standard \texttt{python -m venv} environment. The same
+\texttt{Scripts\textbackslash activate.bat} (Windows) and
+\texttt{bin/activate} (Linux) scripts are present and activation is
+unchanged.
+
+\subsubsection{Creating an Environment}
+
+\begin{lstlisting}[style=windowsStyle, caption={Creating a uv-managed environment (Windows)}]
+uv venv C:\uvenv\DAIR3 --python 3.12
+\end{lstlisting}
+
+\begin{lstlisting}[style=linuxStyle, caption={Creating a uv-managed environment (Linux/WSL)}]
+uv venv ~/uvenv/DAIR3 --python 3.12
+\end{lstlisting}
+
+The \texttt{--python} flag specifies the Python version. If that
+version is not already installed, \texttt{uv} will download and
+install it automatically.
+
+\subsubsection{Activating an Environment}
+
+Activation is identical to a standard venv:
+
+\begin{lstlisting}[style=windowsStyle]
+C:\uvenv\DAIR3\Scripts\activate.bat
+\end{lstlisting}
+
+\begin{lstlisting}[style=linuxStyle]
+source ~/uvenv/DAIR3/bin/activate
+\end{lstlisting}
+
+\subsubsection{Installing Packages}
+
+Within an activated environment, \texttt{uv pip install} replaces
+\texttt{pip install}:
+
+\begin{lstlisting}[style=inlineStyle, caption={Installing packages with uv}]
+uv pip install numpy pandas matplotlib
+\end{lstlisting}
+
+\subsubsection{Declaring Dependencies with \texttt{pyproject.toml}}
+
+For projects that will be shared or reproduced, \texttt{uv} works best
+with a \texttt{pyproject.toml} file in the project root that declares
+dependencies explicitly:
+
+\begin{lstlisting}[style=inlineStyle, caption={Minimal \texttt{pyproject.toml}}]
+[project]
+name = "my-project"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "matplotlib>=3.9",
+]
+\end{lstlisting}
+
+With this file present, a single command installs all dependencies and
+generates the lockfile:
+
+\begin{lstlisting}[style=inlineStyle]
+uv sync
+\end{lstlisting}
+
+\texttt{uv sync} reads \texttt{pyproject.toml}, resolves the full
+dependency graph, installs all packages, and writes \texttt{uv.lock}.
+Running \texttt{uv sync} again on another machine---or after a
+\texttt{git pull} that added new dependencies---reproduces the
+environment exactly.
+
+\begin{infobox}
+Commit \texttt{pyproject.toml} and \texttt{uv.lock} to your
+repository. Do not commit the environment folder itself. Add it to
+\texttt{.gitignore}.
+\end{infobox}
+
+\subsection{\texttt{requirements.txt} vs.\ \texttt{uv.lock}}
+
+\begin{table}[h]
+\centering
+\caption{Comparison of \texttt{requirements.txt} and \texttt{uv.lock}}
+\label{tab:req-vs-lock}
+\begin{tabular}{@{}p{0.28\textwidth}p{0.30\textwidth}p{0.30\textwidth}@{}}
+\toprule
+\textbf{Property} & \textbf{\texttt{requirements.txt}} & \textbf{\texttt{uv.lock}} \\
+\midrule
+Generated by
+  & \texttt{pip freeze}
+  & \texttt{uv sync} / \texttt{uv lock} \\[4pt]
+Records
+  & Installed packages only
+  & Full dependency graph \\[4pt]
+Distinguishes direct vs.\ transitive deps
+  & No
+  & Yes \\[4pt]
+Hash verification
+  & No
+  & Yes \\[4pt]
+Cross-platform reproducibility
+  & Partial
+  & Yes \\[4pt]
+Should be committed to git
+  & Yes
+  & Yes \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 % ============================================================
 \section{Level 1 --- Script Files}
@@ -610,6 +819,164 @@ source ~/.bashrc
 \end{lstlisting}
 
 After this, the shell can find \texttt{ActivateEnv.sh} from any directory.
+
+% ------------------------------------------------------------
+\subsection{The \texttt{uv} Approach: \texttt{ActivateUVEnv}}
+\label{subsec:activateuvenv}
+% ------------------------------------------------------------
+
+The following scripts mirror \texttt{ActivateEnv} but target
+\texttt{uv}-managed environments stored in
+\texttt{C:\textbackslash uvenv} (Windows) or
+\texttt{\textasciitilde/uvenv} (Linux). Store all \texttt{uv}
+environments in \texttt{uvenv} rather than \texttt{penv} to keep the
+two toolchains visually distinct on disk.
+
+Two behaviours distinguish \texttt{ActivateUVEnv} from its
+\texttt{pip}-based counterpart:
+
+\begin{enumerate}
+  \item \textbf{Automatic creation.} If the named environment does not
+        yet exist, \texttt{uv venv} creates it before activation. There
+        is no separate setup step for new projects.
+  \item \textbf{Automatic synchronisation.} If a
+        \texttt{pyproject.toml} is present in the project directory,
+        \texttt{uv sync} runs after activation. Dependencies install
+        themselves after every \texttt{git pull} that adds new
+        requirements---no manual \texttt{pip install} is needed.
+\end{enumerate}
+
+\subsubsection{ActivateUVEnv.bat (Windows)}
+
+Store this file in \texttt{C:\textbackslash uvenv} and add that folder
+to the system \texttt{PATH}.
+
+\begin{lstlisting}[style=windowsStyle, basicstyle=\footnotesize\ttfamily, caption={\texttt{ActivateUVEnv.bat} --- uv environment launcher (Windows)}]
+@echo off
+setlocal
+
+set "ENV_NAME=%~1"
+set "BASE_DIR=%~2"
+set "VENV_ROOT=C:\uvenv"
+set "VENV_PATH=%VENV_ROOT%\%ENV_NAME%"
+set "VENV_ACTIVATE=%VENV_PATH%\Scripts\activate.bat"
+
+:: Validate inputs
+if "%ENV_NAME%"=="" (
+    echo [ERROR] Usage: ActivateUVEnv ^<env-name^> ^<project-dir^>
+    goto :eof
+)
+if "%BASE_DIR%"=="" (
+    echo [ERROR] Usage: ActivateUVEnv ^<env-name^> ^<project-dir^>
+    goto :eof
+)
+if not exist "%BASE_DIR%" (
+    echo [ERROR] Project directory not found: %BASE_DIR%
+    goto :eof
+)
+
+:: Create environment if it does not exist yet
+if not exist "%VENV_ACTIVATE%" (
+    echo [INFO] Environment '%ENV_NAME%' not found. Creating with uv...
+    uv venv "%VENV_PATH%" --python 3.12
+    if errorlevel 1 (
+        echo [ERROR] Failed to create environment.
+        goto :eof
+    )
+)
+
+:: Activate
+cd /d "%BASE_DIR%"
+call "%VENV_ACTIVATE%"
+
+:: Sync dependencies if pyproject.toml is present
+if exist "pyproject.toml" (
+    echo [INFO] pyproject.toml found. Syncing dependencies...
+    uv sync
+)
+
+echo.
+echo [OK] Environment '%ENV_NAME%' active.
+echo Launching VS Code...
+code .
+
+endlocal
+\end{lstlisting}
+
+Usage is identical in form to \texttt{ActivateEnv.bat}:
+
+\begin{lstlisting}[style=windowsStyle]
+ActivateUVEnv lunar "C:\Dropbox\Research\Lunar\python"
+ActivateUVEnv forecasting "C:\Projects\forecasting"
+\end{lstlisting}
+
+\subsubsection{ActivateUVEnv --- Linux / WSL Shell Function}
+
+Add the following function to \texttt{\textasciitilde/.bashrc}. Like
+its \texttt{pip}-based counterpart, it runs in the current shell so
+that activation and directory changes persist in your session.
+
+\begin{lstlisting}[style=linuxStyle, basicstyle=\footnotesize\ttfamily, caption={\texttt{ActivateUVEnv()} shell function for \textasciitilde/.bashrc}]
+# -------------------------------------------------------
+# ActivateUVEnv: Activate a uv-managed venv and open VS Code
+# Usage: ActivateUVEnv <ENV_NAME> <PROJECT_DIR>
+# -------------------------------------------------------
+ActivateUVEnv() {
+    local ENV_NAME="$1"
+    local BASE_DIR="$2"
+    local VENV_ROOT="$HOME/uvenv"
+    local VENV_PATH="${VENV_ROOT}/${ENV_NAME}"
+    local VENV_ACTIVATE="${VENV_PATH}/bin/activate"
+
+    if [ -z "$ENV_NAME" ]; then
+        echo "[ERROR] Usage: ActivateUVEnv <env-name> <project-dir>"
+        return 1
+    fi
+
+    if [ -z "$BASE_DIR" ]; then
+        echo "[ERROR] Usage: ActivateUVEnv <env-name> <project-dir>"
+        return 1
+    fi
+
+    if [ ! -d "$BASE_DIR" ]; then
+        echo "[ERROR] Project directory not found: ${BASE_DIR}"
+        return 1
+    fi
+
+    # Create environment if it does not exist yet
+    if [ ! -f "$VENV_ACTIVATE" ]; then
+        echo "[INFO] Environment '${ENV_NAME}' not found. Creating with uv..."
+        uv venv "$VENV_PATH" --python 3.12 || return 1
+    fi
+
+    # Activate
+    cd "$BASE_DIR" || return 1
+    # shellcheck source=/dev/null
+    source "$VENV_ACTIVATE"
+
+    # Sync dependencies if pyproject.toml is present
+    if [ -f "pyproject.toml" ]; then
+        echo "[INFO] pyproject.toml found. Syncing dependencies..."
+        uv sync
+    fi
+
+    echo "[OK] Environment '${ENV_NAME}' active."
+    echo "Launching VS Code..."
+    code .
+}
+\end{lstlisting}
+
+Reload \texttt{.bashrc} after saving:
+
+\begin{lstlisting}[style=linuxStyle]
+source ~/.bashrc
+\end{lstlisting}
+
+Then call it from any directory:
+
+\begin{lstlisting}[style=linuxStyle]
+ActivateUVEnv lunar "$HOME/Research/Lunar/python"
+\end{lstlisting}
 
 % ============================================================
 \section{The Critical Difference: Executing vs.\ Sourcing}
@@ -903,6 +1270,54 @@ Exit a script/function
 \end{tabular}
 \end{table}
 
+\begin{table}[h]
+\centering
+\caption{\texttt{uv} quick reference: equivalences with \texttt{pip} and \texttt{venv}}
+\label{tab:uv-cheatsheet}
+\begin{tabular}{@{}p{0.32\textwidth}p{0.28\textwidth}p{0.28\textwidth}@{}}
+\toprule
+\textbf{Task} & \textbf{pip / venv} & \textbf{uv} \\
+\midrule
+Install \texttt{uv}
+  & (not applicable)
+  & See Section~\ref{sec:uv} \\[4pt]
+Create environment
+  & \texttt{python -m venv PATH}
+  & \texttt{uv venv PATH -{}-python 3.12} \\[4pt]
+Activate environment
+  & \texttt{source PATH/bin/activate}
+  & \texttt{source PATH/bin/activate} \\[4pt]
+Install a package
+  & \texttt{pip install pkg}
+  & \texttt{uv pip install pkg} \\[4pt]
+Install from \texttt{pyproject.toml}
+  & \texttt{pip install -e .}
+  & \texttt{uv sync} \\[4pt]
+Add a dependency
+  & Edit \texttt{requirements.txt} manually
+  & \texttt{uv add pkg} \\[4pt]
+Remove a dependency
+  & Edit \texttt{requirements.txt} manually
+  & \texttt{uv remove pkg} \\[4pt]
+Generate lockfile
+  & \texttt{pip freeze > req.txt}
+  & \texttt{uv lock} (or implicit in \texttt{uv sync}) \\[4pt]
+Install from lockfile
+  & \texttt{pip install -r req.txt}
+  & \texttt{uv sync} \\[4pt]
+Launcher script (Windows)
+  & \texttt{ActivateEnv.bat}
+  & \texttt{ActivateUVEnv.bat} \\[4pt]
+Launcher function (Linux)
+  & \texttt{ActivateEnv()} in \texttt{.bashrc}
+  & \texttt{ActivateUVEnv()} in \texttt{.bashrc} \\[4pt]
+Environment root
+  & \texttt{C:\textbackslash penv} / \texttt{\textasciitilde/penv}
+  & \texttt{C:\textbackslash uvenv} / \texttt{\textasciitilde/uvenv} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 % ============================================================
 \section{Summary}
 \label{sec:summary}
@@ -921,10 +1336,22 @@ We covered:
         development experience.
   \item Python virtual environments: what they are, why they matter, and
         how to create, activate, populate, and deactivate them on both
-        platforms.
+        platforms using the standard \texttt{pip} and \texttt{venv}
+        toolchain maintained by the Python Software Foundation.
+  \item \textbf{\texttt{uv}}: a modern, high-performance alternative to
+        \texttt{pip} and \texttt{venv}, developed by Astral. \texttt{uv}
+        offers dramatically faster installs, a global package cache,
+        reproducible lockfiles, and native \texttt{pyproject.toml}
+        support. Because \texttt{uv} is maintained by a commercial
+        entity rather than a foundation-backed community project, knowing
+        both tools remains the prudent professional position until the
+        ecosystem settles.
   \item \textbf{Level~1} scripting: writing \texttt{ActivateEnv.bat} /
         \texttt{ActivateEnv.sh} and \texttt{DAIR3.bat} / \texttt{DAIR3.sh}
-        as reusable launchers.
+        as reusable launchers for \texttt{pip}-managed environments, and
+        \texttt{ActivateUVEnv.bat} / \texttt{ActivateUVEnv()} as their
+        \texttt{uv}-managed counterparts with automatic environment
+        creation and dependency synchronisation.
   \item The critical \texttt{source} vs.\ execute distinction on Linux,
         and why virtual environment activation requires the former.
   \item \textbf{Level~2} scripting: shell functions defined in
@@ -938,4 +1365,3 @@ meaningful example of a broader principle: the CLI lets you encode your
 workflow into repeatable, shareable, and improvable scripts. Every
 tedious setup step you eliminate today is cognitive load freed up for the
 work that actually matters.
-
