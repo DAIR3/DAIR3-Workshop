@@ -21,11 +21,11 @@ mathematically inevitable in any LLM-generated output; human
 verification is therefore not optional. Second, cross-agent
 critique reduces invalidation rates below what any single model
 achieves, but introduces its own ethical tradeoffs that must be
-actively managed. Third, race and ethnicity in biomedical data are
-social constructs whose reification in data systems has real
-consequences; LLMs applied to historical vital statistics data are
-particularly prone to normative invalidation when treating racial
-categories as stable natural kinds.
+actively managed. Third,  any
+sociodemographic variable whose encoding has changed across the
+historical record 
+carries risks of structural and normative invalidation when
+queried without contextual grounding. 
 
 %================================================================
 \section{The Ethics of AI Agents}
@@ -71,9 +71,10 @@ The lesson proceeds in four instructional blocks:
     those columns did not exist in the flat file. Each type requires
     a distinct verification strategy.
 
-    \item \textbf{Race-consciousness in biomedical data science
-    (15 min).} Race is a social construct with no valid biological
-    basis, but its reification in law, medicine, and data systems
+    \item \textbf{Sociodemographic consciousness in biomedical data science
+    (15 min).}   We explore how many sociodemographic variables are  
+    social construct with no valid biological
+    basis, but their reification in law, medicine, and data systems
     makes it real in its consequences. Birth outcomes differ by
     recorded race not because of intrinsic racial biology but because
     of racism: differential access to prenatal care, chronic stress
@@ -92,7 +93,7 @@ The lesson proceeds in four instructional blocks:
     midway through the study period. Any LLM query about race in
     this dataset risks producing normative invalidation by treating
     these categories as stable, comparable, and biologically grounded
-    across the full 1969--1986 span.
+    across the full 1969--1986 span. 
 
     \item \textbf{Ethics checklist and governance protocol
     construction (20 min).} The seven risk categories from the
@@ -119,14 +120,14 @@ The lesson proceeds in four instructional blocks:
     involving the NCHS vital statistics database, and identify
     the appropriate verification strategy for each type.
 
-    \item Articulate why race and ethnicity in historical US
-    vital statistics data are social constructs whose reification
+    \item Articulate why sociodemographic variables historical US
+    vital statistics data often reflect social constructs whose reification
     has real health consequences, and explain the specific coding
     inconsistencies in the NCHS 1969--1986 dataset that make
     naive racial comparisons normatively invalid.
 
     \item Construct a Research AI Governance Protocol specifying
-    provenance logging, invalidation classification, race-variable
+    provenance logging, invalidation classification, sociodemographic variable
     handling, escalation thresholds, and a compliant disclosure
     statement for the team's subsequent AI-assisted work.
 \end{enumerate}
@@ -156,14 +157,15 @@ all five required components:
     recording invalidation type, description, and resolution for
     each detected LLM failure.
 
-    \item \textbf{Race variable handling clause:} specific
-    commitments about how race and ethnicity fields will be
-    treated in LLM queries given the documented coding
-    inconsistencies of the NCHS dataset. At minimum: LLM queries
-    involving race variables must inject the relevant coding
-    history as context; temporal comparisons of racial category
-    rates require explicit justification; normative claims about
-    racial disparities must be flagged for human review.
+    \item \textbf{Sociodemographic variable handling clause:}
+    specific commitments about how sociodemographic variables
+    with historically unstable encoding will be treated in
+    LLM queries. 
+    LLM queries involving sociodemographic variables must inject the
+    relevant coding history as context; temporal comparisons
+    of category rates require explicit justification;
+    normative claims about disparities must be flagged
+    for human review. 
 
     \item \textbf{Escalation threshold:} the conditions under
     which LLM output will not be used without independent
@@ -320,25 +322,38 @@ in their Unit~4 report should examine whether the ensemble
 is producing false-negative outputs (a structural invalidation
 of the ensemble itself) and document their reasoning.
 
-\subsection*{Block C --- Race Variable Temporal Inconsistency
-(15 minutes)}
+\subsection*{Block C --- Sociodemographic Variable
+Integrity: Instructor-Led Exploration (15 minutes)}
 
-Building directly on Section~\ref{sec:7.1}, students encounter
-the race variable problem in the actual data. Teams query the
-ensemble with the race coding history injected as context and ask
-it to: (a)~identify which race-related variable or combination
-is most defensible for the projection analysis, (b)~specify which
-temporal comparisons are valid and which are not, and
-(c)~identify any normative claims in its own response.
+Building directly on Section~\ref{sec:7.1}, the
+instructor demonstrates how LLM behavior differs across
+three sociodemographic variables whose encoding changed
+across the NCHS study period. 
+For each variable the instructor submits a
+common query to the ensemble, first without contextual
+grounding and then with the relevant coding history
+injected, and the class observes the difference in output.
 
-The key learning outcomes are: (1)~students observe whether the
-ensemble correctly identifies the temporal inconsistency and flags
-its own normative claims, (2)~students discover how injecting the
-coding history as context changes ensemble output, demonstrating
-retrieval-augmented generation as a concrete mitigation for
-normative and structural invalidation, and (3)~students update the
-race variable handling clause in their governance protocol based
-on what they actually encountered.
+The three demonstrations pursue the same comparative
+question: does the ensemble recognize that the variable
+is historically unstable, and does it flag its own
+normative or structural claims without prompting? Race
+is the variable most likely to surface normative
+invalidation; maternal education is most likely to
+surface structural invalidation arising from changes in
+coding categories; geographic identifiers are most likely
+to surface factual invalidation arising from county
+boundary or code revisions. Together they illustrate
+that the retrieval-augmented mitigation strategy from
+Section~\ref{sec:7.1} generalizes to any variable
+with a documented encoding history.
+
+Students take notes and update the sociodemographic
+variable handling clause in their governance protocol
+based on what they observe. The take-home deliverable
+(Assessment Item~5) asks them to apply the same
+comparative analysis independently to their own
+data challenge variables.
 
 \subsection*{Block D --- Methodological Decision Support
 (60 minutes)}
@@ -375,10 +390,11 @@ evidence that motivated the rejection.
     that implements a defensible query with all disambiguations
     documented.
 
-    \item Evaluate the temporal inconsistency of racial and ethnic
-    categories in the NCHS 1969--1986 dataset and produce a written
-    race-variable handling strategy grounded in both the social
-    construct framework and the specific coding history of the data.
+    \item Recognize temporal instability and normative invalidation
+    risk across sociodemographic variables in the NCHS dataset,
+    using sociodemographic variables 
+    and apply retrieval-augmented mitigation strategies
+    consistently across all three.
 
     \item Produce a structured methodological consensus memo
     evaluating competing projection approaches, with
@@ -410,15 +426,19 @@ particular invalidation type does not appear in a team's
 experience, this must be explicitly documented with a note on
 what would have caused it to appear.
 
-\textbf{Item 5 --- Race Variable Handling Strategy (Block~C
-deliverable):}
-A written strategy, two to three paragraphs, specifying: (a)~which
-race-related variable(s) will be used in the projection analysis
-and why, (b)~which temporal comparisons are valid within the
-1969--1986 data and which are not, (c)~how the team's LLM queries
-will be structured to mitigate normative invalidation on racial
-disparity claims, and (d)~the updated race variable handling clause
-for the governance protocol.
+\textbf{Item 5 --- Sociodemographic Variable Integrity
+Memo (take-home, due before Session~7.3):}
+A written memo of three to four paragraphs treating
+sociodemographic variables comparatively. For each variable
+the memo must specify: (a)~which coding or classification
+changes affect the variable across the study period and
+their source in the data dictionary; (b)~which temporal
+comparisons are analytically valid and which are not;
+(c)~how the team's LLM queries will be structured to
+mitigate normative or structural invalidation specific
+to that variable; and (d)~the updated sociodemographic
+variable handling clause for the governance protocol,
+incorporating all variables. 
 
 \textbf{Item 6 --- Methodological Consensus Memo (Block~D
 deliverable):}
@@ -447,7 +467,7 @@ Students work with canonical NIH grant proposals that include
 their actual panel summary statements, providing ground-truth
 verification for ensemble outputs. Students also prepare a
 Specific Aims page for a research proposal using Jackson Heart
-Study (JHS) data, applying the race-consciousness framework from
+Study (JHS) data, applying the framework from
 Section~\ref{sec:7.1} to the framing of health disparity research.
 
 The governance protocol from Section~\ref{sec:7.1} remains active.
@@ -514,14 +534,15 @@ with JHS context. Every LLM claim about JHS data, published
 results, or methods is flagged for verification against the
 provided papers and logged in the invalidation log.
 
-\textbf{Human revision and race/ethnicity review (20 min).}
+\textbf{Human revision and sociodemographic framing
+review (20 min).}
 Teams revise the LLM draft, correcting all logged invalidations.
 A mandatory step: teams explicitly evaluate whether the drafted
-Specific Aims uses race and ethnicity appropriately as social
-determinants of health rather than as biological variables, and
-whether the framing aligns with current NIH policy on race
-and ethnicity in grant applications. Each revision is documented
-in the invalidation log.
+Specific Aims treats sociodemographic factors as social determinants of health operating through
+identifiable structural pathways rather than as fixed biological
+or demographic properties of the study population. The review must confirm
+that the framing aligns with current NIH policy on sociodemographic variables 
+in grant applications. Each revision is documented in the invalidation log.
 
 \textbf{Disclosure statement finalization (5 min).} The draft
 disclosure statement from Section~\ref{sec:7.1} is revised to
@@ -540,9 +561,10 @@ statement suitable for inclusion in a peer-reviewed publication.
 
     \item Construct an ensemble-assisted Specific Aims draft for
     a JHS research proposal, verifying all LLM claims against
-    published JHS literature and applying the race-consciousness
-    framework to ensure appropriate framing of health disparity
-    research.
+    published JHS literature and ensuring that sociodemographic
+    factors are framed as social determinants of health operating through
+    structural pathways rather than as fixed biological or
+    demographic properties.
 
     \item Produce a finalized disclosure statement appropriate for
     inclusion in a peer-reviewed publication, accurately reflecting
@@ -568,9 +590,12 @@ assumptions.
 A draft Specific Aims page produced through the ensemble pipeline
 and revised by the team, with: (a)~all LLM invalidations
 documented in the invalidation log with verification sources
-cited; (b)~a written race/ethnicity review note confirming that
-race and ethnicity are framed as social determinants of health
-and that framing is consistent with NIH policy; and (c)~a brief
+cited; (b)~a written  framing review note
+confirming that sociodemographic
+factors are framed as social determinants of health operating
+through structural pathways are treated consistently with the framework from
+Section~\ref{sec:7.1}, and that the overall framing is
+consistent with NIH policy; and (c)~a brief
 annotation for each aim identifying which elements are
 human-authored and which were substantially shaped by ensemble
 output, consistent with the governance protocol.
@@ -650,18 +675,18 @@ the completed invalidation log.
     understanding of why the type applies and not another;
     proposes a concrete, type-appropriate verification method for
     each scenario; connects normative invalidation to the
-    race-consciousness framework.
+    sociodemographic consciousness framework.
     &
     Correctly identifies most invalidation types; justifications
     are mostly accurate with minor gaps in specificity;
     verification methods proposed are appropriate with minor
-    omissions; some connection to normative/race-consciousness
+    omissions; some connection to normative/sociodemographic consciousness
     dimension.
     &
     Identifies some invalidation types correctly but confuses
     at least one; justifications present but imprecise or
     incomplete; verification methods generic rather than
-    type-specific; race-consciousness connection absent or
+    type-specific; sociodemographic consciousness connection absent or
     superficial.
     &
     Fails to correctly identify multiple invalidation types or
@@ -680,27 +705,32 @@ the completed invalidation log.
     &
     All five required components are present, complete, and
     specific to the NCHS/vital statistics context; provenance
-    logging convention is operationalizable as written; race
-    variable handling clause addresses coding history, temporal
-    comparisons, and normative claim flagging; escalation
+    logging convention is operationalizable as written;
+    sociodemographic variable handling clause addresses
+    coding history, temporal comparisons, and normative
+    claim flagging for sociodemographic variables as primary case and at least
+    one additional variable; escalation
     thresholds are concrete and verifiable; disclosure statement
     follows the prescribed format and is appropriately specific.
     Protocol was demonstrably active and updated through
     Sections~7.2 and~7.3.
     &
     All five components present; most are specific and
-    operationalizable with minor gaps; race clause addresses
-    most key concerns; some evidence of protocol use in
+    operationalizable with minor gaps; sociodemographic variable
+    handling clause addresses most key concerns; some evidence
+    of protocol use in
     subsequent sections.
     &
     Most components present but one or more are generic or
-    incomplete; race clause present but does not address
+    incomplete; sociodemographic variable handling clause
+    present but does not address
     temporal inconsistency or normative flagging substantively;
     limited evidence of protocol use beyond Section~7.1.
     &
     One or more required components missing; present components
-    are too generic to operationalize; race clause absent
-    or addresses only surface concerns; protocol not
+    are too generic to operationalize; sociodemographic variable
+    handling clause absent or addresses only surface concerns;
+    protocol not
     demonstrably used in subsequent activities.
     \\
     \midrule
@@ -800,46 +830,48 @@ the completed invalidation log.
     \midrule
 
     % -------------------------------------------------------
-    % Row 6: Race Variable Handling Strategy (10%)
+    % Row 6: Sociodemographic Variable Integrity Memo (10%)
     % Maps to Assessment Item 5 (Section 7.2 Block C)
     % -------------------------------------------------------
-    \textbf{6.\ Race Variable Handling Strategy}
+    \textbf{6.\ Sociodemographic Variable
+    Integrity Memo}
     \newline\textbf{(10\%)}
     &
-    Strategy identifies a specific variable or combination
-    with clear, data-dictionary-grounded justification;
-    specifies which temporal comparisons are valid and which
-    are not, with reference to the documented coding changes;
-    concrete LLM query structure for mitigating normative
-    invalidation is articulated; governance protocol clause
-    is updated and consistent with the strategy.
-    Strategy reflects understanding that race is a social
-    construct whose reification has health consequences.
+    Memo addresses all sociodemographic variables with
+    data-dictionary-grounded analysis; for each variable,
+    temporal validity is specified with reference to the
+    documented coding changes; LLM query mitigation strategy
+    is concretely articulated per variable; governance
+    protocol clause is updated and consistent across all
+    three; sociodemographic variables are addressed with comparable
+    analytical specificity.
     &
-    Variable selection justified with reasonable grounding;
-    temporal validity addressed with minor gaps; normative
-    invalidation mitigation described but not fully
-    operationalized; protocol clause updated.
+    All three variables addressed with mostly adequate
+    grounding; temporal validity discussed with minor gaps
+    for one variable; mitigation strategies present but not
+    fully operationalized for all three; protocol clause
+    updated; sociodemographic variables treatment mostly sound.
     &
-    Variable selected but justification is weak or missing;
-    temporal validity mentioned but not analyzed; normative
-    invalidation acknowledged without concrete mitigation
-    strategy; protocol clause minimally updated.
+    All three variables named but treatment is uneven;
+    temporal validity addressed for sociodemographic variables but not fully for
+    the other two; mitigation strategies generic rather than
+    variable-specific; protocol clause minimally updated.
     &
-    No specific variable identified or justification absent;
-    temporal coding inconsistency not addressed; no normative
-    invalidation mitigation; race treated as a natural
-    biological category without acknowledgment of the social
-    construct framework.
+    One or more variables absent or addressed without
+    data-dictionary grounding; temporal coding inconsistency
+    not addressed for at least one variable; no
+    variable-specific mitigation strategy; sociodemographic
+    variables treated as stable, ahistorical categories
+    without acknowledgment of encoding changes.
     \\
     \midrule
 
     % -------------------------------------------------------
-    % Row 7: Methodological Consensus Memo (15%)
+    % Row 7: Methodological Consensus Memo (10%)
     % Maps to Assessment Item 6 (Section 7.2 Block D)
     % -------------------------------------------------------
     \textbf{7.\ Methodological Consensus Memo}
-    \newline\textbf{(15\%)}
+    \newline\textbf{(10\%)}
     &
     Comparison table is complete for all three approaches with
     accurate, specific entries for consensus level, assumptions,
@@ -907,7 +939,7 @@ the completed invalidation log.
     &
     Draft is complete (opening paragraph, three aims, closing
     paragraph); all LLM invalidations are logged with
-    verification sources; race/ethnicity review note confirms
+    verification sources; sociodemographic review note confirms
     appropriate social-determinant framing and NIH policy
     alignment with specific evidence from the draft;
     annotation accurately distinguishes human-authored from
@@ -915,17 +947,17 @@ the completed invalidation log.
     and grounded in the provided JHS literature.
     &
     Draft is mostly complete; most invalidations logged with
-    sources; race/ethnicity framing mostly appropriate with
+    sources; sociodemographic framing mostly appropriate with
     minor lapses; annotation present with minor gaps; draft
     is scientifically reasonable.
     &
     Draft has structural gaps (missing aim or section);
-    invalidation log incomplete or sources missing; race/
-    ethnicity framing partially addressed without explicit
+    invalidation log incomplete or sources missing; sociodemographic  
+    framing partially addressed without explicit
     review note; annotation minimal.
     &
     Draft is incomplete or incoherent; invalidation log
-    absent or has fewer than two entries; no race/ethnicity
+    absent or has fewer than two entries; no sociodemographic 
     review performed; no annotation distinguishing human
     from ensemble contributions.
     \\
