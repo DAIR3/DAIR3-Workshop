@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Unit 7: Transformer-based AI in Biomedical Research}
+\chapter{Unit 7: Large Language Models in Biomedical Research}
 \label{chap:unit7}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -12,7 +12,7 @@ are components of the 2026 Data Challenge final report. Students
 work with the same NCHS vital statistics database used throughout
 the bootcamp, using an LLM ensemble to assist with data navigation,
 methodological decision-making, grant review, and manuscript
-preparation---while maintaining human accountability for every output.
+preparation, while maintaining human accountability for every output.
 
 Three principles organize the unit. First, invalidation
 (a framework broader than ``hallucination'' that encompasses
@@ -59,8 +59,8 @@ The lesson proceeds in four instructional blocks:
     optional quality check.
 
     \item \textbf{Invalidation: a taxonomy broader than hallucination
-    (15 min).} The four types of invalidation---factual, logical,
-    normative, and structural---are introduced using NCHS-specific
+    (15 min).} The four types of invalidation (factual, logical,
+    normative, and structural) are introduced using NCHS-specific
     examples. Factual: an LLM names a variable not present in the
     DVS schema as a named field. Logical: an LLM recommends a rate
     denominator inconsistent with the research question's population
@@ -96,9 +96,9 @@ The lesson proceeds in four instructional blocks:
 
     \item \textbf{Ethics checklist and governance protocol
     construction (20 min).} The seven risk categories from the
-    ethics framework---epistemic, accountability and authorship,
+    ethics framework (epistemic, accountability and authorship,
     provenance and reproducibility, confidentiality, bias and
-    fairness, security, and sustainability---are reviewed with
+    fairness, security, and sustainability) are reviewed with
     emphasis on the tradeoffs specific to this bootcamp context.
     Multi-agent critique tradeoffs: privacy amplification, epistemic
     homogenization, compute burden, and attribution diffusion.
@@ -114,8 +114,8 @@ The lesson proceeds in four instructional blocks:
     capability expands the ethical surface area relative to
     single-turn LLM use.
 
-    \item Apply the four-type invalidation taxonomy---factual,
-    logical, normative, and structural---to concrete scenarios
+    \item Apply the four-type invalidation taxonomy (factual,
+    logical, normative, and structural) to concrete scenarios
     involving the NCHS vital statistics database, and identify
     the appropriate verification strategy for each type.
 
@@ -236,22 +236,21 @@ share with $n$ mutually detecting agents is:
 \end{equation}
 %
 Setting $\pi_F^{(n)} \leq \varepsilon$ and solving for $n$ yields
-Eq.~(\ref{eq:nmin}). The invalidation floor---proved formally in the
-underlying theory---establishes that some error rate is
+Eq.~(\ref{eq:nmin}). The invalidation floor (proved formally in the
+underlying theory) establishes that some error rate is
 mathematically inevitable in any finite-loss LLM; the FOO
 architecture is the engineering response to this impossibility
 result.
 
 Students compute $n_{\min}$ for three task categories they will
 encounter in this session using the reference values above:
-%
+{\footnotesize
 \begin{center}
 \begin{tabular}{llccc}
 \toprule
 Task category & Example & $p$ & $\varepsilon$ & $n_{\min}$ \\
 \midrule
-Factual schema lookup & Identify correct byte range
-    for birthweight & 0.10 & 0.10 & \emph{compute} \\
+Factual schema lookup & Identify correct byte range for birthweight & 0.10 & 0.10 & \emph{compute} \\
 Methodological judgment & Choose projection model
     for county-level rates & 0.30 & 0.05 & \emph{compute} \\
 Code generation & SQL query for core
@@ -259,6 +258,7 @@ Code generation & SQL query for core
 \bottomrule
 \end{tabular}
 \end{center}
+}
 %
 The computed values are entered into the governance protocol as
 the team's agent-count commitments for Blocks~B, C, and~D.
@@ -277,17 +277,17 @@ any ambiguities in the dictionary language, and (c)~write a query
 implementing the most defensible interpretation. Teams execute
 the generated query and compare counts across the class.
 
-The instructor then surfaces the documented sources of ambiguity:
-the \texttt{resident} flag records whether the mother is a resident
-of the \emph{reporting area} (not necessarily Texas); the
-place-of-residence field encodes the mother's state; and the
-reporting area field records where the birth was registered. A
-count restricted to records where the birth \emph{occurred} in
-Texas differs from one restricted to mothers \emph{residing} in
-Texas, and both differ from one using the resident flag. The
-``live birth'' filter has no explicit flag---it is the absence
-of certain mortality indicators that were encoded differently
-across years.
+%The instructor then surfaces the documented sources of ambiguity:
+% the \texttt{resident} flag records whether the mother is a resident
+% of the \emph{reporting area} (not necessarily Texas); the
+% place-of-residence field encodes the mother's state; and the
+% reporting area field records where the birth was registered. A
+% count restricted to records where the birth \emph{occurred} in
+% Texas differs from one restricted to mothers \emph{residing} in
+% Texas, and both differ from one using the resident flag. The
+% ``live birth'' filter has no explicit flag; it is the absence
+% of certain mortality indicators that were encoded differently
+% across years.
 
 The deliverable is annotated, executable code (Python or SQL) that
 implements the correct filter with comments explaining each
@@ -308,7 +308,7 @@ temporal comparisons are valid and which are not, and
 The key learning outcomes are: (1)~students observe whether the
 ensemble correctly identifies the temporal inconsistency and flags
 its own normative claims, (2)~students discover how injecting the
-coding history as context changes ensemble output---demonstrating
+coding history as context changes ensemble output, demonstrating
 retrieval-augmented generation as a concrete mitigation for
 normative and structural invalidation, and (3)~students update the
 race variable handling clause in their governance protocol based
@@ -416,7 +416,7 @@ A structured memo containing: (a)~a comparison table with one
 row per projection approach, recording ensemble consensus level
 (High/Medium/Low), key assumptions, major risks, and divergence
 points; (b)~the team's synthesis recommendation with justification;
-(c)~the FOO analysis---which approach generated the most divergent
+(c)~the FOO analysis, which approach generated the most divergent
 ensemble responses and what epistemic difficulty that signals;
 and (d)~a retrospective comparison to the analytic plan designed
 in Section~\ref{sec:3.1}, noting whether the consensus confirms,
@@ -547,8 +547,8 @@ deliverable):}
 A structured comparison document containing: (a)~the comparison
 table across all five NIH criteria with scores, identified
 strengths, divergence types, and agreement levels; (b)~three
-empirical categories---reliable detections, systematic misses,
-and variable outcomes---derived from the comparison data with
+empirical categories (reliable detections, systematic misses,
+and variable outcomes) derived from the comparison data with
 at least one concrete example per category; and (c)~a one-paragraph
 critical reflection on appropriate LLM use in grant preparation,
 grounded in the evidence from the comparison rather than prior
@@ -589,7 +589,7 @@ consistent with the completed invalidation log.
 
     \section{Evaluation Rubric}
 
-    {\footnotesize
+    {\scriptsize
 
     \begin{longtable}{%
         >{\RaggedRight\arraybackslash}p{2.5cm}   % Component
