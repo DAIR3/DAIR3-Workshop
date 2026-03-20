@@ -18,6 +18,62 @@
 \label{ch:cli-scripting}
 % ============================================================
 
+% ============================================================
+\section{What Is a File?}
+\label{sec:what-is-a-file}
+% ============================================================
+
+\subsection{Files and text}
+
+A file is a named sequence of bytes stored on a storage device. From the
+computer's perspective, all files are sequences of bytes. What distinguishes
+a Python script from a photograph is not the storage mechanism but the
+interpretation: a text editor interprets bytes as characters; an image
+viewer interprets them as pixel values. A Python file is plain text: every
+character you type is stored as a byte, and the Python interpreter reads
+those bytes as instructions. This is why a Word document cannot serve as a
+Python program; Word stores invisible formatting bytes alongside the text.
+
+\subsection{The filesystem: folders and paths}
+
+Every file lives inside a folder (also called a directory). Folders can
+contain other folders, forming a tree. The location of any file can be
+described by a \emph{path}: a sequence of folder names separated by a
+delimiter, ending in the filename.
+
+\begin{table}[htbp]
+\centering
+\caption{Path syntax on each operating system.}
+\label{tab:path-syntax}
+\begin{tabular}{p{3.5cm} p{9cm}}
+\toprule
+\textbf{Operating System} & \textbf{Example path} \\
+\midrule
+Windows & \texttt{C:\textbackslash Users\textbackslash Alice\textbackslash Documents\textbackslash hello.py} \\
+macOS   & \texttt{/Users/alice/Documents/hello.py} \\
+Linux   & \texttt{/home/alice/Documents/hello.py} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Windows uses backslashes and a drive letter; macOS and Linux use forward
+slashes and start from a root \texttt{/}.
+
+\subsection{The working directory}
+
+At any moment, the CLI is ``inside'' a particular folder, called the
+\emph{current working directory} (CWD). Commands that refer to files
+without a full path are interpreted relative to that folder. When you type
+\texttt{python hello.py}, the interpreter looks for \texttt{hello.py} in
+the CWD. If the file is elsewhere, the command fails. Understanding the
+CWD is the single most common source of confusion for new CLI users and
+the root cause of most ``file not found'' errors.
+
+The CLI provides the commands to navigate the filesystem, inspect its
+contents, and execute files; these are introduced in the next section.
+
+% ============================================================
+
 \begin{quote}
 \textit{``The command line is the most powerful interface ever invented.
 It is also the most intimidating. This chapter aims to change that.''}

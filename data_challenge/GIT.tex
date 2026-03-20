@@ -125,11 +125,11 @@ The first command launches the agent and sets the necessary environment variable
 The commands above must be repeated every time you open a new Git Bash session. To avoid this, you can add the following lines to your \texttt{\textasciitilde/.bashrc} file so that the agent starts automatically:
 
 \begin{lstlisting}[style=bashstyle]
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
+eval "$(ssh-agent -s)" > /dev/null 2>&1
+ssh-add ~/.ssh/id_ed25519 2>/dev/null
 \end{lstlisting}
 
-Open or create \texttt{\textasciitilde/.bashrc} in a text editor, paste the two lines at the end of the file, and save. The next time you open Git Bash the agent will start and load your key without any manual steps.
+Open or create \texttt{\textasciitilde/.bashrc} in a text editor, paste the two lines at the end of the file, and save. The redirects suppress startup messages so they do not clutter your terminal. The next time you open Git Bash the agent will start and load your key without any manual steps.
 \end{tipbox}
 
 \subsection{Adding the Public Key to GitHub}
@@ -408,6 +408,7 @@ the second failure.
 
 % ============================================================
 \section{Summary}
+\label{sec:git-summary}
 % ============================================================
 
 This chapter introduced version control with Git and GitHub, focusing on
