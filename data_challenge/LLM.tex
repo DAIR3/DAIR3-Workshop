@@ -37,8 +37,8 @@ integrates directly with the \texttt{ProviderAdapter} protocol already
 implemented in \textsc{Max}. Second, Ollama has first-class support for
 unified-memory architectures such as the NVIDIA GB10 SoC found in the
 Spark, where CPU and GPU share the same memory pool. Third, Ollama
-manages model lifecycle---loading, eviction, and context
-allocation---through a small set of environment variables that translate
+manages model lifecycle (loading, eviction, and context
+allocation) through a small set of environment variables that translate
 cleanly to \texttt{systemd} service overrides, preserving production
 parity.
 
@@ -84,8 +84,8 @@ order of magnitude for spilled portions of the model.
 The GB10 uses a \emph{unified memory} architecture. Unlike a discrete
 GPU, there is no separate VRAM budget to track. The 110\,GB pool covers
 weights, KV cache, and OS overhead together. This makes the Spark well
-suited to serving multiple large models simultaneously---provided context
-windows are bounded---but it also means that vLLM's PagedAttention,
+suited to serving multiple large models simultaneously (provided context
+windows are bounded), but it also means that vLLM's PagedAttention,
 which is optimised for discrete high-VRAM GPUs, provides fewer benefits
 here than Ollama's native unified-memory handling.
 \end{warningbox}
@@ -120,7 +120,7 @@ concept of IP subnets, routing, or traffic restriction. A
 enforce IP-level traffic policies.
 
 Because both machines are on the same \texttt{/23} subnet managed by the
-university network, ARP entries are not visible between hosts---traffic
+university network, ARP entries are not visible between hosts; traffic
 crosses at least one router hop, and ARP does not traverse routers. This
 is expected behaviour on a routed network and should not be interpreted
 as a connectivity error.
@@ -305,7 +305,7 @@ appears twice for the key/value pair and the 2-byte (BF16) dtype.
 \textbf{The context window dominates memory for large models.} A
 \texttt{llama3.3:70b} model requires approximately 40\,GB for weights
 at Q4. With Ollama's default context of 262,144~tokens, the KV cache
-adds another 134\,GB, pushing total allocation to 174\,GB---exceeding
+adds another 134\,GB, pushing total allocation to 174\,GB, exceeding
 the Spark's 120\,GB and causing the load to fail. With a context of
 8,192~tokens, the KV cache drops to 2.5\,GB, giving a total of
 42.5\,GB which fits comfortably.
@@ -333,7 +333,7 @@ ollama run llama3.3:70b-ctx8k "Reply with one word: ready"
 
 PowerShell uses a here-string syntax for multi-line literals. The
 closing \texttt{"@} must appear at the \emph{absolute start of a line}
-with no leading spaces or tabs---this is a hard requirement of the
+with no leading spaces or tabs; this is a hard requirement of the
 PowerShell parser.
 
 \begin{lstlisting}[style=psstyle, caption={Create a context-bounded model variant on Windows}]
@@ -417,7 +417,7 @@ budget may be exhausted inside the thinking block, producing either an
 HTTP~500 error or an empty reply.
 
 The correct mitigation is \emph{not} to suppress thinking via the
-\texttt{/no\_think} system prompt---that can leave the model with nothing
+\texttt{/no\_think} system prompt, which can leave the model with nothing
 to say outside the block. Instead, set \texttt{max\_tokens} generously
 (500 or more) and strip thinking tags from the response:
 
@@ -569,12 +569,12 @@ development work targeting the FOO framework, the following tier
 assignment balances capability with VRAM residency:
 
 \begin{itemize}
-  \item \textbf{Primary agent:} \texttt{deepseek-r1:8b} (5.5\,GB) ---
+  \item \textbf{Primary agent:} \texttt{deepseek-r1:8b} (5.5\,GB),
         reasoning model with thinking mode; good proxy for larger
         consensus agents.
-  \item \textbf{Fast critic:} \texttt{mistral-nemo:12b} (7.7\,GB) ---
+  \item \textbf{Fast critic:} \texttt{mistral-nemo:12b} (7.7\,GB),
         tools-capable, fast, NVIDIA-trained.
-  \item \textbf{Utility agent:} \texttt{gemma3:1b} (0.9\,GB) ---
+  \item \textbf{Utility agent:} \texttt{gemma3:1b} (0.9\,GB),
         sub-second responses for structured output tasks.
 \end{itemize}
 
@@ -634,14 +634,14 @@ end-to-end path from the application host to the Ollama server. It tests
 four conditions in sequence, stopping at the first failure:
 
 \begin{enumerate}
-  \item \textbf{TCP handshake} --- confirms the host is reachable and the
+  \item \textbf{TCP handshake:} confirms the host is reachable and the
         port is open.
-  \item \textbf{MAC ARP check} --- informational only; confirms whether the
+  \item \textbf{MAC ARP check:} informational only; confirms whether the
         machines are on the same Layer~2 segment. Failure here is expected
         on a routed university network and does not indicate a problem.
-  \item \textbf{Model list} --- confirms Ollama is serving and returns the
+  \item \textbf{Model list:} confirms Ollama is serving and returns the
         installed model list.
-  \item \textbf{Inference} --- sends a minimal chat completion request and
+  \item \textbf{Inference:} sends a minimal chat completion request and
         validates the response.
 \end{enumerate}
 

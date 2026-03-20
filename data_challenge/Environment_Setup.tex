@@ -91,7 +91,7 @@ For PC: If you did not add \texttt{python.exe} to the PATH during installation, 
 
 \vs
 
-For Mac: If you did not ensure Python was added to your system's PATH during installation, you can manually do so using the following steps on a Mac. After installation is complete, open the Terminal application. Enter the command \texttt{which python3} or \texttt{which python} to find the path to the installed Python binary. Copy that path. Then open your shell configuration file in a text editor---this will typically be \texttt{\~{}/.zshrc} if you are using the Zsh shell (default on newer versions of macOS) or \texttt{\~{}/.bash\_profile} if you are using Bash. Add the line \texttt{export PATH="/path/to/python:\$PATH"}, replacing \texttt{/path/to/python} with the path you copied. Save the file and close the editor. In the Terminal, run \texttt{source \~{}/.zshrc} or \texttt{source \~{}/.bash\_profile} depending on the file you edited, so the new PATH is loaded into your environment.
+For Mac: If you did not ensure Python was added to your system's PATH during installation, you can manually do so using the following steps on a Mac. After installation is complete, open the Terminal application. Enter the command \texttt{which python3} or \texttt{which python} to find the path to the installed Python binary. Copy that path. Then open your shell configuration file in a text editor. This will typically be \texttt{\~{}/.zshrc} if you are using the Zsh shell (default on newer versions of macOS) or \texttt{\~{}/.bash\_profile} if you are using Bash. Add the line \texttt{export PATH="/path/to/python:\$PATH"}, replacing \texttt{/path/to/python} with the path you copied. Save the file and close the editor. In the Terminal, run \texttt{source \~{}/.zshrc} or \texttt{source \~{}/.bash\_profile} depending on the file you edited, so the new PATH is loaded into your environment.
 
 \vs
 
@@ -100,7 +100,7 @@ In the window ``Optional Features'' select all features
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.65\textwidth]{../images/envsetup-4-1.png}
-	\caption{Python Optional Features screen---select all features.}
+	\caption{Python Optional Features screen: select all features.}
 	\label{fig:envsetup-4-1}
 \end{figure}
 
@@ -193,148 +193,10 @@ code .
 
 Note the period after the command \texttt{code}; it instructs VSC to use the current folder as the working folder.
 
-%================================================================
-\section{Partially Required (this or \ref{sec:venvoutside}): Virtual environments inside VS Code}\label{sec:venvinside}
-%================================================================
-
-Create virtual environments \textit{inside} Visual Studio. We will start by creating a virtual environment; the reason for this is that sometimes specific versions of different libraries might be incompatible. You should create an environment for each project you work on.
-
-\begin{enumerate}
-	\item Open Visual Studio. Select the option \textit{File $>$ Open Folder}\ldots\ Choose the folder you want to use for your project.
-
-	\begin{figure}[htbp]
-		\centering
-		\includegraphics[width=0.7\textwidth]{../images/envsetup-7-1.png}
-		\caption{VS Code File menu showing Open Folder.}
-		\label{fig:envsetup-7-1}
-	\end{figure}
-
-	\item Once you select the folder, you will see the files related to the project you are working on in the Visual Studio File Explorer. Notice that the status bar changes color from purple to blue.
-
-	\begin{figure}[htbp]
-		\centering
-		\includegraphics[width=0.7\textwidth]{../images/envsetup-7-2.png}
-		\caption{VS Code with a project open---notice the blue status bar.}
-		\label{fig:envsetup-7-2}
-	\end{figure}
-
-	\item Now, hit the keys \textit{SHIFT+CTRL+P}. This will allow you to type in the command palette the following instruction:
-
-	\begin{verbatim}
-	Python: Create Environment
-	\end{verbatim}
-
-	\begin{figure}[htbp]
-		\centering
-		\includegraphics[width=0.7\textwidth]{../images/envsetup-8-1.png}
-		\caption{VS Code Command Palette with ``Python: Create Environment'' selected.}
-		\label{fig:envsetup-8-1}
-	\end{figure}
-
-	\item You will likely see two options: \texttt{venv} and \texttt{conda}. Choose \texttt{venv}.
-
-	\begin{figure}[htbp]
-		\centering
-		\includegraphics[width=0.7\textwidth]{../images/envsetup-8-2.png}
-		\caption{Selecting venv over conda in VS Code.}
-		\label{fig:envsetup-8-2}
-	\end{figure}
-
-	\item Once you choose \texttt{venv}, you will have to pick a Python installation. Pick the one we just installed (this could be the only one you see).
-
-	\begin{figure}[htbp]
-		\centering
-		\includegraphics[width=0.7\textwidth]{../images/envsetup-9-1.png}
-		\caption{Selecting the Python installation for the virtual environment.}
-		\label{fig:envsetup-9-1}
-	\end{figure}
-
-	\item Now, go to the menu \textit{View $>$ Terminal}.
-
-	\begin{figure}[htbp]
-		\centering
-		\includegraphics[width=0.7\textwidth]{../images/envsetup-9-2.png}
-		\caption{VS Code View menu showing Terminal option.}
-		\label{fig:envsetup-9-2}
-	\end{figure}
-
-	\item You will see that the command prompt now has the word \texttt{(.venv)}. This means that the virtual environment has been installed and is now active. If it has not been activated, you can simply type \texttt{activate}. To inactivate the virtual environment, you simply need to type \texttt{deactivate}.
-
-	\begin{figure}[htbp]
-		\centering
-		\includegraphics[width=0.7\textwidth]{../images/envsetup-10-1.png}
-		\caption{Terminal showing the \texttt{(.venv)} prompt indicating an active virtual environment.}
-		\label{fig:envsetup-10-1}
-	\end{figure}
-\end{enumerate}
-
-%================================================================
-\section{Partially Required (this or \ref{sec:venvinside}): Virtual environments outside VS Code}\label{sec:venvoutside}
-%================================================================
-
-Create virtual environments \textit{outside} Visual Studio. A comprehensive guide is here:
-
-\href{https://biomathematicus.me/working-with-python-virtual-environments-in-visual-studio-code/}{https://biomathematicus.me/working-with-python-virtual-environments-in-visual-studio-code/}
-
 \vs
-
-Open a terminal window. Now you are ready to install Python packages. We will start by creating a virtual environment; the reason for this is that sometimes specific versions of different libraries might be incompatible. You should create an environment for each project you work on.
-
-\begin{enumerate}
-	\item All related instructions about packages and virtual environments are at:
-
-	\href{https://packaging.python.org/en/latest/tutorials/installing-packages/}{https://packaging.python.org/en/latest/tutorials/installing-packages/}
-
-	\item Check your version of pip. It is the most popular tool for installing Python packages, and the one included with modern versions of Python. If the following command returns a version number, you are good to go. Otherwise, reinstall python (or bootstrap it).
-
-	\begin{verbatim}
-	python -m pip --version
-	\end{verbatim}
-
-	\item Update the pip and setuptools
-
-	\begin{verbatim}
-	python -m pip install --upgrade pip setuptools wheel
-	\end{verbatim}
-
-	\begin{figure}[htbp]
-		\centering
-		\includegraphics[width=0.85\textwidth]{../images/envsetup-11-1.png}
-		\caption{Terminal output of upgrading pip, setuptools, and wheel.}
-		\label{fig:envsetup-11-1}
-	\end{figure}
-
-	\item I like to have an easy-to-access folder for virtual environments, thus I always create a folder like \texttt{c:\textbackslash penv} for this purpose. To create this folder, run the following command in the terminal: \texttt{mkdir c:\textbackslash penv}. You can name this folder whatever you like. The importance of this will become evident in step 8. Also importantly, the folder in which you create your virtual environments does not need to be the folder in which your code resides.
-
-	\item Now \textbf{create} a virtual environment called venn (this is an example for a program about Venn diagrams; you can call it whatever name you prefer):
-
-	\begin{verbatim}
-	python -m venv c:\penv\venn
-	\end{verbatim}
-
-	\item To \textbf{activate} this environment execute the following command in the terminal in VSC:
-
-	\begin{verbatim}
-	C:\penv\venn\Scripts\activate
-	\end{verbatim}
-
-	Now the command line will show the prompt named as the environment that was activated.
-
-	\begin{figure}[htbp]
-		\centering
-		\includegraphics[width=0.7\textwidth]{../images/envsetup-11-2.png}
-		\caption{Command prompt showing the activated virtual environment.}
-		\label{fig:envsetup-11-2}
-	\end{figure}
-
-	\item To \textbf{deactivate} a virtual environment, simply type \texttt{deactivate} in the command prompt.
-
-	\item The ideal solution is to use the ActivateEnv.bat file described in the appendix (add \texttt{c:\textbackslash venv} to the PATH environment variable). Call it from a .bat or a .sh file as in the following example:
-
-	\begin{verbatim}
-	ActivateEnv DiNet "C:\Dropbox\!JBGResearch\!!!DiNet\FOO_QtPy"
-	\end{verbatim}
-\end{enumerate}
+Virtual environment setup and workflow automation are covered in
+Chapter~\ref{ch:python-environments}.
+\vs
 
 %================================================================
 \section{Troubleshoot}\label{sec:troubleshoot}
@@ -356,7 +218,7 @@ After that, run the script \texttt{activate}.
 \end{figure}
 
 %================================================================
-\section{Required (after \ref{sec:venvinside} or \ref{sec:venvoutside}): Install Python libraries}\label{sec:libraries}
+\section{Required: Install Python libraries}\label{sec:libraries}
 %================================================================
 
 We will install libraries for the python environment for this project environment. The most important libraries are:
@@ -419,7 +281,7 @@ An important suggestion that comes from experiencing frustration in the past is 
 \begin{enumerate}
 	\item Abundant relevant information regarding Jupyter in VSC is available at \href{https://code.visualstudio.com/docs/datascience/jupyter-notebooks}{https://code.visualstudio.com/docs/datascience/jupyter-notebooks}
 
-	\item Activate the environment you want to use according to step \ref{sec:venvoutside}.f
+	\item Activate the environment you want to use (see Chapter~\ref{ch:python-environments}).
 
 	\item You need to attach the kernel of your virtual environment. For example, if I have a virtual environment called venn:
 
@@ -427,7 +289,7 @@ An important suggestion that comes from experiencing frustration in the past is 
 	python -m ipykernel install --user --name=venn
 	\end{verbatim}
 
-	\item Execute step \ref{sec:venvoutside}.a
+	\item Open VS Code in your project folder (see Section~\ref{sec:vscstart}).
 
 	\item In VSC, run the command \texttt{Create:New Jupyter Notebook} from the Command Palette (Ctrl+Shift+P) or by creating a new .ipynb file in your workspace.
 
@@ -436,7 +298,7 @@ An important suggestion that comes from experiencing frustration in the past is 
 	\begin{figure}[htbp]
 		\centering
 		\includegraphics[width=0.6\textwidth]{../images/envsetup-14-1.png}
-		\caption{Windows Defender Firewall alert---allow access for Visual Studio Code.}
+		\caption{Windows Defender Firewall alert: allow access for Visual Studio Code.}
 		\label{fig:envsetup-14-1}
 	\end{figure}
 
@@ -445,7 +307,7 @@ An important suggestion that comes from experiencing frustration in the past is 
 	\begin{figure}[htbp]
 		\centering
 		\includegraphics[width=0.55\textwidth]{../images/envsetup-14-2.png}
-		\caption{VS Code prompt to install the ipykernel package---click Install.}
+		\caption{VS Code prompt to install the ipykernel package: click Install.}
 		\label{fig:envsetup-14-2}
 	\end{figure}
 

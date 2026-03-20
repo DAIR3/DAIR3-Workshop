@@ -1,0 +1,1114 @@
+%================================================================
+\chapter{Python Virtual Environments and Workflow Automation}
+\label{ch:python-environments}
+%================================================================
+
+\section{Python Virtual Environments}
+\label{sec:venvs}
+% ============================================================
+
+Before we write any scripts, we need to understand \emph{what} those scripts
+will manage: Python virtual environments.
+
+\textbf{The Problem: Package Conflicts}.
+Imagine you have two projects on your computer. Project~A uses version~1.5
+of a library called \texttt{numpy}; Project~B requires version~2.0. If you
+install both versions globally, they will conflict. The last one installed
+wins, and one of your projects will break.
+
+\textbf{The Solution: Virtual Environments}.
+A \textbf{virtual environment} (or \emph{venv}) is an isolated copy of
+Python with its own set of installed packages, completely separate from
+every other environment on your machine. Think of it as a self-contained
+bubble around your project.
+
+\begin{itemize}
+  \item Each project gets its own environment
+  \item Packages installed in one environment cannot interfere with another
+  \item You can recreate an environment exactly from a list of packages
+        (\texttt{requirements.txt})
+  \item Deleting an environment is safe and clean
+\end{itemize}
+
+\subsection{Creating a Virtual Environment}
+
+\subsubsection{Windows (CMD or PowerShell)}
+
+\begin{lstlisting}[style=windowsStyle, caption={Creating a venv on Windows}]
+:: Navigate to your project folder
+cd C:\Projects\DAIR3
+
+:: Create the environment (Python must be installed globally)
+python -m venv C:\penv\DAIR3
+\end{lstlisting}
+
+\subsubsection{Linux / WSL}
+
+\begin{lstlisting}[style=linuxStyle, caption={Creating a venv on Linux/WSL}]
+# Navigate to your project folder
+cd ~/DAIR3
+
+# Create the environment
+python3 -m venv ~/penv/DAIR3
+\end{lstlisting}
+
+In both cases, \texttt{C:\textbackslash penv\textbackslash DAIR3} or
+\texttt{\textasciitilde/penv/DAIR3} is where the environment will be stored.
+Keeping all environments in a single folder (\texttt{penv} stands for
+``Python environments'') makes them easy to find and manage.
+
+\subsection{Activating a Virtual Environment}
+
+Activating an environment modifies your current shell session so that
+\texttt{python} and \texttt{pip} refer to the isolated copies inside the
+venv, not the global ones.
+
+\subsubsection{Windows}
+
+\begin{lstlisting}[style=windowsStyle, caption={Activating a venv on Windows}]
+C:\penv\DAIR3\Scripts\activate.bat
+\end{lstlisting}
+
+After activation, your prompt will change to show the environment name:
+\begin{lstlisting}[style=windowsStyle]
+(DAIR3) C:\Projects\DAIR3>
+\end{lstlisting}
+
+\subsubsection{Linux / WSL}
+
+\begin{lstlisting}[style=linuxStyle, caption={Activating a venv on Linux/WSL}]
+source ~/penv/DAIR3/bin/activate
+\end{lstlisting}
+
+After activation:
+\begin{lstlisting}[style=linuxStyle]
+(DAIR3) drg@machine:~/DAIR3$
+\end{lstlisting}
+
+\begin{warningbox}
+Note the \texttt{source} keyword in the Linux command. This is critical and
+is explained in detail in Section~\ref{sec:source-vs-execute}.
+\end{warningbox}
+
+\subsection{Installing Packages}
+
+Once the environment is active, use \texttt{pip} to install packages.
+The syntax is identical on both platforms:
+
+\begin{lstlisting}[style=inlineStyle, caption={Installing packages with pip}]
+pip install numpy pandas matplotlib openai langchain
+\end{lstlisting}
+
+To save a list of all installed packages (so you or a colleague can
+recreate the environment later):
+
+\begin{lstlisting}[style=inlineStyle]
+pip freeze > requirements.txt
+\end{lstlisting}
+
+To recreate an environment from such a list:
+
+\begin{lstlisting}[style=inlineStyle]
+pip install -r requirements.txt
+\end{lstlisting}
+
+\subsection{Deactivating}
+
+To leave the environment and return to the global shell (identical on
+both platforms):
+
+\begin{lstlisting}[style=inlineStyle]
+deactivate
+\end{lstlisting}
+
+% ============================================================
+\section{Modern Package Management: \texttt{uv}}
+\label{sec:uv}
+% ============================================================
+
+\subsection{Why \texttt{uv} Matters Today}
+
+The tools introduced in the previous section (\texttt{python -m venv}
+for environment creation and \texttt{pip} for package
+installation) are the established, stable foundation of Python package
+management. They are maintained by the Python Packaging Authority
+(PyPA) under the umbrella of the Python Software Foundation (PSF), a
+non-profit organisation with a long-term governance structure and no
+commercial dependency. Every Python installation includes \texttt{pip}
+by default, and knowing how to use it remains an essential skill
+regardless of what other tools you adopt.
+
+A newer tool called \texttt{uv} has emerged and is rapidly gaining
+adoption in professional environments. Understanding both tools is
+important precisely because the landscape is in transition.
+
+\begin{infobox}
+\textbf{A note on governance.} \texttt{pip} is maintained by the
+Python Packaging Authority under the Python Software Foundation, a
+non-profit with a community governance model and no commercial
+dependency. \texttt{uv} is an open-source tool developed and
+maintained by Astral, a venture-capital funded commercial company.
+Astral has been an excellent steward of the tool and has contributed
+meaningfully to the broader Python packaging ecosystem. Nevertheless,
+its long-term trajectory depends on business outcomes in a way that
+foundation-backed projects do not. Until the ecosystem stabilises
+around a clear community standard, knowing both \texttt{pip} and
+\texttt{uv} is the prudent professional position.
+\end{infobox}
+
+\subsection{What \texttt{uv} Offers}
+
+\texttt{uv} is a drop-in replacement for \texttt{pip} and
+\texttt{python -m venv}, rewritten in Rust for performance. Its
+principal advantages over the traditional toolchain are:
+
+\begin{itemize}
+  \item \textbf{Speed.} Package resolution and installation are
+        10--100 times faster than \texttt{pip} due to a Rust
+        implementation and aggressive parallel downloading.
+  \item \textbf{A central cache.} Downloaded packages are stored once
+        in a global cache and reused across environments. On the same
+        filesystem, \texttt{uv} uses hardlinks so that multiple
+        environments sharing a package consume no additional disk space
+        beyond the first copy.
+  \item \textbf{Lockfiles.} \texttt{uv} produces a \texttt{uv.lock}
+        file that records the complete, resolved dependency graph with
+        cryptographic hashes. This is a significant improvement over
+        \texttt{pip freeze > requirements.txt}, which records only
+        installed package names and versions without distinguishing
+        direct dependencies from transitive ones, and without hash
+        verification.
+  \item \textbf{\texttt{pyproject.toml} integration.} \texttt{uv}
+        works natively with \texttt{pyproject.toml}, the modern
+        standard for declaring project dependencies, replacing the
+        older \texttt{requirements.txt} workflow.
+  \item \textbf{Python version management.} \texttt{uv} can download
+        and manage multiple Python versions independently, removing the
+        need for separate tools such as \texttt{pyenv}.
+\end{itemize}
+
+\subsection{Installing \texttt{uv}}
+
+\subsubsection{Windows (PowerShell)}
+
+\begin{lstlisting}[style=windowsStyle, caption={Installing \texttt{uv} on Windows}]
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+\end{lstlisting}
+
+\texttt{uv} installs itself to
+\texttt{\%USERPROFILE\%\textbackslash.local\textbackslash bin} and
+adds itself to your user \texttt{PATH} automatically. Close and reopen
+your terminal, then verify:
+
+\begin{lstlisting}[style=windowsStyle]
+uv --version
+\end{lstlisting}
+
+\subsubsection{Linux / WSL}
+
+\begin{lstlisting}[style=linuxStyle, caption={Installing \texttt{uv} on Linux/WSL}]
+curl -LsSf https://astral.sh/uv/install.sh | sh
+\end{lstlisting}
+
+\texttt{uv} installs to \texttt{\textasciitilde/.local/bin}. Reload
+your shell configuration and verify:
+
+\begin{lstlisting}[style=linuxStyle]
+source ~/.bashrc
+uv --version
+\end{lstlisting}
+
+\subsection{Creating and Managing Environments with \texttt{uv}}
+
+The environment structure produced by \texttt{uv venv} is identical to
+a standard \texttt{python -m venv} environment. The same
+\texttt{Scripts\textbackslash activate.bat} (Windows) and
+\texttt{bin/activate} (Linux) scripts are present and activation is
+unchanged.
+
+\subsubsection{Creating an Environment}
+
+\begin{lstlisting}[style=windowsStyle, caption={Creating a uv-managed environment (Windows)}]
+uv venv C:\uvenv\DAIR3 --python 3.12
+\end{lstlisting}
+
+\begin{lstlisting}[style=linuxStyle, caption={Creating a uv-managed environment (Linux/WSL)}]
+uv venv ~/uvenv/DAIR3 --python 3.12
+\end{lstlisting}
+
+The \texttt{--python} flag specifies the Python version. If that
+version is not already installed, \texttt{uv} will download and
+install it automatically.
+
+\subsubsection{Activating an Environment}
+
+Activation is identical to a standard venv:
+
+\begin{lstlisting}[style=windowsStyle]
+C:\uvenv\DAIR3\Scripts\activate.bat
+\end{lstlisting}
+
+\begin{lstlisting}[style=linuxStyle]
+source ~/uvenv/DAIR3/bin/activate
+\end{lstlisting}
+
+\subsubsection{Installing Packages}
+
+Within an activated environment, \texttt{uv pip install} replaces
+\texttt{pip install}:
+
+\begin{lstlisting}[style=inlineStyle, caption={Installing packages with uv}]
+uv pip install numpy pandas matplotlib
+\end{lstlisting}
+
+\subsubsection{Declaring Dependencies with \texttt{pyproject.toml}}
+
+For projects that will be shared or reproduced, \texttt{uv} works best
+with a \texttt{pyproject.toml} file in the project root that declares
+dependencies explicitly:
+
+\begin{lstlisting}[style=inlineStyle, caption={Minimal \texttt{pyproject.toml}}]
+[project]
+name = "my-project"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "matplotlib>=3.9",
+]
+\end{lstlisting}
+
+With this file present, a single command installs all dependencies and
+generates the lockfile:
+
+\begin{lstlisting}[style=inlineStyle]
+uv sync
+\end{lstlisting}
+
+\texttt{uv sync} reads \texttt{pyproject.toml}, resolves the full
+dependency graph, installs all packages, and writes \texttt{uv.lock}.
+Running \texttt{uv sync} again on another machine, or after a
+\texttt{git pull} that added new dependencies, reproduces the
+environment exactly.
+
+\begin{infobox}
+Commit \texttt{pyproject.toml} and \texttt{uv.lock} to your
+repository. Do not commit the environment folder itself. Add it to
+\texttt{.gitignore}.
+\end{infobox}
+
+\subsection{\texttt{requirements.txt} vs.\ \texttt{uv.lock}}
+
+\begin{table}[h]
+\centering
+\caption{Comparison of \texttt{requirements.txt} and \texttt{uv.lock}}
+\label{tab:req-vs-lock}
+\begin{tabular}{@{}p{0.28\textwidth}p{0.30\textwidth}p{0.30\textwidth}@{}}
+\toprule
+\textbf{Property} & \textbf{\texttt{requirements.txt}} & \textbf{\texttt{uv.lock}} \\
+\midrule
+Generated by
+  & \texttt{pip freeze}
+  & \texttt{uv sync} / \texttt{uv lock} \\[4pt]
+Records
+  & Installed packages only
+  & Full dependency graph \\[4pt]
+Distinguishes direct vs.\ transitive deps
+  & No
+  & Yes \\[4pt]
+Hash verification
+  & No
+  & Yes \\[4pt]
+Cross-platform reproducibility
+  & Partial
+  & Yes \\[4pt]
+Should be committed to git
+  & Yes
+  & Yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Level 1: Script Files}
+\label{sec:level1}
+% ============================================================
+
+Now that we understand virtual environments, we can write scripts to
+activate them automatically. The goal is to create two scripts:
+
+\begin{enumerate}
+  \item \textbf{\texttt{ActivateEnv}}: A reusable script that accepts
+        two parameters (environment name and project directory), activates
+        the environment, and opens VS Code.
+  \item \textbf{\texttt{DAIR3}}: A project-specific one-liner that calls
+        \texttt{ActivateEnv} with the correct parameters for the DAIR3
+        project.
+\end{enumerate}
+
+\subsection{The Windows Solution: Batch Files}
+
+\subsubsection{ActivateEnv.bat}
+
+The Windows version, \texttt{ActivateEnv.bat}, is stored in
+\texttt{C:\textbackslash penv} and placed on the system \texttt{PATH}.
+It accepts two parameters: \texttt{\%1} (environment name) and
+\texttt{\%2} (project directory).
+
+\begin{lstlisting}[style=windowsStyle, basicstyle=\footnotesize\ttfamily, caption={\texttt{ActivateEnv.bat}: Reusable environment launcher (Windows)}]
+@echo off
+setlocal
+
+:: Read parameters
+set "ENV_NAME=%~1"
+set "BASE_DIR=%~2"
+echo Starting activation of environment '\%ENV_NAME%'...
+
+:: Validate input
+if "%ENV_NAME%"=="" (
+    echo [ERROR] Environment name not specified.
+    goto :eof
+)
+if "%BASE_DIR%"=="" (
+    echo [ERROR] Base directory not specified.
+    goto :eof
+)
+
+:: Check if base directory exists
+if not exist "%BASE_DIR%" (
+    echo [ERROR] Directory not found: %BASE_DIR%
+    goto :eof
+)
+
+:: Change to working directory
+cd /d "%BASE_DIR%"
+
+:: Define activation script path
+set "VENV_ROOT=C:\penv"
+set "VENV_ACTIVATE=%VENV_ROOT%\%ENV_NAME%\Scripts\activate.bat"
+
+:: Activate the environment
+if exist "%VENV_ACTIVATE%" (
+    echo Activating...
+    call "%VENV_ACTIVATE%"
+    echo Activation complete.
+) else (
+    echo [ERROR] Not found: %VENV_ACTIVATE%
+    goto :eof
+)
+
+:: Open VS Code in the project directory
+echo Launching VS Code...
+code .
+
+endlocal
+\end{lstlisting}
+
+
+Key Windows-specific elements:
+\begin{itemize}
+  \item \texttt{@echo off} suppresses the echoing of each command to the
+        screen.
+  \item \texttt{setlocal} ensures that variable changes are local to this
+        script.
+  \item \texttt{\%\textasciitilde1} strips surrounding quotes from the first
+        argument.
+  \item \texttt{call} is used to invoke another batch file and return
+        control afterward.
+  \item \texttt{goto :eof} jumps to the end of the file (a clean exit).
+\end{itemize}
+
+\subsubsection{DAIR3.bat}
+
+This file lives in the DAIR3 project directory. It simply calls
+\texttt{ActivateEnv.bat} with the correct arguments:
+
+\begin{lstlisting}[style=windowsStyle, caption={\texttt{DAIR3.bat}: Project launcher (Windows)}]
+ActivateEnv DAIR3 "C:\Projects\DAIR3"
+\end{lstlisting}
+
+Because \texttt{C:\textbackslash penv} is on the system \texttt{PATH},
+Windows finds \texttt{ActivateEnv.bat} automatically. You can run
+\texttt{DAIR3.bat} by double-clicking it or typing \texttt{DAIR3} in any
+CMD window.
+
+\subsection{The Linux Solution: Shell Scripts}
+\label{subsec:linux-scripts}
+
+\subsubsection{Understanding Shell Script Syntax}
+
+A Linux shell script is a plain text file containing Bash commands. Every
+script should begin with a \textbf{shebang line}, a special first line that
+tells the system which interpreter to use:
+
+\begin{lstlisting}[style=linuxStyle]
+#!/bin/bash
+\end{lstlisting}
+
+Parameters passed to a script are accessed as \texttt{\$1}, \texttt{\$2},
+\texttt{\$3}, etc. The script's own name is \texttt{\$0}.
+
+\subsubsection{ActivateEnv.sh}
+
+\begin{lstlisting}[style=linuxStyle, basicstyle=\footnotesize\ttfamily, caption={\texttt{ActivateEnv.sh}: Reusable environment launcher (Linux/WSL)}]
+#!/bin/bash
+# ActivateEnv.sh
+# Usage: source ~/penv/ActivateEnv.sh <ENV_NAME> <PROJECT_DIR>
+# Note: Must be *sourced*, not executed. See explanation below.
+
+ENV_NAME="$1"
+BASE_DIR="$2"
+
+echo "Starting activation of environment '${ENV_NAME}'..."
+
+# Validate input
+if [ -z "$ENV_NAME" ]; then
+    echo "[ERROR] Environment name not specified."
+    return 1
+fi
+
+if [ -z "$BASE_DIR" ]; then
+    echo "[ERROR] Base directory not specified."
+    return 1
+fi
+
+# Check if the project directory exists
+if [ ! -d "$BASE_DIR" ]; then
+    echo "[ERROR] Directory not found: ${BASE_DIR}"
+    return 1
+fi
+
+# Change to the project directory
+cd "$BASE_DIR" || return 1
+
+# Build the path to the activation script
+VENV_ROOT="$HOME/penv"
+VENV_ACTIVATE="${VENV_ROOT}/${ENV_NAME}/bin/activate"
+
+# Activate the environment
+if [ -f "$VENV_ACTIVATE" ]; then
+    echo "Activating..."
+    # shellcheck source=/dev/null
+    source "$VENV_ACTIVATE"
+    echo "Activation complete."
+else
+    echo "[ERROR] Not found: ${VENV_ACTIVATE}"
+    return 1
+fi
+
+# Open VS Code in the project directory (WSL-aware)
+echo "Launching VS Code..."
+code .
+\end{lstlisting}
+
+Notice several differences from the Windows version:
+\begin{itemize}
+  \item \texttt{-z} tests whether a string is empty (zero length).
+  \item \texttt{-d} tests whether a path is a directory.
+  \item \texttt{-f} tests whether a path is a regular file.
+  \item \texttt{\$HOME} is the Linux equivalent of
+        \texttt{\%USERPROFILE\%}: it expands to your home directory.
+  \item \texttt{return 1} exits the script with an error code (we use
+        \texttt{return} rather than \texttt{exit} for a reason explained in
+        the next section).
+\end{itemize}
+
+\subsubsection{DAIR3.sh}
+
+\begin{lstlisting}[style=linuxStyle, caption={\texttt{DAIR3.sh}: Project launcher (Linux/WSL)}]
+#!/bin/bash
+# DAIR3.sh
+# Usage: source ~/DAIR3/DAIR3.sh
+# Launches the DAIR3 project environment.
+
+source ~/penv/ActivateEnv.sh DAIR3 "$HOME/DAIR3"
+\end{lstlisting}
+
+\subsection{Making a Script Executable}
+\label{sec:chmod}
+
+On Linux, creating a file does not automatically make it executable. You
+must grant execute permission using the \texttt{chmod} command:
+
+\begin{lstlisting}[style=linuxStyle]
+chmod +x ~/penv/ActivateEnv.sh
+chmod +x ~/DAIR3/DAIR3.sh
+\end{lstlisting}
+
+\texttt{chmod} stands for \emph{change mode}. The \texttt{+x} flag adds
+execute (\texttt{x}) permission. Linux permissions are organized around
+three roles (owner, group, and others), but for personal scripts,
+\texttt{chmod +x} is almost always all you need.
+
+\subsection{Adding Your Scripts to PATH}
+
+On Windows, you added \texttt{C:\textbackslash penv} to the system
+\texttt{PATH} so that \texttt{ActivateEnv.bat} could be found from
+anywhere. On Linux, you do the same by editing your shell configuration
+file.
+
+\begin{lstlisting}[style=linuxStyle, caption={Adding \textasciitilde/penv to PATH in \textasciitilde/.bashrc}]
+# Open your bashrc file in a text editor
+nano ~/.bashrc
+
+# Add this line at the bottom:
+export PATH="$HOME/penv:$PATH"
+
+# Save and reload the configuration
+source ~/.bashrc
+\end{lstlisting}
+
+After this, the shell can find \texttt{ActivateEnv.sh} from any directory.
+
+% ------------------------------------------------------------
+\subsection{The \texttt{uv} Approach: \texttt{ActivateUVEnv}}
+\label{subsec:activateuvenv}
+% ------------------------------------------------------------
+
+The following scripts mirror \texttt{ActivateEnv} but target
+\texttt{uv}-managed environments stored in
+\texttt{C:\textbackslash uvenv} (Windows) or
+\texttt{\textasciitilde/uvenv} (Linux). Store all \texttt{uv}
+environments in \texttt{uvenv} rather than \texttt{penv} to keep the
+two toolchains visually distinct on disk.
+
+Two behaviours distinguish \texttt{ActivateUVEnv} from its
+\texttt{pip}-based counterpart:
+
+\begin{enumerate}
+  \item \textbf{Automatic creation.} If the named environment does not
+        yet exist, \texttt{uv venv} creates it before activation. There
+        is no separate setup step for new projects.
+  \item \textbf{Automatic synchronisation.} If a
+        \texttt{pyproject.toml} is present in the project directory,
+        \texttt{uv sync} runs after activation. Dependencies install
+        themselves after every \texttt{git pull} that adds new
+        requirements, so no manual \texttt{pip install} is needed.
+\end{enumerate}
+
+\subsubsection{ActivateUVEnv.bat (Windows)}
+
+Store this file in \texttt{C:\textbackslash uvenv} and add that folder
+to the system \texttt{PATH}.
+
+\begin{lstlisting}[style=windowsStyle, basicstyle=\footnotesize\ttfamily, caption={\texttt{ActivateUVEnv.bat}: uv environment launcher (Windows)}]
+@echo off
+setlocal
+
+set "ENV_NAME=%~1"
+set "BASE_DIR=%~2"
+set "VENV_ROOT=C:\uvenv"
+set "VENV_PATH=%VENV_ROOT%\%ENV_NAME%"
+set "VENV_ACTIVATE=%VENV_PATH%\Scripts\activate.bat"
+
+:: Validate inputs
+if "%ENV_NAME%"=="" (
+    echo [ERROR] Usage: ActivateUVEnv ^<env-name^> ^<project-dir^>
+    goto :eof
+)
+if "%BASE_DIR%"=="" (
+    echo [ERROR] Usage: ActivateUVEnv ^<env-name^> ^<project-dir^>
+    goto :eof
+)
+if not exist "%BASE_DIR%" (
+    echo [ERROR] Project directory not found: %BASE_DIR%
+    goto :eof
+)
+
+:: Create environment if it does not exist yet
+if not exist "%VENV_ACTIVATE%" (
+    echo [INFO] Environment '%ENV_NAME%' not found. Creating with uv...
+    uv venv "%VENV_PATH%" --python 3.12
+    if errorlevel 1 (
+        echo [ERROR] Failed to create environment.
+        goto :eof
+    )
+)
+
+:: Activate
+cd /d "%BASE_DIR%"
+call "%VENV_ACTIVATE%"
+
+:: Sync dependencies if pyproject.toml is present
+if exist "pyproject.toml" (
+    echo [INFO] pyproject.toml found. Syncing dependencies...
+    uv sync
+)
+
+echo.
+echo [OK] Environment '%ENV_NAME%' active.
+echo Launching VS Code...
+code .
+
+endlocal
+\end{lstlisting}
+
+Usage is identical in form to \texttt{ActivateEnv.bat}:
+
+\begin{lstlisting}[style=windowsStyle]
+ActivateUVEnv lunar "C:\Dropbox\Research\Lunar\python"
+ActivateUVEnv forecasting "C:\Projects\forecasting"
+\end{lstlisting}
+
+\subsubsection{ActivateUVEnv: Linux / WSL Shell Function}
+
+Add the following function to \texttt{\textasciitilde/.bashrc}. Like
+its \texttt{pip}-based counterpart, it runs in the current shell so
+that activation and directory changes persist in your session.
+
+\begin{lstlisting}[style=linuxStyle, basicstyle=\footnotesize\ttfamily, caption={\texttt{ActivateUVEnv()} shell function for \textasciitilde/.bashrc}]
+# -------------------------------------------------------
+# ActivateUVEnv: Activate a uv-managed venv and open VS Code
+# Usage: ActivateUVEnv <ENV_NAME> <PROJECT_DIR>
+# -------------------------------------------------------
+ActivateUVEnv() {
+    local ENV_NAME="$1"
+    local BASE_DIR="$2"
+    local VENV_ROOT="$HOME/uvenv"
+    local VENV_PATH="${VENV_ROOT}/${ENV_NAME}"
+    local VENV_ACTIVATE="${VENV_PATH}/bin/activate"
+
+    if [ -z "$ENV_NAME" ]; then
+        echo "[ERROR] Usage: ActivateUVEnv <env-name> <project-dir>"
+        return 1
+    fi
+
+    if [ -z "$BASE_DIR" ]; then
+        echo "[ERROR] Usage: ActivateUVEnv <env-name> <project-dir>"
+        return 1
+    fi
+
+    if [ ! -d "$BASE_DIR" ]; then
+        echo "[ERROR] Project directory not found: ${BASE_DIR}"
+        return 1
+    fi
+
+    # Create environment if it does not exist yet
+    if [ ! -f "$VENV_ACTIVATE" ]; then
+        echo "[INFO] Environment '${ENV_NAME}' not found. Creating with uv..."
+        uv venv "$VENV_PATH" --python 3.12 || return 1
+    fi
+
+    # Activate
+    cd "$BASE_DIR" || return 1
+    # shellcheck source=/dev/null
+    source "$VENV_ACTIVATE"
+
+    # Sync dependencies if pyproject.toml is present
+    if [ -f "pyproject.toml" ]; then
+        echo "[INFO] pyproject.toml found. Syncing dependencies..."
+        uv sync
+    fi
+
+    echo "[OK] Environment '${ENV_NAME}' active."
+    echo "Launching VS Code..."
+    code .
+}
+\end{lstlisting}
+
+Reload \texttt{.bashrc} after saving:
+
+\begin{lstlisting}[style=linuxStyle]
+source ~/.bashrc
+\end{lstlisting}
+
+Then call it from any directory:
+
+\begin{lstlisting}[style=linuxStyle]
+ActivateUVEnv lunar "$HOME/Research/Lunar/python"
+\end{lstlisting}
+
+% ============================================================
+\section{The Critical Difference: Executing vs.\ Sourcing}
+\label{sec:source-vs-execute}
+% ============================================================
+
+This section explains one of the most important, and most
+misunderstood, concepts in Linux shell scripting, especially for
+developers coming from Windows.
+
+\subsection{Child Shells}
+
+Every time you run a script with \texttt{./script.sh} or just
+\texttt{script.sh}, Linux launches a \textbf{child shell}: a new,
+separate shell process that inherits a copy of your environment, runs
+the script, and then \emph{terminates}. Any changes the script makes to
+the environment (activating a venv, changing directory, setting a
+variable) exist only in that child shell. When the child terminates,
+those changes disappear. Your original terminal is completely unaffected.
+
+This is why running \texttt{./ActivateEnv.sh} would seem to do
+nothing useful: the venv gets activated inside the child, then the child
+exits, and your terminal is still pointing at the global Python.
+
+\subsection{Sourcing: Running in the Current Shell}
+
+The \texttt{source} command (or its shorthand, a single dot \texttt{.})
+runs a script \emph{in the current shell}: no child is created. Every
+command executes as if you had typed it directly at the prompt. This means:
+
+\begin{itemize}
+  \item \texttt{source ~/penv/DAIR3/bin/activate} activates the venv
+        in \emph{your} terminal.
+  \item \texttt{cd} changes \emph{your} working directory.
+  \item Variables set by the script persist in \emph{your} session.
+\end{itemize}
+
+\begin{lstlisting}[style=linuxStyle]
+# These two are equivalent:
+source ActivateEnv.sh DAIR3 ~/DAIR3
+. ActivateEnv.sh DAIR3 ~/DAIR3
+
+# This does NOT work for venv activation:
+./ActivateEnv.sh DAIR3 ~/DAIR3    # child shell; changes are lost
+\end{lstlisting}
+
+\subsection{The Windows Parallel}
+
+Windows does not have this distinction in quite the same way. The
+\texttt{call} command in a batch file runs another \texttt{.bat} in the
+same CMD session and returns, which is why the Windows version works
+as expected. Linux's default behavior of spawning a child process is
+actually the \emph{safer} design, as it prevents scripts from accidentally
+modifying your environment, but it requires you to opt in to the
+shared-session behavior with \texttt{source}.
+
+\begin{notebox}
+This is also why \texttt{ActivateEnv.sh} uses \texttt{return} instead of
+\texttt{exit} for error handling. When a script is sourced, \texttt{exit}
+would close your entire terminal. \texttt{return} exits only the script,
+leaving your session intact.
+\end{notebox}
+
+% ============================================================
+\section{Level 2: Shell Functions, The Elegant Linux Approach}
+\label{sec:level2}
+% ============================================================
+
+Sourcing scripts is powerful, but it requires typing \texttt{source}
+or \texttt{.} every time. It also means your launcher script must live
+somewhere on the \texttt{PATH} and the user must remember the exact
+invocation. Linux offers a more elegant solution: \textbf{shell functions}.
+
+\subsection{What Is a Shell Function?}
+
+A shell function is like a script, but it is defined directly inside
+your shell configuration file (\texttt{\textasciitilde/.bashrc}).
+Because it is part of the shell itself (not a separate file), it
+automatically runs in the current session without requiring
+\texttt{source}. You call it just by typing its name.
+
+\subsection{Defining the ActivateEnv Function}
+
+Add the following to the bottom of \texttt{\textasciitilde/.bashrc}:
+
+\begin{lstlisting}[style=linuxStyle, basicstyle=\footnotesize\ttfamily, caption={Shell function version of \texttt{ActivateEnv} in \textasciitilde/.bashrc}]
+# -------------------------------------------------------
+# ActivateEnv: Activate a Python venv and open VS Code
+# Usage: ActivateEnv <ENV_NAME> <PROJECT_DIR>
+# -------------------------------------------------------
+ActivateEnv() {
+    local ENV_NAME="$1"
+    local BASE_DIR="$2"
+
+    echo "Starting activation of environment '${ENV_NAME}'..."
+
+    # Validate input
+    if [ -z "$ENV_NAME" ]; then
+        echo "[ERROR] Environment name not specified."
+        return 1
+    fi
+
+    if [ -z "$BASE_DIR" ]; then
+        echo "[ERROR] Base directory not specified."
+        return 1
+    fi
+
+    if [ ! -d "$BASE_DIR" ]; then
+        echo "[ERROR] Directory not found: ${BASE_DIR}"
+        return 1
+    fi
+
+    local VENV_ACTIVATE="$HOME/penv/${ENV_NAME}/bin/activate"
+
+    if [ ! -f "$VENV_ACTIVATE" ]; then
+        echo "[ERROR] Virtual environment not found: ${VENV_ACTIVATE}"
+        return 1
+    fi
+
+    # Change directory, activate, and open VS Code
+    cd "$BASE_DIR" || return 1
+    source "$VENV_ACTIVATE"
+    echo "Environment '${ENV_NAME}' activated."
+    code .
+}
+\end{lstlisting}
+
+The keyword \texttt{local} restricts variables to the function's scope,
+so they do not pollute your shell session.
+
+\subsection{Defining the DAIR3 Function}
+
+Now add a one-line function that calls \texttt{ActivateEnv} for the
+DAIR3 project:
+
+\begin{lstlisting}[style=linuxStyle, caption={Project-specific function for DAIR3 in \textasciitilde/.bashrc}]
+# -------------------------------------------------------
+# DAIR3: Launch the DAIR3 project environment
+# Usage: DAIR3
+# -------------------------------------------------------
+DAIR3() {
+    ActivateEnv "DAIR3" "$HOME/DAIR3"
+}
+\end{lstlisting}
+
+\subsection{Activating the New Functions}
+
+After editing \texttt{\textasciitilde/.bashrc}, reload it:
+
+\begin{lstlisting}[style=linuxStyle]
+source ~/.bashrc
+\end{lstlisting}
+
+Now, from \emph{any directory}, simply type:
+
+\begin{lstlisting}[style=linuxStyle]
+DAIR3
+\end{lstlisting}
+
+The shell will change to your DAIR3 project directory, activate the
+virtual environment, and open VS Code, all in one word, with no
+\texttt{source} prefix required.
+
+\subsection{Why Windows Has No Clean Equivalent}
+
+Windows batch files always run as child processes; there is no
+\texttt{source} command in CMD. PowerShell comes closest: you can define
+functions in your PowerShell profile (\texttt{\$PROFILE}), and they
+behave similarly to Bash functions. However, PowerShell's profile is
+disabled by default for security reasons and requires changing the
+execution policy. For Windows users who want this one-command experience
+natively, configuring PowerShell profiles is the path forward, but it
+involves more administrative overhead than editing
+\texttt{\textasciitilde/.bashrc}. This is one of the practical reasons
+many developers on Windows adopt WSL.
+
+% ============================================================
+\section{Putting It All Together}
+\label{sec:together}
+% ============================================================
+
+Figure~\ref{fig:workflow} summarizes the complete workflow on each platform.
+
+\begin{table}[h]
+\centering
+\caption{Complete workflow comparison: Windows vs.\ Linux/WSL}
+\label{fig:workflow}
+\begin{tabular}{@{}p{0.15\textwidth}p{0.38\textwidth}p{0.38\textwidth}@{}}
+\toprule
+\textbf{Step} & \textbf{Windows} & \textbf{Linux / WSL} \\
+\midrule
+Create venv
+  & \texttt{python -m venv C:\textbackslash penv\textbackslash DAIR3}
+  & \texttt{python3 -m venv \textasciitilde/penv/DAIR3} \\[4pt]
+Reusable launcher
+  & \texttt{ActivateEnv.bat} in \texttt{C:\textbackslash penv}
+  & Function \texttt{ActivateEnv()} in \texttt{\textasciitilde/.bashrc} \\[4pt]
+Project launcher
+  & \texttt{DAIR3.bat} in project folder
+  & Function \texttt{DAIR3()} in \texttt{\textasciitilde/.bashrc} \\[4pt]
+Make available globally
+  & Add \texttt{C:\textbackslash penv} to system PATH
+  & Functions in \texttt{.bashrc} are always available \\[4pt]
+Launch project
+  & Type \texttt{DAIR3} in any CMD window
+  & Type \texttt{DAIR3} in any terminal \\[4pt]
+Result
+  & venv active, VS Code opens in project folder
+  & venv active, VS Code opens in project folder (WSL mode) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The Full WSL Experience}
+
+When you type \texttt{DAIR3} in your WSL terminal:
+
+\begin{enumerate}
+  \item Bash looks up \texttt{DAIR3} in its list of known functions.
+  \item \texttt{DAIR3()} calls \texttt{ActivateEnv "DAIR3" "\$HOME/DAIR3"}.
+  \item \texttt{ActivateEnv()} changes to the project directory.
+  \item The virtual environment is activated in your current shell.
+  \item \texttt{code .} launches VS Code with the WSL extension,
+        connecting your Windows VS Code interface to your Linux backend.
+  \item You are now working in a fully configured development environment
+        with one word.
+\end{enumerate}
+
+% ============================================================
+\section{Quick Reference Cheat Sheet}
+\label{sec:cheatsheet}
+% ============================================================
+
+\begin{table}[h]
+\centering
+\caption{Shell scripting and virtual environment cheat sheet}
+\label{tab:cheatsheet}
+\begin{tabular}{@{}p{0.35\textwidth}p{0.28\textwidth}p{0.28\textwidth}@{}}
+\toprule
+\textbf{Task} & \textbf{Windows (CMD)} & \textbf{Linux / WSL (Bash)} \\
+\midrule
+Create virtual environment
+  & \texttt{python -m venv C:\textbackslash penv\textbackslash NAME}
+  & \texttt{python3 -m venv \textasciitilde/penv/NAME} \\[4pt]
+Activate environment
+  & \texttt{C:\textbackslash penv\textbackslash NAME\textbackslash Scripts\textbackslash activate}
+  & \texttt{source \textasciitilde/penv/NAME/bin/activate} \\[4pt]
+Deactivate environment
+  & \texttt{deactivate}
+  & \texttt{deactivate} \\[4pt]
+Install a package
+  & \texttt{pip install pkg}
+  & \texttt{pip install pkg} \\[4pt]
+Save package list
+  & \texttt{pip freeze > req.txt}
+  & \texttt{pip freeze > req.txt} \\[4pt]
+Restore from list
+  & \texttt{pip install -r req.txt}
+  & \texttt{pip install -r req.txt} \\[4pt]
+Make script executable
+  & (not required; extension handles it)
+  & \texttt{chmod +x script.sh} \\[4pt]
+Run a script
+  & \texttt{script.bat}
+  & \texttt{./script.sh} \\[4pt]
+Source a script
+  & \texttt{call script.bat}
+  & \texttt{source script.sh} \\[4pt]
+Edit shell config
+  & (no equivalent in CMD)
+  & \texttt{nano \textasciitilde/.bashrc} \\[4pt]
+Reload shell config
+  & (restart CMD)
+  & \texttt{source \textasciitilde/.bashrc} \\[4pt]
+Open VS Code (WSL)
+  & \texttt{code .}
+  & \texttt{code .} \\[4pt]
+Script parameter~1
+  & \texttt{\%\textasciitilde1}
+  & \texttt{\$1} \\[4pt]
+Check if variable empty
+  & \texttt{if "\%VAR\%"==""}
+  & \texttt{if [ -z "\$VAR" ]} \\[4pt]
+Check if directory exists
+  & \texttt{if exist "DIR\textbackslash"}
+  & \texttt{if [ -d "DIR" ]} \\[4pt]
+Exit a script/function
+  & \texttt{goto :eof}
+  & \texttt{return} (in function/sourced script) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{\texttt{uv} quick reference: equivalences with \texttt{pip} and \texttt{venv}}
+\label{tab:uv-cheatsheet}
+\begin{tabular}{@{}p{0.32\textwidth}p{0.28\textwidth}p{0.28\textwidth}@{}}
+\toprule
+\textbf{Task} & \textbf{pip / venv} & \textbf{uv} \\
+\midrule
+Install \texttt{uv}
+  & (not applicable)
+  & See Section~\ref{sec:uv} \\[4pt]
+Create environment
+  & \texttt{python -m venv PATH}
+  & \texttt{uv venv PATH -{}-python 3.12} \\[4pt]
+Activate environment
+  & \texttt{source PATH/bin/activate}
+  & \texttt{source PATH/bin/activate} \\[4pt]
+Install a package
+  & \texttt{pip install pkg}
+  & \texttt{uv pip install pkg} \\[4pt]
+Install from \texttt{pyproject.toml}
+  & \texttt{pip install -e .}
+  & \texttt{uv sync} \\[4pt]
+Add a dependency
+  & Edit \texttt{requirements.txt} manually
+  & \texttt{uv add pkg} \\[4pt]
+Remove a dependency
+  & Edit \texttt{requirements.txt} manually
+  & \texttt{uv remove pkg} \\[4pt]
+Generate lockfile
+  & \texttt{pip freeze > req.txt}
+  & \texttt{uv lock} (or implicit in \texttt{uv sync}) \\[4pt]
+Install from lockfile
+  & \texttt{pip install -r req.txt}
+  & \texttt{uv sync} \\[4pt]
+Launcher script (Windows)
+  & \texttt{ActivateEnv.bat}
+  & \texttt{ActivateUVEnv.bat} \\[4pt]
+Launcher function (Linux)
+  & \texttt{ActivateEnv()} in \texttt{.bashrc}
+  & \texttt{ActivateUVEnv()} in \texttt{.bashrc} \\[4pt]
+Environment root
+  & \texttt{C:\textbackslash penv} / \texttt{\textasciitilde/penv}
+  & \texttt{C:\textbackslash uvenv} / \texttt{\textasciitilde/uvenv} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Summary}
+\label{sec:summary}
+% ============================================================
+
+This chapter covered the tools and techniques for managing Python
+environments and automating project setup across Windows and Linux:
+
+\begin{itemize}
+  \item \textbf{Python virtual environments}: isolated, per-project
+        copies of Python that prevent dependency conflicts between
+        projects. Each environment has its own set of installed packages,
+        and deleting one has no effect on any other.
+  \item \textbf{The standard \texttt{pip} and \texttt{venv} toolchain}:
+        the foundation-backed tools included with every Python
+        installation for creating environments, installing packages, and
+        recording dependencies in \texttt{requirements.txt}. Knowing
+        this toolchain remains an essential skill regardless of what
+        other tools you adopt.
+  \item \textbf{\texttt{uv}}: a modern, high-performance alternative
+        developed by Astral that offers dramatically faster installs, a
+        global package cache, reproducible lockfiles with cryptographic
+        hashes, and native \texttt{pyproject.toml} support. Because
+        \texttt{uv} automatically synchronises dependencies from a
+        lockfile via \texttt{uv sync}, environment reproduction becomes
+        a single command rather than a manual process.
+  \item \textbf{Level~1 scripting}: writing reusable launcher scripts
+        (\texttt{ActivateEnv.bat} and \texttt{ActivateEnv.sh} for
+        \texttt{pip}-managed environments; \texttt{ActivateUVEnv.bat}
+        and the \texttt{ActivateUVEnv()} shell function for
+        \texttt{uv}-managed environments) and project-specific
+        one-liners (\texttt{DAIR3.bat}, \texttt{DAIR3.sh}) that
+        activate the correct environment, change to the project
+        directory, and launch VS Code in a single invocation.
+  \item \textbf{Level~2 scripting}: shell functions defined in
+        \texttt{\textasciitilde/.bashrc} that provide a one-word launch
+        command from any directory, with no \texttt{source} prefix
+        required.
+  \item \textbf{The \texttt{source} vs.\ execute distinction}: on
+        Linux, running a script normally spawns a child shell whose
+        environment changes vanish when it exits. The \texttt{source}
+        command (or its shorthand \texttt{.}) runs the script in the
+        current shell, which is why virtual environment activation
+        requires sourcing. This same distinction explains why
+        \texttt{ActivateEnv.sh} uses \texttt{return} instead of
+        \texttt{exit} for error handling.
+\end{itemize}
+
+The \texttt{DAIR3} command you built in this chapter is a small but
+meaningful example of a broader principle: the CLI lets you encode your
+workflow into repeatable, shareable, and improvable scripts. Every
+tedious setup step you eliminate today is cognitive load freed up for the
+work that actually matters.
