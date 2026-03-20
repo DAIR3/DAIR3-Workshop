@@ -1,0 +1,399 @@
+%================================================================
+\chapter{Introduction to \LaTeX{}}
+\label{ch:latex}
+%================================================================
+
+\LaTeX{} is a document preparation system in which the author writes
+plain text interleaved with markup commands, and a compiler transforms
+that source into a typeset PDF. This contrasts with word processors
+such as Microsoft Word or Google Docs, where formatting is applied
+interactively in a what-you-see-is-what-you-get (WYSIWYG) editor.
+The key property that makes \LaTeX{} the standard in science and
+mathematics is its ability to render arbitrarily complex mathematical
+notation with precision and consistency. Every document produced in
+this program is a \LaTeX{} document.
+
+%================================================================
+\section{Your First \LaTeX{} Document}
+\label{sec:first-latex-doc}
+%================================================================
+
+A \LaTeX{} source file is a plain text file with the extension
+\texttt{.tex}. Just as \texttt{hello.py} was a plain text file that
+Python interpreted, \texttt{hello.tex} is a plain text file that the
+\LaTeX{} compiler processes into a PDF. The same text editor rules
+apply (see Section~\ref{sec:plaintext-first}): use Notepad, TextEdit
+in plain-text mode, or \texttt{gedit}; never a word processor.
+
+\begin{infobox}{Exercise L-1: Your First \LaTeX{} Document}
+Open a plain text editor (see Table~\ref{tab:text-editors}), type the
+following exactly, and save the file as \texttt{hello.tex}:
+
+\begin{lstlisting}[style=inlineStyle]
+\documentclass{article}
+\begin{document}
+
+Hello, world. This is my first \LaTeX{} document.
+
+Here is some mathematics: $e^{i\pi} + 1 = 0$.
+
+\end{document}
+\end{lstlisting}
+\end{infobox}
+
+Each line of the listing serves a specific purpose:
+
+\begin{itemize}
+    \item \verb|\documentclass{article}| declares the document class.
+          For most reports and papers, \texttt{article} is the correct
+          choice.
+    \item \verb|\begin{document}| and \verb|\end{document}| delimit
+          the body. Everything outside this pair is the
+          \emph{preamble} (covered in
+          Section~\ref{sec:latex-structure}).
+    \item The text between the delimiters is the visible content.
+    \item \verb|$e^{i\pi} + 1 = 0$| is inline math mode: text
+          between dollar signs is typeset as mathematics.
+\end{itemize}
+
+\begin{table}[htbp]
+\centering
+\caption{Compiling a \LaTeX{} document on each platform}
+\label{tab:latex-compile}
+\footnotesize
+\begin{tabular}{ll}
+\toprule
+\textbf{Platform} & \textbf{Command} \\
+\midrule
+Windows (Command Prompt or Git Bash) & \texttt{pdflatex hello.tex} \\
+macOS (Terminal) & \texttt{pdflatex hello.tex} \\
+Linux & \texttt{pdflatex hello.tex} or \texttt{latexmk -pdf hello.tex} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Note that two compilation passes are often required for documents with
+cross-references or a table of contents; \texttt{latexmk} handles
+this automatically.
+
+\vs
+\noindent
+Running \texttt{pdflatex hello.tex} produces several files. The
+important one is \texttt{hello.pdf}, which can be opened in any PDF
+viewer. The \texttt{.aux}, \texttt{.log}, and \texttt{.out} files are
+auxiliary; they can be deleted safely.
+
+%================================================================
+\section{Document Structure}
+\label{sec:latex-structure}
+%================================================================
+
+Every \LaTeX{} source file has two parts: the \emph{preamble}
+(everything before \verb|\begin{document}|) and the \emph{body}
+(everything between \verb|\begin{document}| and
+\verb|\end{document}|). The preamble declares the document class,
+loads packages with \verb|\usepackage{...}|, and sets metadata. The
+body contains the visible content, organized with sectioning commands.
+
+\begin{lstlisting}[style=inlineStyle, caption={Minimal compilable document with preamble and sectioning}]
+\documentclass{article}
+
+% --- Preamble ---
+\usepackage{amsmath}    % extended math
+\usepackage{graphicx}   % figures
+\usepackage{booktabs}   % professional tables
+\usepackage{hyperref}   % clickable links
+
+\title{My First Report}
+\author{Alice Smith}
+\date{\today}
+
+% --- Body ---
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This is the introduction.
+
+\subsection{Background}
+Some background material.
+
+\subsubsection{Details}
+More specific details.
+
+\section{Methods}
+Description of methods.
+
+\end{document}
+\end{lstlisting}
+
+The \verb|\usepackage{...}| command loads extension packages. The
+packages most relevant to this program are \texttt{amsmath} (extended
+math), \texttt{graphicx} (figures), \texttt{booktabs} (tables), and
+\texttt{hyperref} (clickable links). These are already loaded in the
+shared preamble \texttt{DAIR3Config.tex} for all documents in this
+repository; students writing their own documents will need to load
+them explicitly.
+
+%================================================================
+\section{Mathematics in \LaTeX{}: A Cheat Sheet}
+\label{sec:latex-math}
+%================================================================
+
+\LaTeX{} distinguishes two math modes. Inline mode (\verb|$...$|)
+typesets mathematics within a line of text. Display mode
+(\verb|\[...\]| or the \texttt{equation} environment) centers
+mathematics on its own line and assigns an equation number when using
+\texttt{equation}. Use display mode for any expression that warrants
+its own visual emphasis, and inline mode for symbols embedded in
+prose.
+
+%----------------------------------------------------------------
+\subsection{Common Mathematical Notation}
+%----------------------------------------------------------------
+
+\begin{longtable}{p{3.2cm} p{4.5cm} p{3.0cm} p{3.5cm}}
+\caption{Common \LaTeX{} mathematical notation} \label{tab:latex-math-cheatsheet} \\
+\toprule
+\textbf{Category} & \textbf{\LaTeX{} source} & \textbf{Rendered} & \textbf{Notes} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Category} & \textbf{\LaTeX{} source} & \textbf{Rendered} & \textbf{Notes} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\emph{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+% --- Inline/display modes ---
+\multicolumn{4}{l}{\textbf{Inline and display modes}} \\
+\midrule
+Inline math & \verb|$x + y = z$| & $x + y = z$ & Within a sentence \\
+Display math & \verb|\[ x + y = z \]| & (centered block) & No number \\
+Numbered equation & \verb|\begin{equation}...\end{equation}| & (with number) & Cross-referenceable \\
+\midrule
+
+% --- Basic arithmetic ---
+\multicolumn{4}{l}{\textbf{Basic arithmetic}} \\
+\midrule
+Addition & \verb|a + b| & $a+b$ & \\
+Subtraction & \verb|a - b| & $a-b$ & \\
+Multiplication (dot) & \verb|a \cdot b| & $a \cdot b$ & Preferred in math \\
+Multiplication (cross) & \verb|a \times b| & $a \times b$ & Vectors, cross product \\
+Division & \verb|\frac{a}{b}| & $\frac{a}{b}$ & Always use \verb|\frac| in display \\
+Superscript & \verb|x^{2}| & $x^{2}$ & Braces required for >1 char \\
+Subscript & \verb|x_{i}| & $x_{i}$ & Braces required for >1 char \\
+Both & \verb|x_{i}^{2}| & $x_{i}^{2}$ & \\
+\midrule
+
+% --- Common functions ---
+\multicolumn{4}{l}{\textbf{Common functions}} \\
+\midrule
+Square root & \verb|\sqrt{x}| & $\sqrt{x}$ & \\
+$n$th root & \verb|\sqrt[n]{x}| & $\sqrt[n]{x}$ & \\
+Exponential & \verb|e^{x}| or \verb|\exp(x)| & $e^{x}$ & \verb|\exp| preferred in display \\
+Natural log & \verb|\ln x| & $\ln x$ & \\
+Log base $b$ & \verb|\log_{b} x| & $\log_{b} x$ & \\
+Sine & \verb|\sin x| & $\sin x$ & Use \verb|\sin|, not \texttt{sin} \\
+Cosine & \verb|\cos x| & $\cos x$ & \\
+Absolute value & \verb+|x|+ or \verb|\lvert x \rvert| & $\lvert x \rvert$ & \verb|\lvert| scales with content \\
+Floor & \verb|\lfloor x \rfloor| & $\lfloor x \rfloor$ & \\
+Ceiling & \verb|\lceil x \rceil| & $\lceil x \rceil$ & \\
+\midrule
+
+% --- Summation and integration ---
+\multicolumn{4}{l}{\textbf{Summation and integration}} \\
+\midrule
+Sum & \verb|\sum_{i=1}^{n} x_i| & $\sum_{i=1}^{n} x_i$ & Limits above/below in display \\
+Product & \verb|\prod_{i=1}^{n} x_i| & $\prod_{i=1}^{n} x_i$ & \\
+Integral & \verb|\int_{a}^{b} f(x)\,dx| & $\int_{a}^{b} f(x)\,dx$ & \verb|\,| adds thin space before $dx$ \\
+Limit & \verb|\lim_{x \to 0} f(x)| & $\lim_{x \to 0} f(x)$ & \\
+\midrule
+
+% --- Greek letters ---
+\multicolumn{4}{l}{\textbf{Greek letters (common in biostatistics and ML)}} \\
+\midrule
+alpha & \verb|\alpha| & $\alpha$ & Significance level, learning rate \\
+beta & \verb|\beta| & $\beta$ & Regression coefficients \\
+gamma & \verb|\gamma|, \verb|\Gamma| & $\gamma$, $\Gamma$ & Gamma distribution \\
+delta & \verb|\delta|, \verb|\Delta| & $\delta$, $\Delta$ & Change, Dirac delta \\
+epsilon & \verb|\epsilon|, \verb|\varepsilon| & $\epsilon$, $\varepsilon$ & Small quantity \\
+theta & \verb|\theta|, \verb|\Theta| & $\theta$, $\Theta$ & Parameters, angle \\
+lambda & \verb|\lambda|, \verb|\Lambda| & $\lambda$, $\Lambda$ & Poisson rate, eigenvalue \\
+mu & \verb|\mu| & $\mu$ & Mean \\
+nu & \verb|\nu| & $\nu$ & Degrees of freedom \\
+pi & \verb|\pi|, \verb|\Pi| & $\pi$, $\Pi$ & 3.14\ldots, product \\
+rho & \verb|\rho| & $\rho$ & Correlation \\
+sigma & \verb|\sigma|, \verb|\Sigma| & $\sigma$, $\Sigma$ & Std dev, summation \\
+tau & \verb|\tau| & $\tau$ & Time constant \\
+phi & \verb|\phi|, \verb|\Phi| & $\phi$, $\Phi$ & Normal CDF, angle \\
+chi & \verb|\chi| & $\chi$ & Chi-squared test \\
+omega & \verb|\omega|, \verb|\Omega| & $\omega$, $\Omega$ & Frequency, sample space \\
+\midrule
+
+% --- Relations and logic ---
+\multicolumn{4}{l}{\textbf{Relations and logic}} \\
+\midrule
+Not equal & \verb|\neq| & $\neq$ & \\
+Less/greater or equal & \verb|\leq|, \verb|\geq| & $\leq$, $\geq$ & \\
+Approximately & \verb|\approx| & $\approx$ & \\
+Proportional to & \verb|\propto| & $\propto$ & \\
+Distributed as & \verb|\sim| & $\sim$ & \\
+For all & \verb|\forall| & $\forall$ & \\
+There exists & \verb|\exists| & $\exists$ & \\
+Implies & \verb|\Rightarrow| & $\Rightarrow$ & \\
+If and only if & \verb|\Leftrightarrow| & $\Leftrightarrow$ & \\
+Element of & \verb|\in| & $\in$ & \\
+Subset & \verb|\subset|, \verb|\subseteq| & $\subset$, $\subseteq$ & \\
+Union, intersection & \verb|\cup|, \verb|\cap| & $\cup$, $\cap$ & \\
+\midrule
+
+% --- Number sets ---
+\multicolumn{4}{l}{\textbf{Number sets}} \\
+\midrule
+Real numbers & \verb|\mathbb{R}| & $\mathbb{R}$ & Requires \texttt{amsfonts} or \texttt{amssymb} \\
+Natural numbers & \verb|\mathbb{N}| & $\mathbb{N}$ & \\
+Integers & \verb|\mathbb{Z}| & $\mathbb{Z}$ & \\
+Rationals & \verb|\mathbb{Q}| & $\mathbb{Q}$ & \\
+Complex & \verb|\mathbb{C}| & $\mathbb{C}$ & \\
+\midrule
+
+% --- Vectors and matrices ---
+\multicolumn{4}{l}{\textbf{Vectors and matrices}} \\
+\midrule
+Bold vector & \verb|\mathbf{x}| & $\mathbf{x}$ & Preferred in statistics \\
+Vector with arrow & \verb|\vec{x}| & $\vec{x}$ & Physics convention \\
+Transpose & \verb|A^{\top}| or \verb|A^T| & $A^{\top}$ & \\
+$2\times 2$ matrix & \verb|\begin{bmatrix} a & b \\ c & d \end{bmatrix}| & $\begin{bmatrix} a & b \\ c & d \end{bmatrix}$ & Requires \texttt{amsmath} \\
+Norm & \verb+\|x\|+ & $\|x\|$ & \\
+Inner product & \verb|\langle x, y \rangle| & $\langle x, y \rangle$ & \\
+
+\end{longtable}
+
+%================================================================
+\section{Figures}
+\label{sec:latex-figures}
+%================================================================
+
+Figures are included using the \texttt{figure} float environment and
+the \verb|\includegraphics| command from the \texttt{graphicx}
+package, which is already loaded in \texttt{DAIR3Config.tex}. The
+\texttt{pdflatex} compiler accepts PDF, PNG, and JPG image formats.
+
+\begin{lstlisting}[style=inlineStyle, caption={Including a figure in \LaTeX{}}]
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/my-plot.png}
+    \caption{Description of the figure.}
+    \label{fig:my-plot}
+\end{figure}
+\end{lstlisting}
+
+The \texttt{[htbp]} option suggests placement preferences to
+\LaTeX{}: here, top, bottom, or a dedicated page. The
+\verb|\caption| and \verb|\label| commands provide a numbered caption
+and a cross-reference target, respectively.
+
+%================================================================
+\section{Tables}
+\label{sec:latex-tables}
+%================================================================
+
+Tables are built with the \texttt{table} float and the
+\texttt{tabular} environment. The \texttt{booktabs} package (already
+loaded in \texttt{DAIR3Config.tex}) provides clean horizontal rules.
+Vertical rules (\texttt{|}) are omitted by convention in professional
+documents; \texttt{booktabs} horizontal rules are sufficient.
+
+\begin{lstlisting}[style=inlineStyle, caption={A minimal table with booktabs}]
+\begin{table}[htbp]
+\centering
+\caption{Sample measurements}
+\label{tab:sample}
+\begin{tabular}{lrr}
+\toprule
+Subject & Height (cm) & Weight (kg) \\
+\midrule
+Alice   & 165         & 60          \\
+Bob     & 178         & 75          \\
+Carol   & 172         & 68          \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{lstlisting}
+
+%================================================================
+\section{Bibliography}
+\label{sec:latex-bibliography}
+%================================================================
+
+\LaTeX{} manages bibliographies via an external file (\texttt{.bib})
+and a style command. The \verb|\cite{key}| command inserts a citation
+at any point in the text; the \verb|\bibliography{filename}| and
+\verb|\bibliographystyle{plain}| commands generate the reference list.
+
+For more sophisticated bibliography management, the \texttt{biblatex}
+package with the \texttt{biber} backend is preferred in modern
+documents. This repository's shared preamble has bibliography support
+commented out; students writing independent reports should uncomment
+and configure it.
+
+%================================================================
+\section{LaTeX Workshop in Visual Studio Code}
+\label{sec:latex-workshop}
+%================================================================
+
+The LaTeX Workshop extension for VSC (referenced in
+Section~\ref{sec:extensions}) provides a complete integrated workflow:
+syntax highlighting, live PDF preview, one-click build, and error
+navigation. Once installed, opening any \texttt{.tex} file activates
+the extension automatically. The build shortcut is
+\texttt{Ctrl+Alt+B} (Windows/Linux) or \texttt{Cmd+Option+B}
+(macOS), which runs \texttt{pdflatex} and displays the result in the
+built-in PDF viewer. Students do not need to use the command line for
+compilation after this is set up; the command-line approach in
+Section~\ref{sec:first-latex-doc} is presented first so the
+underlying process is understood.
+
+%================================================================
+\section{Summary}
+\label{sec:latex-summary}
+%================================================================
+
+This chapter introduced \LaTeX{}, the document preparation system
+used throughout this program and widely adopted as the standard in
+science and mathematics:
+
+\begin{itemize}
+    \item \textbf{What \LaTeX{} is.} A plain-text markup language
+          compiled into typeset PDFs, in contrast to WYSIWYG word
+          processors.
+    \item \textbf{The source-to-PDF workflow.} Writing a
+          \texttt{.tex} file in a text editor, compiling with
+          \texttt{pdflatex} or \texttt{latexmk}, and viewing the
+          resulting PDF.
+    \item \textbf{Document structure.} The preamble (document class,
+          packages, metadata) and the body (content organized with
+          \verb|\section|, \verb|\subsection|, and
+          \verb|\subsubsection|).
+    \item \textbf{Inline and display math.} Dollar signs for inline
+          mathematics and \verb|\[...\]| or the \texttt{equation}
+          environment for display mathematics.
+    \item \textbf{The math cheat sheet.} A comprehensive reference
+          table (Table~\ref{tab:latex-math-cheatsheet}) covering
+          arithmetic, functions, summation, integration, Greek
+          letters, relations, number sets, and vectors/matrices.
+    \item \textbf{Figures and tables.} Float environments with
+          \verb|\includegraphics|, \texttt{tabular}, and
+          \texttt{booktabs} for professional formatting.
+    \item \textbf{Bibliography.} Citation management with
+          \texttt{.bib} files and the \verb|\cite| command.
+    \item \textbf{LaTeX Workshop.} The VSC extension that provides
+          syntax highlighting, live preview, and one-click build,
+          eliminating the need for command-line compilation in daily
+          use.
+\end{itemize}

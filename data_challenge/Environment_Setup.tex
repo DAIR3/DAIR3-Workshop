@@ -90,7 +90,7 @@ Select the Extensions icon on the left and install the following Visual Studio C
 
 	\item \textbf{Optional}: Install C/C++ for Visual Studio Code, C/C++ Themes \& C/C++ Extension Pack.
 
-	\item \textbf{Optional}: Install the extension ``\textbf{LaTeX Workshop}'' by James Yu. You will never use another LaTeX editor :)
+	\item \textbf{Optional}: Install the extension ``\textbf{LaTeX Workshop}'' by James Yu. This extension provides syntax highlighting, live preview, and one-click build. Its use is described in Section~\ref{sec:latex-workshop}.
 
 	\begin{figure}[htbp]
 		\centering
@@ -160,53 +160,9 @@ file explorer.
 \section{Required: Install Python libraries}\label{sec:libraries}
 %================================================================
 
-Install the core scientific Python libraries into your DAIR3 virtual
-environment. If you have not yet set up a virtual environment, complete
-Chapter~\ref{ch:python-environments} first, then return here.
-
-\vs
-\noindent
-With the DAIR3 environment active, install the required libraries:
-
-\begin{verbatim}
-pip install numpy pandas matplotlib scipy jupyter
-\end{verbatim}
-
-These five libraries are sufficient for the data challenge analysis.
-Additional libraries required for the LLM chapter (including
-\texttt{openai}, \texttt{anthropic}, and \texttt{langchain}) are
-installed separately in Chapter~\ref{ch:ollama-infrastructure}.
-
-\vs
-\noindent
-To verify the installation, start the Python interpreter and import
-each library:
-
-\begin{verbatim}
-python
->>> import numpy, pandas, matplotlib, scipy, jupyter
->>> print("All libraries installed successfully.")
-\end{verbatim}
-
-\vs
-\noindent
-An important suggestion that comes from experiencing frustration in the past is this: Keep the base environment clean, that is, with minimal libraries. Conflicts between libraries will arise once you install a number of them. This is why it is a good practice to create an environment for each project.
-
-\vs
-\noindent
-\textbf{You know your core environment is fully functional when:}
-\begin{itemize}
-    \item \texttt{python --version} returns a version number.
-    \item \texttt{code .} opens Visual Studio Code from a terminal.
-    \item \texttt{git --version} returns a version number.
-    \item The five required libraries import without errors (see above).
-\end{itemize}
-The LLM agent programs (\texttt{agentGroq.py}, \texttt{agentGPT.py},
-\texttt{agentClaude.py}) are located at
-\texttt{resources/unit\_7/FOO/} in the DAIR3-Workshop repository.
-Running them requires API keys configured in
-Chapter~\ref{ch:ollama-infrastructure}.
-\vs
+Python libraries for the data challenge are installed inside a virtual
+environment. Complete Chapter~\ref{ch:python-environments} to set up
+your environment, then install the required libraries as described there.
 
 %================================================================
 \section{Optional: Jupyter Notebook}\label{sec:jupyter}
@@ -294,91 +250,40 @@ After that, run the script \texttt{activate}.
 If you'd like to code in C or C++, you have several options, including \href{https://gcc.gnu.org}{GCC, the GNU Compiler Collection}, but it requires some effort to install the prerequisites. From Microsoft there is \href{https://visualstudio.microsoft.com/vs/community/}{Visual Studio Community Edition} (VSCE), which encapsulates the complexity of installing multiple compilers (including the .NET framework SDK). I recommend you install VSCE with all ``Workloads'' in ``Web \& Cloud'' and ``Desktop \& Mobile'' (except Python).
 
 %================================================================
-\section{Optional: LaTeX}\label{sec:latex}
+\section{Optional: Install a \LaTeX{} Distribution}\label{sec:latex-install}
 %================================================================
 
-If you intend to produce PDF documents using LaTeX, install \href{https://miktex.org}{MiKTeX}.
+\LaTeX{} is required if you intend to compile \texttt{.tex} documents
+locally. The program's documents are maintained as \LaTeX{} source files
+in the DAIR3-Workshop repository. For authoring and compiling your own
+documents, install the distribution for your platform.
 
-%================================================================
-\section{Optional: Installing LaTeX Tools on Linux}
-%================================================================
-Most Linux distributions provide the \texttt{TeX Live} distribution,
-which includes the LaTeX compiler and a large collection of packages
-for document preparation.
+\begin{table}[htbp]
+\centering
+\caption{Recommended \LaTeX{} distributions by platform}
+\label{tab:latex-distros}
+\begin{tabular}{llp{7.5cm}}
+\toprule
+\textbf{Platform} & \textbf{Distribution} & \textbf{Download} \\
+\midrule
+Windows & MiKTeX & \url{https://miktex.org} \\
+macOS & MacTeX & \url{https://www.tug.org/mactex/} \\
+Linux (Ubuntu/Debian) & TeX Live & \texttt{sudo apt install texlive-latex-extra texlive-fonts-recommended latexmk} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-The following procedure installs the basic tools required to compile
-LaTeX documents on Ubuntu or Debian-based systems.
+Verify the installation on any platform with:
 
-%----------------------------------------------------------------
-\subsection{Update Package Lists}
-%----------------------------------------------------------------
-Update the system package index:
-
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
-sudo apt update
-\end{lstlisting}
-
-%----------------------------------------------------------------
-\subsection{Install Core LaTeX Packages}
-%----------------------------------------------------------------
-Install the essential components of the TeX Live distribution:
-
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
-sudo apt install texlive-latex-base \
-                 texlive-latex-extra \
-                 texlive-fonts-recommended
-\end{lstlisting}
-
-These packages provide the LaTeX compiler, common fonts,
-and widely used packages required by most academic documents.
-
-%----------------------------------------------------------------
-\subsection{Install the \texttt{latexmk} Build Tool}
-%----------------------------------------------------------------
-The \texttt{latexmk} utility automates the compilation process by
-running the required sequence of LaTeX and bibliography commands.
-
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
-sudo apt install latexmk
-\end{lstlisting}
-
-%----------------------------------------------------------------
-\subsection{Compile a LaTeX Document}
-%----------------------------------------------------------------
-Assuming a file named \texttt{document.tex} exists in the current
-directory, compile it using:
-
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
-latexmk -pdf document.tex
-\end{lstlisting}
-
-This command automatically runs \texttt{pdflatex}, \texttt{bibtex} or
-\texttt{biber}, and any additional compilation passes required to
-resolve references.
-
-%----------------------------------------------------------------
-\subsection{Verify the Installation}
-%----------------------------------------------------------------
-Confirm that the LaTeX compiler is available:
-
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+\begin{verbatim}
 pdflatex --version
-\end{lstlisting}
+\end{verbatim}
 
-The output should display the installed \texttt{pdfTeX} or
-\texttt{TeX Live} version.
-
-%----------------------------------------------------------------
-\subsection{Optional: Install the Complete TeX Live Distribution}
-%----------------------------------------------------------------
-For systems with sufficient disk space, the entire TeX Live
-distribution can be installed:
-
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
-sudo apt install texlive-full
-\end{lstlisting}
-
-This installation includes all available LaTeX packages and tools.
+\vs
+\noindent
+Usage of \LaTeX{} for document preparation, including a mathematics
+notation cheat sheet, is covered in Chapter~\ref{ch:latex}.
+\vs
 
 %================================================================
 \section{Optional: Installing PostgreSQL on Linux}

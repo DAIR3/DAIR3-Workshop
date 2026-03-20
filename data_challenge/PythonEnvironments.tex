@@ -121,6 +121,45 @@ both platforms):
 deactivate
 \end{lstlisting}
 
+\subsection{Installing the DAIR3 Required Libraries}
+\label{sec:dair3-libraries}
+
+With the DAIR3 environment active, install the required libraries for
+the data challenge:
+
+\begin{verbatim}
+pip install numpy pandas matplotlib scipy jupyter
+\end{verbatim}
+
+These five libraries are sufficient for all analysis in the data
+challenge. Additional libraries required for the LLM chapter (including
+\texttt{openai}, \texttt{anthropic}, and \texttt{langchain}) are
+installed separately in Chapter~\ref{ch:ollama-infrastructure}.
+
+\vs
+\noindent
+To verify the installation:
+
+\begin{verbatim}
+python -c "import numpy, pandas, matplotlib, scipy, jupyter; print('OK')"
+\end{verbatim}
+
+\vs
+\noindent
+\textbf{You know your core environment is fully functional when:}
+\begin{itemize}
+    \item \texttt{python --version} returns a version number.
+    \item \texttt{code .} opens Visual Studio Code from a terminal.
+    \item \texttt{git --version} returns a version number.
+    \item The five required libraries import without errors (see above).
+\end{itemize}
+The LLM agent programs (\texttt{agentGroq.py}, \texttt{agentGPT.py},
+\texttt{agentClaude.py}) are located at
+\texttt{resources/unit\_7/FOO/} in the DAIR3-Workshop repository.
+Running them requires API keys configured in
+Chapter~\ref{ch:ollama-infrastructure}.
+\vs
+
 % ============================================================
 \section{Modern Package Management: \texttt{uv}}
 \label{sec:uv}
