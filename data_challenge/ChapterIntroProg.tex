@@ -1,6 +1,83 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction to Programming Environments}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%======================================
+\section{Before the editor: writing your first program in a text file}
+\label{sec:plaintext-first}
+%======================================
+
+A Python program is plain text stored in a file with a \texttt{.py}
+extension. Any tool that saves plain text (not formatted text) can
+create one. Before using a sophisticated editor, you will create and
+run a program using the simplest text editor available on your system.
+This establishes a fundamental idea: the editor is irrelevant; the
+file is what matters.
+
+\begin{warningbox}[title=Word processors are not text editors]
+Microsoft Word, Google Docs, and LibreOffice Writer save files with
+invisible formatting markup. A Python file saved from one of these
+tools will fail to run. Use only the editors listed in
+Table~\ref{tab:text-editors}.
+\end{warningbox}
+
+\begin{table}[htbp]
+\centering
+\caption{Opening a plain text editor on each operating system.}
+\label{tab:text-editors}
+\begin{tabular}{p{2.8cm} p{5.5cm} p{6.5cm}}
+\toprule
+\textbf{Operating System} & \textbf{How to open the editor} & \textbf{Critical step before typing} \\
+\midrule
+Windows &
+Press \texttt{Win + R}, type \texttt{notepad}, press Enter &
+In the Save As dialog, set ``Save as type'' to \texttt{All Files (*.*)} before saving; otherwise the file saves as \texttt{hello.py.txt} \\
+\midrule
+macOS &
+Open Spotlight (\texttt{Cmd + Space}), type \texttt{TextEdit}, press Enter &
+Go to \textbf{Format $>$ Make Plain Text} before typing anything; TextEdit defaults to rich text, which corrupts code \\
+\midrule
+Linux &
+Press \texttt{Ctrl + Alt + T} to open a terminal, then type \texttt{gedit \&} and press Enter &
+No additional step required; \texttt{gedit} saves plain text by default \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{infobox}[title=Exercise P-1: Your first Python program]
+Type the program below exactly as shown into your text editor. Pay
+attention to the indentation: the spaces before \texttt{print(n)} and
+\texttt{if n == 5:} are not decorative; they are required Python syntax
+and the program will fail without them. Save the file as
+\texttt{hello.py} in a folder you can find (your Desktop is a good
+choice). Apply the critical step in Table~\ref{tab:text-editors} for
+your operating system before saving.
+
+\begin{lstlisting}[language=Python]
+# This program exemplifies I/O, loops, conditionals, and assignment
+print("This is programming!")
+k = 10
+for n in range(k):
+    print(n)
+    if n == 5:
+        print("here")
+\end{lstlisting}
+
+The \texttt{\#} line is a comment; Python ignores it. Comments exist
+for humans. \texttt{k = 10} is an assignment; it creates a variable
+named \texttt{k} and stores the value 10. \texttt{for n in range(k):}
+is a loop; everything indented below it executes 10 times.
+\texttt{if n == 5:} is a conditional; the indented block below only
+runs when the condition is true.
+\end{infobox}
+
+The program exists as a file, but it does nothing until it is executed
+by the Python interpreter. To run it, you need the command-line
+interface, which is introduced in Chapter~\ref{ch:cli-scripting}.
+After completing that chapter, return here and run \texttt{hello.py}
+from the terminal using \texttt{python hello.py} (or
+\texttt{python3 hello.py} on macOS and Linux).
+
 %======================================
 \section{Introduction}
 %======================================
