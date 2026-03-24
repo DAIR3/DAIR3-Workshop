@@ -1,0 +1,249 @@
+%================================================================
+\chapter{Assessment and Progress Record}
+\label{ch:assessment}
+%================================================================
+
+\begin{Form}
+
+This chapter is a fillable PDF form. Each section corresponds to one
+category of prerequisite: Required, Essential, Desirable, and Optional.
+Checkboxes record binary completion; text fields record written
+responses. Use this chapter to track your progress through the program.
+
+\vs
+\noindent
+\textbf{Saving your responses requires Adobe Acrobat Reader} (free for
+Windows, macOS, and Linux; available at
+\url{https://get.adobe.com/reader/}). Other viewers behave as follows:
+
+\begin{itemize}
+    \item \textbf{macOS Preview:} displays form fields and allows you
+          to type in them, but \emph{does not save the entered data}.
+          If you close and reopen the file in Preview, your responses
+          will be lost.
+    \item \textbf{Google Chrome (built-in PDF viewer):} displays and
+          accepts input in form fields, but \emph{does not save the
+          data}. Printing to PDF from Chrome will not preserve field
+          contents either.
+    \item \textbf{Most Linux PDF viewers} (Evince, Okular, Zathura):
+          \emph{ignore form fields entirely}. Fields will not appear
+          interactive.
+    \item \textbf{Adobe Acrobat Reader:} fully saves, prints, and
+          exports form data. Use \textbf{File $>$ Save} (not Save As)
+          after completing each section.
+\end{itemize}
+
+\vs
+\noindent
+\textbf{How to interpret the four categories:}
+
+\begin{description}
+    \item[Required] Items directly related to the Data Challenge.
+          These must be completed to participate in the program.
+    \item[Essential] Environment setup items: Python, Visual Studio
+          Code, Git, the required libraries, and a successful API
+          call to a commercial LLM. These must be completed before
+          the first session.
+    \item[Desirable] Technical understanding of tools covered in the
+          prerequisite chapters (CLI, programming, virtual
+          environments, Git, \LaTeX{}). Completing these demonstrates
+          readiness to work independently.
+    \item[Optional] LLM infrastructure setup (Ollama). Not required
+          for the data challenge; relevant for students who want to
+          run local models.
+\end{description}
+\vs
+
+%================================================================
+\section{Required: Data Challenge}
+\label{sec:assess-required}
+%================================================================
+
+The following items require engaging directly with the NCHS vital
+statistics dataset. Items R3 and R4 require running Python code.
+See Chapter~\ref{ch:analysis-activities} for the analysis context.
+
+\vs
+
+\noindent\textbf{R1.} Why is the date and time of birth no longer
+recorded in NCHS data after 1988? What does this decision tell us
+about how data governance priorities can change over time?
+(See Chapter~\ref{ch:analysis-activities}.)\\[4pt]
+\TextField[name=r1,width=\linewidth,height=3cm,multiline=true,
+           bordercolor=black]{}
+
+\vs
+
+\noindent\textbf{R2.} Why was the flat file format used for NCHS
+birth records? What are the tradeoffs of this format compared to a
+relational database or a structured format like CSV with a header?
+(See Chapter~\ref{ch:analysis-activities}.)\\[4pt]
+\TextField[name=r2,width=\linewidth,height=3cm,multiline=true,
+           bordercolor=black]{}
+
+\vs
+
+\noindent\textbf{R3.} How many live births occurred in Texas in 1969
+from mothers residing in Texas? State your count and describe the
+filtering logic you used.
+(See Chapter~\ref{ch:analysis-activities}.)\\[4pt]
+\TextField[name=r3,width=\linewidth,height=3cm,multiline=true,
+           bordercolor=black]{}
+
+\vs
+
+\noindent\textbf{R4.} What socioeconomic variable in the NCHS dataset
+shows the strongest relationship with birth weight in your analysis?
+Briefly describe how you identified this relationship.
+(See Chapter~\ref{ch:analysis-activities}.)\\[4pt]
+\TextField[name=r4,width=\linewidth,height=3cm,multiline=true,
+           bordercolor=black]{}
+
+%================================================================
+\section{Essential: Environment and API Setup}
+\label{sec:assess-essential}
+%================================================================
+
+Check each box when the corresponding verification step succeeds.
+All six items should be checked before the first program session.
+
+\vs
+
+\noindent\CheckBox[name=e1,width=0.4cm,height=0.4cm]{}~\textbf{E1.}
+\texttt{python --version} returns a version number in the terminal.
+(See Chapter~\ref{ch:environment-setup}, Section~\ref{sec:python}.)
+
+\vs
+
+\noindent\CheckBox[name=e2,width=0.4cm,height=0.4cm]{}~\textbf{E2.}
+\texttt{code .} opens Visual Studio Code from a terminal window.
+(See Chapter~\ref{ch:environment-setup}, Section~\ref{sec:vscstart}.)
+
+\vs
+
+\noindent\CheckBox[name=e3,width=0.4cm,height=0.4cm]{}~\textbf{E3.}
+\texttt{git --version} returns a version number.
+(See Chapter~\ref{ch:environment-setup}, Section~\ref{sec:git}.)
+
+\vs
+
+\noindent\CheckBox[name=e4,width=0.4cm,height=0.4cm]{}~\textbf{E4.}
+The five required libraries (\texttt{numpy}, \texttt{pandas},
+\texttt{matplotlib}, \texttt{scipy}, \texttt{jupyter}) import
+without errors in your virtual environment.
+(See Chapter~\ref{ch:python-environments},
+Section~\ref{sec:project-libraries}.)
+
+\vs
+
+\noindent\CheckBox[name=e5,width=0.4cm,height=0.4cm]{}~\textbf{E5.}
+Running \texttt{agentClaude.py}, \texttt{agentGPT.py}, or
+\texttt{agentGroq.py} from \texttt{resources/unit\_7/FOO/} returns
+a response from a commercial LLM.
+(See Chapter~\ref{ch:ollama-infrastructure},
+Section~\ref{sec:apikeys}.)
+
+\vs
+
+\noindent\CheckBox[name=e6,width=0.4cm,height=0.4cm]{}~\textbf{E6.}
+Running \texttt{pdflatex hello.tex} produces a \texttt{hello.pdf}
+file.
+(See Chapter~\ref{ch:latex}, Section~\ref{sec:first-latex-doc}.)
+
+%================================================================
+\section{Desirable: Technical Skills}
+\label{sec:assess-desirable}
+%================================================================
+
+These items demonstrate working understanding of the tools introduced
+in the prerequisite chapters. Written responses need not be long;
+two or three sentences each are sufficient.
+
+\vs
+
+\noindent\textbf{D1.} What is the current working directory when you
+first open a terminal? Write the command you would use to navigate
+to a folder named \texttt{DAIR3-Workshop} on your Desktop.
+(See Chapter~\ref{ch:cli-scripting}, Section~\ref{sec:what-is-a-file}.)\\[4pt]
+\TextField[name=d1,width=\linewidth,height=2.5cm,multiline=true,
+           bordercolor=black]{}
+
+\vs
+
+\noindent\textbf{D2.} What happens when you type \texttt{hello.py}
+in a terminal without \texttt{python} in front of it? Why does
+this happen, and how do you fix it?
+(See Chapter~\ref{ch:intro-prog}, Section~\ref{sec:plaintext-first}.)\\[4pt]
+\TextField[name=d2,width=\linewidth,height=2.5cm,multiline=true,
+           bordercolor=black]{}
+
+\vs
+
+\noindent\textbf{D3.} Why does adding 0.1 ten times in Python not
+equal exactly 1.0? What underlying technical limitation causes this?
+(See Chapter~\ref{ch:intro-prog}.)\\[4pt]
+\TextField[name=d3,width=\linewidth,height=2.5cm,multiline=true,
+           bordercolor=black]{}
+
+\vs
+
+\noindent\textbf{D4.} What is the difference between a Python virtual
+environment and the global Python installation? Give one scenario
+where you would need more than one virtual environment.
+(See Chapter~\ref{ch:python-environments}.)\\[4pt]
+\TextField[name=d4,width=\linewidth,height=2.5cm,multiline=true,
+           bordercolor=black]{}
+
+\vs
+
+\noindent\textbf{D5.} Why does \texttt{git push} require a prior
+\texttt{git commit}? What is the conceptual difference between
+the two operations?
+(See Chapter~\ref{ch:git}.)\\[4pt]
+\TextField[name=d5,width=\linewidth,height=2.5cm,multiline=true,
+           bordercolor=black]{}
+
+\vs
+
+\noindent\textbf{D6.} In \LaTeX{}, what is the practical difference
+between \verb|\[...\]| and \verb|$$...$$|? Which should be used in
+new documents, and why?
+(See Chapter~\ref{ch:latex}, Section~\ref{sec:latex-math}.)\\[4pt]
+\TextField[name=d6,width=\linewidth,height=2.5cm,multiline=true,
+           bordercolor=black]{}
+
+%================================================================
+\section{Optional: LLM Infrastructure (Ollama)}
+\label{sec:assess-optional}
+%================================================================
+
+These items apply only to students who install and configure the
+local Ollama LLM infrastructure. They are not required for the data
+challenge.
+
+\vs
+
+\noindent\CheckBox[name=o1,width=0.4cm,height=0.4cm]{}~\textbf{O1.}
+Ollama is installed and \texttt{ollama list} returns at least one
+model in the terminal.
+(See Chapter~\ref{ch:ollama-infrastructure},
+Section~\ref{sec:install}.)
+
+\vs
+
+\noindent\CheckBox[name=o2,width=0.4cm,height=0.4cm]{}~\textbf{O2.}
+\texttt{connectivity\_test.py} passes all four checks (TCP
+handshake, model list, inference).
+(See Chapter~\ref{ch:ollama-infrastructure}.)
+
+\vs
+
+\noindent\textbf{O3.} Explain the tradeoff between context window
+size and memory consumption in Ollama. Why is \texttt{OLLAMA\_NUM\_CTX=8192}
+a safe default for large models on hardware with limited memory?
+(See Chapter~\ref{ch:ollama-infrastructure},
+Section~\ref{sec:memory}.)\\[4pt]
+\TextField[name=o3,width=\linewidth,height=3cm,multiline=true,
+           bordercolor=black]{}
+
+\end{Form}

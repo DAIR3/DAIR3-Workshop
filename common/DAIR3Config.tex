@@ -56,10 +56,6 @@
 \usepackage{tcolorbox}
 \usepackage{fontawesome5}   % optional, for icons
 
-
-%********** Enybeling Hyperlinks *******
-\usepackage[pdftex=true]{hyperref}% this enables jumping from a reference and table of content in the pdf file to its target % pdfborder=000,
-
 % ********* Table layout **************
 \usepackage{booktabs}	  	%design of table, has an excellent documentation
 %\usepackage{lscape}			%use this if you want to rotate the table together with the lines around the table
@@ -93,6 +89,10 @@
 % ============= Tables ================
 \usepackage{array}
 \usepackage{ragged2e}
+
+
+%********** Enybeling Hyperlinks *******
+\usepackage[pdftex=true]{hyperref}% this enables jumping from a reference and table of content in the pdf file to its target % pdfborder=000,
 
 
 % ********* Header and Footer **********
@@ -203,6 +203,17 @@
     \definecolor{numberpurple}{HTML}{5E35B1}     % strong purple (line numbers)
     \definecolor{functionmagenta}{HTML}{C2185B}  % magenta (function names, optional)
     \definecolor{framegray}{HTML}{BDBDBD}        % neutral frame lines
+% ======= Assessment / Introduction category colors =======
+% Four-level priority scheme shared by Introduction.tex and Assessment.tex.
+% Colors chosen for CVD safety: distinct by hue AND luminance.
+%   Required   -- dark red    -- must complete before program begins
+%   Essential  -- navy blue   -- environment and API setup
+%   Desirable  -- forest green -- technical skill chapters
+%   Optional   -- medium gray  -- Ollama infrastructure
+\definecolor{colorRequired}{HTML}{C0392B}
+\definecolor{colorEssential}{HTML}{005F9E}
+\definecolor{colorDesirable}{HTML}{3B7A57}
+\definecolor{colorOptional}{HTML}{757575}
 
 \newcommand{\low}{\textnormal{\tiny\textit{low}}\hspace{-5pt}}
 \newcommand{\high}{\textnormal{\tiny \textit{high}}\hspace{-5pt}}
