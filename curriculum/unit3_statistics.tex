@@ -21,7 +21,10 @@ In this subunit, we will consider how you can develop an understanding of the ma
 \begin{enumerate}
 
 \item You will be able to rapidly internalize the current state of scientific knowledge about a specific health-related topic. The goal here is not to master every detail that a domain specialist would know, but rather to develop fluency with the key known mechanisms, to recognize the quantitative strengths of established relationships, and to identify gaps in the current state of knowledge.
+
 \item You will be able to rapidly assess the structure and capacity of a dataset for conducting research on a specific health-related topic. This includes identifying the units of analysis (who is being measured) and the variables or attributes (what is being measured), understanding how the units of analysis were selected, what population they represent, how the variables were measured, and what types of measurement errors may be present.
+
+\item You will be able to propose creative research aims that contribute to scientific knowledge, and that are tractable to address with available data and methods.
 
 \item You will be able to use appropriate terminology from epidemiology and biostatistics to discuss possible research studies relating to a given health-science domain, that can feasibly be conducted using a provided dataset.
 
@@ -79,7 +82,7 @@ The data we have here are {\em spatial} and {\em temporal}.  However they are no
 
 The data are {\em partially observed}, that is, there is some missing data.  The most commonly missing data is information about the father.  These missing values are unlikely to be missing ``at random'' because births in which the father is not available are likely to be systematically different from births in which the father is present.  Many factors, both measured and unmeasured, may covary with the availability of information about the father.  This {\em informative missingness} can give rise to methodological challenges which we will return to later.
 
-The data are {\em administrative}, as they were collected due to the interest of the government in documenting the population, but not for any specific research purpose.  They were subsequently repurposed for research.  The data were collected {\em prospectively}, in that information about each birth was collected at the time of the birth, and did not depend on anyone recalling circumstances of the birth from a later point in time (in which case the data would be {\em retrospective}).
+The data are {\em administrative}, as they were collected due to the interest of the government in documenting the population, but not for any specific research purpose.  They were subsequently repurposed for research.  The data were collected {\em prospectively}, in that information about each birth was collected at the time of the birth, and did not depend on anyone recalling circumstances of the birth from a later point in time (in which case the data would be {\em retrospectively} collected).  However research involving these data would be considered retrospective, as hypotheses and research aims would emerge after the data were available for exploratory analyses to be conducted.
 
 The data are {\em clustered}, or {\em multilevel}, which means here that there is a grouping of the births into subsets, determined by the county in which each baby was born, such that babies born in the same county will tend to have similar attributes.  The strength of clustering may be weak for most factors, but there is still some such tendency.  Clustering likely reflects unavailable {\em stable covariates} that are constant for all births in a county, such as unmeasured social or environmental factors.  For rigorous analysis, clustered data should be analyzed using methods that account for the clustering, otherwise uncertainty is likely to be understated.
 
