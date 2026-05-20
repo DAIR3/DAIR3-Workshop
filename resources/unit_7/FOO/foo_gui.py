@@ -1411,7 +1411,61 @@ class BlockchainAgentWorker(QThread):
             self.result_ready.emit(f"Error: {e}")        
 
 
+def _reset_agent_history_files(master_config_path="config.json"):
+    """Delete agent .json history files before the orchestrator starts.
+
+    Skips the slow conversation-replay path at startup. Resolves the active
+    config the same way MultiAgentChatGUI.load_configuration does: if CWD has
+    its own config.json, that one names the agents; otherwise the master config
+    does.
+    """
+    if not os.path.exists(master_config_path):
+        print(f"--reset: master config '{master_config_path}' not found; nothing to do")
+        return
+
+    try:
+        with open(master_config_path, "r") as f:
+            master_config = json.load(f)
+    except Exception as e:
+        print(f"--reset: could not parse '{master_config_path}': {e}")
+        return
+
+    cwd = master_config.get("CONFIG", {}).get("CWD", "/chats")
+    cwd_path = cwd[1:] if cwd.startswith("/") else cwd
+
+    config_in_cwd = os.path.join(cwd_path, "config.json")
+    active_path = config_in_cwd if (cwd != "/chats" and os.path.exists(config_in_cwd)) else master_config_path
+    try:
+        with open(active_path, "r") as f:
+            active_config = json.load(f)
+    except Exception as e:
+        print(f"--reset: could not parse active config '{active_path}': {e}")
+        return
+
+    if not os.path.isdir(cwd_path):
+        print(f"--reset: CWD '{cwd_path}' does not exist; nothing to delete")
+        return
+
+    deleted = 0
+    for entry in active_config.get("MODELS", []):
+        name = entry.get("agent_name")
+        if not name:
+            continue
+        file_path = os.path.join(cwd_path, f"{name}.json")
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                print(f"--reset: deleted {file_path}")
+                deleted += 1
+            except Exception as e:
+                print(f"--reset: failed to delete {file_path}: {e}")
+    print(f"--reset: removed {deleted} history file(s) from '{cwd_path}'")
+
+
 if __name__ == "__main__":
+    if "--reset" in sys.argv or "-r" in sys.argv:
+        _reset_agent_history_files()
+
     app = QApplication([])
     window = MultiAgentChatGUI()
     window.show()

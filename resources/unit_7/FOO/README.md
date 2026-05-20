@@ -153,9 +153,12 @@ Once running, you can switch roles live via the dropdown in the top-left of the 
 
 ```bash
 python foo_gui.py
+python foo_gui.py --reset      # or -r: wipe agent history before starting
 ```
 
 Creates one tab per agent listed in `MODELS`. Type into the **broadcast** box at the bottom to send a message to every active agent. Each tab's `Vulnerability` / `Judgment` / `Reflection` buttons drive the three FOO phases.
+
+**`--reset` / `-r` flag.** On startup, each agent normally loads its saved history from `chats/<AgentName>.json` and replays the full transcript to the model as a single priming turn so the conversation resumes with prior context. For long conversations this can take many seconds per agent on the main thread and the GUI will appear stuck while the API call is in flight. Passing `--reset` deletes those JSON files *before* the orchestrator initializes, so each agent starts fresh and the GUI comes up immediately. Equivalent to the in-app **Reset** button, but without the confirmation dialog and without needing the GUI to be responsive first.
 
 ---
 
@@ -232,6 +235,9 @@ Old foo_gui.py message; the `CWD` mechanism still falls back to the local folder
 
 **The window appears to freeze during file uploads.**
 Fixed — uploads now run on `FileUploadWorker` with a live progress bar. If you still see this, you're probably running an older copy of `foo_gui.py`; re-pull.
+
+**`foo_gui.py` looks stuck after `Updated thread ID for <Agent>: …`.**
+Not stuck — replaying a long saved conversation back to the model on startup. The replay runs synchronously per agent before the GUI is shown; with a multi-thousand-line history this can take 30–90 s per agent. Either wait it out, or relaunch with `python foo_gui.py --reset` to discard the prior history and start fresh.
 
 **`model_not_found` from OpenAI/Anthropic.**
 The model ID in `config.json` doesn't exist on your account. Edit the `model_code` value (e.g. `gpt-5.5` → `gpt-5.1`, or pick whatever your dashboard lists).
