@@ -1,3 +1,6 @@
+# macOS specific
+**/.DS_Store
+
 # local files and folders
 specs/*
 data/*
