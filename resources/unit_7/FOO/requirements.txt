@@ -58,7 +58,6 @@ langsmith==0.3.42
 libpysal==4.14.1
 librt==0.8.1
 logistro==2.0.1
--e git+https://github.com/biomathematicus/Lunar.git@2eaa1d4289ca9791b1e4d56e7c9acba18bd9ba22#egg=lunar&subdirectory=python
 lxml==6.0.1
 mapclassify==2.10.0
 MarkupSafe==3.0.3

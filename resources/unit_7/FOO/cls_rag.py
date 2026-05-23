@@ -252,6 +252,135 @@ def _read_text_any(path):
         return data.decode("cp1252", errors="replace")
 
 
+class _SimpleStore:
+    """Pure-Python persistent vector store.
+
+    We were using ChromaDB, but its HNSW (hnswlib) backend can hard-crash the
+    host Python process on Windows during ``collection.add(...)`` -- no
+    traceback, the window simply disappears. For a workshop kb (a few hundred
+    chunks per agent at most), exact cosine similarity over a numpy array is
+    fast enough and has zero native dependencies that can blow up.
+
+    On-disk layout (inside ``knowledge/<agent>/.index/``):
+        store.json    : list of {"id", "document", "metadata"}
+        vectors.npy   : numpy array, shape (N, dim), float32
+
+    The two files are loaded together at open time and rewritten on every
+    ``add`` or ``delete``. The API matches what we used from Chroma so the
+    rest of ``KnowledgeBase`` stays unchanged.
+    """
+
+    def __init__(self, root):
+        import numpy as np
+        self._np = np
+        self.root = root
+        os.makedirs(root, exist_ok=True)
+        self.store_path = os.path.join(root, "store.json")
+        self.vectors_path = os.path.join(root, "vectors.npy")
+        self._load()
+
+    def _load(self):
+        if os.path.isfile(self.store_path):
+            try:
+                with open(self.store_path, "r", encoding="utf-8") as f:
+                    self.records = json.load(f)
+            except Exception:
+                self.records = []
+        else:
+            self.records = []
+        if os.path.isfile(self.vectors_path):
+            try:
+                self.vectors = self._np.load(self.vectors_path)
+            except Exception:
+                self.vectors = self._np.zeros((0, 1), dtype=self._np.float32)
+        else:
+            self.vectors = self._np.zeros((0, 1), dtype=self._np.float32)
+        # Align: if records and vectors are out of sync, reset both.
+        if len(self.records) != self.vectors.shape[0]:
+            self.records = []
+            self.vectors = self._np.zeros((0, 1), dtype=self._np.float32)
+
+    def _save(self):
+        with open(self.store_path, "w", encoding="utf-8") as f:
+            json.dump(self.records, f, ensure_ascii=False, indent=2)
+        self._np.save(self.vectors_path, self.vectors)
+
+    def count(self):
+        return len(self.records)
+
+    def add(self, ids, documents, metadatas, embeddings):
+        """Upsert: any existing record with a matching id is replaced."""
+        new_vecs = self._np.array(embeddings, dtype=self._np.float32)
+        if new_vecs.ndim != 2:
+            raise ValueError(f"embeddings must be 2D; got shape {new_vecs.shape}")
+
+        # Remove existing records matching new ids (upsert behavior).
+        new_id_set = set(ids)
+        keep_mask = [r["id"] not in new_id_set for r in self.records]
+        if self.records and not all(keep_mask):
+            self.records = [r for r, k in zip(self.records, keep_mask) if k]
+            if self.vectors.shape[0] > 0:
+                self.vectors = self.vectors[keep_mask]
+
+        # Append.
+        for rid, doc, meta in zip(ids, documents, metadatas):
+            self.records.append({
+                "id": rid,
+                "document": doc,
+                "metadata": dict(meta) if meta else {},
+            })
+        if self.vectors.shape[0] == 0 or self.vectors.shape[1] != new_vecs.shape[1]:
+            self.vectors = new_vecs
+        else:
+            self.vectors = self._np.vstack([self.vectors, new_vecs])
+        self._save()
+
+    def delete(self, where=None):
+        """Delete records whose metadata matches all key/value pairs in
+        ``where``. No-op if ``where`` is falsy."""
+        if not where:
+            return
+        keep_mask = []
+        for r in self.records:
+            md = r.get("metadata") or {}
+            match = all(md.get(k) == v for k, v in where.items())
+            keep_mask.append(not match)
+        if all(keep_mask):
+            return
+        self.records = [r for r, k in zip(self.records, keep_mask) if k]
+        if self.vectors.shape[0] > 0:
+            self.vectors = self.vectors[keep_mask]
+        self._save()
+
+    def query(self, query_embeddings, n_results=4):
+        """Top-k cosine similarity. Returns a Chroma-shaped dict so the
+        caller (KnowledgeBase.query) doesn't need to change."""
+        if not self.records or self.vectors.shape[0] == 0:
+            return {"documents": [[]], "metadatas": [[]], "distances": [[]]}
+        q = self._np.array(query_embeddings[0], dtype=self._np.float32)
+        q_norm = float(self._np.linalg.norm(q)) or 1e-10
+        v_norms = self._np.linalg.norm(self.vectors, axis=1)
+        v_norms = self._np.where(v_norms == 0, 1e-10, v_norms)
+        sims = (self.vectors @ q) / (v_norms * q_norm)
+
+        n = min(int(n_results), len(self.records))
+        # argpartition for top-n, then sort that slice by similarity.
+        if n >= len(self.records):
+            order = self._np.argsort(-sims)
+        else:
+            cand = self._np.argpartition(-sims, n - 1)[:n]
+            order = cand[self._np.argsort(-sims[cand])]
+
+        docs, metas, dists = [], [], []
+        for i in order:
+            r = self.records[int(i)]
+            docs.append(r["document"])
+            metas.append(r.get("metadata") or {})
+            # Convert cosine similarity -> distance for Chroma-API parity.
+            dists.append(float(1.0 - sims[int(i)]))
+        return {"documents": [docs], "metadatas": [metas], "distances": [dists]}
+
+
 def chunk_text(text, max_words=350, overlap_paragraphs=1):
     """Split text into paragraph-based chunks, each at most ``max_words``
     words. Paragraphs are separated by blank lines. Adjacent chunks overlap
@@ -397,27 +526,21 @@ class KnowledgeBase:
     # --- chroma plumbing ----------------------------------------------------
 
     def _open_collection(self):
+        """Return the vector store for this kb. We use a pure-Python
+        ``_SimpleStore`` (numpy + JSON on disk) rather than ChromaDB; see
+        the ``_SimpleStore`` docstring for why.
+
+        The on-disk layout lives under the backend-specific subdirectory so
+        switching backends doesn't mix incompatible-dimension vectors:
+            knowledge/<agent>/.index/<backend>/store.json
+            knowledge/<agent>/.index/<backend>/vectors.npy
+        """
         if self._collection is not None:
             return self._collection
-        print(f"[rag:{self.agent_name}] _open_collection: importing chromadb", flush=True)
-        import chromadb
-        print(f"[rag:{self.agent_name}] _open_collection: PersistentClient(path={self.index_dir})", flush=True)
-        self._client = chromadb.PersistentClient(path=self.index_dir)
-        coll_name = f"kb_{self.backend or 'unset'}"
-        print(f"[rag:{self.agent_name}] _open_collection: get_or_create_collection({coll_name!r}) with stub embed fn", flush=True)
-        # Always pass a no-op embedding function so Chroma does not load
-        # its default ONNX-based embedder (see _ExternalEmbeddingsOnly).
-        # Older Chroma versions that reject arbitrary callables fall back
-        # to the default; the one-time ONNX load is the cost in that case.
-        try:
-            self._collection = self._client.get_or_create_collection(
-                name=coll_name,
-                embedding_function=_ExternalEmbeddingsOnly(),
-            )
-        except Exception as e:
-            print(f"[rag:{self.agent_name}] _open_collection: stub embed fn rejected ({type(e).__name__}: {e}); retrying with default", flush=True)
-            self._collection = self._client.get_or_create_collection(name=coll_name)
-        print(f"[rag:{self.agent_name}] _open_collection: collection ready, count={self._collection.count()}", flush=True)
+        backend_dir = os.path.join(self.index_dir, self.backend or "unset")
+        print(f"[rag:{self.agent_name}] _open_collection: SimpleStore at {backend_dir}", flush=True)
+        self._collection = _SimpleStore(backend_dir)
+        print(f"[rag:{self.agent_name}] _open_collection: store ready, count={self._collection.count()}", flush=True)
         return self._collection
 
     def _embed(self, texts):
