@@ -152,6 +152,7 @@ def route_drop(
     on_context,
     on_rag_status,
     parent_widget,
+    default_backend=None,
 ):
     """Route a (possibly multi-file) drop to the agent's chosen pipeline.
 
@@ -196,14 +197,25 @@ def route_drop(
         return
 
     if not knowledge_base.backend:
-        on_rag_status(
-            "RAG mode requested but no embedding backend is selected. "
-            "Open the RAG settings (gear icon) to choose one. Falling back "
-            "to context for now."
-        )
-        for fp in file_paths:
-            on_context(fp)
-        return
+        # Auto-default the backend so the user doesn't have to open the
+        # gear dialog for every fresh agent before their first drop. The
+        # consent gate fires next, giving the user an explicit opt-in
+        # moment even though we chose the backend implicitly.
+        chosen_default = default_backend or "openai"
+        try:
+            knowledge_base.set_backend(chosen_default)
+            on_rag_status(
+                f"No embedding backend was set for this agent; auto-defaulting to "
+                f"'{chosen_default}'. You can change this in the ⚙ RAG dialog."
+            )
+        except Exception as e:
+            on_rag_status(
+                f"RAG mode requested but auto-defaulting backend failed ({e}). "
+                "Falling back to context for now."
+            )
+            for fp in file_paths:
+                on_context(fp)
+            return
 
     # Split files into RAG-compatible and incompatible up front. Incompatible
     # files (images / audio) go straight to context with a notice; only the

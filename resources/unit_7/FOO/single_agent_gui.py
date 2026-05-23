@@ -334,6 +334,7 @@ class SingleAgentGUI(QWidget):
             on_context=self._upload_via_context,
             on_rag_status=self._rag_log,
             parent_widget=self,
+            default_backend=self.config.get("rag_default_backend", "openai"),
         )
 
     def _rag_log(self, message):

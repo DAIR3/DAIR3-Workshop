@@ -566,6 +566,7 @@ class AgentTab(QWidget):
                 on_context=self.upload_file,
                 on_rag_status=lambda m: self.text_area.append(f"_{m}_"),
                 parent_widget=self,
+                default_backend=self.config.get("rag_default_backend", "openai"),
             )
 
     def _find_main_window(self):
@@ -1254,6 +1255,7 @@ class MultiAgentChatGUI(QWidget):
         # Ensure the user has made a per-window choice once. Subsequent
         # broadcasts reuse it (toggle button to flip).
         self.route_decision.ensure_choice(self)
+        default_backend = self.orchestrator.config.get("rag_default_backend", "openai")
         for tab in active_tabs:
             try:
                 route_drop(
@@ -1264,6 +1266,7 @@ class MultiAgentChatGUI(QWidget):
                     on_context=tab.upload_file,
                     on_rag_status=lambda m, t=tab: t.text_area.append(f"_{m}_"),
                     parent_widget=self,
+                    default_backend=default_backend,
                 )
             except Exception as e:
                 # Defensive: keep the GUI alive even if route_drop blows up
