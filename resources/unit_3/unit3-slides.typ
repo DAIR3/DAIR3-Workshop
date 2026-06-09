@@ -14,8 +14,16 @@ University of Michigan
 
 == Python notebook
 
-Many of the methods and analyses in this notebook are implemented in 
+Many of the methods and analyses discussed in these slides are implemented in 
 #link("https://github.com/DAIR3/DAIR3-Workshop/blob/main/resources/unit_3/birthweight.ipynb")[this] Python notebook.
+
+== Outline of this unit
+
+1. How to quickly get up to speed with a new scientific domain and identify novel and tractable research questions.
+
+2. How to develop an analysis plan
+
+3. How to identify potential sources of bias in your analysis plan, quantify uncertainty, and justify that the statistical power is sufficient.
 
 == Learning objectives 1
 
@@ -35,7 +43,7 @@ All discussion will be centered on the NCHS birth data
   diseases in adulthood).
 - Causes of birth weight are multifactorial (including many genetic and environmental effects and their
   interactions).
-- Causes are mostly out of scope for us as we do not measure most of the likely _root causes_;
+- Causes are partly out of scope for us as we do not measure some of the likely _root causes_;
   however we measure some plausible _correlates_ that _explain variation_
   in birth weight; these may provide some insight into underlying root causes.
 
@@ -115,11 +123,13 @@ In all of these, regression analysis will likely play a role -- but the aim shou
 
 == Regression analysis
 
-Model for the relationship between response and predictors.
+A brief introduction: regression analysis provides a model for the relationship between the response and predictors.
 
-Most commonly, we focus on the _conditional mean_ of the _response_ $Y$ denoted $E[Y|X_1=x_1, X_2=x_2, ..., X_p=x_p]$, which is a function of _covariates_ $x_1, ..., x_p$.
+Rather than aiming to capture the full conditional distribution, we can target specific _conditional quantities_ that are functions of _covariates_ (_explanatory variables_) $x_1, ..., x_p$.
 
-Other relevant conditional quantities include the _conditional variance_ $"Var"[Y|X_1=x_1, X_2=x_2, ..., X_p=x_p]$ and _conditional quantiles_ $Q_p [Y|X_1=x_1, X_2=x_2, ..., X_p=x_p]$.
+
+The _conditional mean_ $E[Y|X_1=x_1, X_2=x_2, ..., X_p=x_p]$.\
+The _conditional variance_ $"Var"[Y|X_1=x_1, X_2=x_2, ..., X_p=x_p]$ _Conditional quantiles_ $Q_p [Y|X_1=x_1, X_2=x_2, ..., X_p=x_p]$.
 
 == Causal roles of covariates
 
@@ -127,7 +137,7 @@ Covariates can be play various causal roles, including being: _exposures_, _trea
 
 These terms can refer to unobserved variables as well as to variables that are available to include in an analysis.
 
-It is rarely possible to identify the causal role of every covariate in a proposed analysis. In most cases, analysis of the data cannot resolve these roles.  External knowledge or substantive theory are the main basis for identifying how variables are causally related.
+It is rarely possible to identify the causal role of every covariate in a proposed analysis. In most cases, analysis of the data cannot fully resolve these roles.  External knowledge or substantive theory are the main basis for identifying how variables are causally related.
 
 == Causal roles of covariates
 
@@ -319,11 +329,13 @@ The scenarios discussed in the preceding slides are idealized and somewhat simpl
 
 - You will be able to identify formal comparisons that address a given research aim.
 
-- You will be able to engage in a sophisticated discussion of quantitative relationships among measured quantities.
+- You will be able to engage in a sophisticated discussion of quantitative relationships among measured values.
 
 == Regression effects and contrasts
 
-Regression models are often parameterized by coefficients $beta$, and in the past, the interpretation of a regression model typically was made by inspecting the estimated coefficients $hat(beta)$.
+Regression models are parameterized by coefficients (parameters) $beta$.
+
+For simple models, interpretation of the model can be made by inspecting the estimated coefficients $hat(beta)$.
 
 This is not an effective approach for more complex models.  Instead, we can estimate _regression effects_ that address sharp research questions.
 
@@ -376,7 +388,7 @@ The _conditional average treatment effect_ (CATE) is $E[Y(1) - Y(0) | X]$, where
 
 == Causal effects and potential outcomes
 
-Many methods of causal inference aim to make practical use of potential outcomes.  Here are two examples:
+Many methods of causal inference aim to make potential outcomes useful in practice.  Here are two examples:
 
 _G-computation_: Fit a regression model to the observed data, including exposure status and any measured confounders as predictors.  Use the model to predict the potential outcomes for each unit, and calculate the casual parameter of interest from them.
 
@@ -395,7 +407,7 @@ Can be fit using least squares (LS), but many other estimators are available.
 
 Ordinary Least Squares (OLS) works best under _homoscedasticity_ $"Var" (Y | X) = sigma^2$.
 
-We are avoiding writing models in _generative form_ $Y = beta^upright(T) + epsilon$, since this places strong and unnecessary assumptions on the model.
+We are avoiding writing models in _generative form_ $Y = beta^upright(T)X + epsilon$, since this places strong and unnecessary assumptions on the model.
 
 == Models for the conditional mean
 
@@ -411,7 +423,7 @@ Each of these notions of linearity has its own implications.
 
 == Models for the conditional mean
 
-This highlights the distinct meanings of the terms _additive_ and _linear_.  In an additive model for the conditional mean, the contrast
+The terms _additive_ and _linear_ have distinct meanings.  In an additive model for the conditional mean, the contrast
 
 $
 E[Y|X_1=x_1, X_2=x_2] - E[Y|X_1=x'_1, X_2=x_2]
@@ -429,7 +441,9 @@ does not depend on the value of $x_1$.
 
 == Models for the conditional mean
 
-Basis functions are a powerful tool that allow "linear models" to accommodate nonlinearity in the relationship between $E[Y|X=x]$ and $x$.  A basic example is _polynomial regression_
+Basis functions are a powerful tool that allow linear models and estimation methods to accommodate nonlinearity in the relationship between $E[Y|X=x]$ and $x$.  
+
+A basic example is _polynomial regression_
 
 $
 E[Y|X=x] = beta_0 + beta_1 x_1 + beta_2 x_1^2 + dots
@@ -445,19 +459,31 @@ $
 E[Y|X=x] = beta_0 + sum_j sum_k beta_(j k)f_k (x_j)
 $
 
-The conditional mean remains linear in the parameters ($beta_(j k)$) and the OLS estimates of the parameters remain linear in $Y$.  However the conditional mean is not a linear function of the covariates $x_j$, i.e. this is not a linear mean structure.
+For each $j$, the contribution of variable $x_j$ to the condition mean is given by $hat(g)_j (x) equiv sum_k beta_(j k)f_k (x_j)$.  Thus we have the model $E[Y|X=x] = beta_0 + sum_j hat(g)_j (x)$.
 
 == Models for the conditional mean
 
-The linear predictor $sum_j sum_k beta_(j k)f_k (x_j)$ represents a _nonlinear additive model_. 
+The conditional mean 
+
+$
+E[Y|X=x] = beta_0 + sum_j sum_k beta_(j k)f_k (x_j)
+$
+
+remains linear in the parameters ($beta_(j k)$) and the OLS estimates of the parameters $beta_(j k)$ remain linear in $Y$.  
+
+However the conditional mean is not a linear function of the covariates $x_j$, i.e. this is not a linear mean structure.
+
+== Models for the conditional mean
+
+The linear predictor $sum_j sum_k beta_(j k)f_k (x_j) = sum_j hat(g)_(j k)(x_j)$ represents a _nonlinear additive model_. 
 
 Each term of the form $sum_k beta_(j k)f_k (x_j)$ captures the additive contribution of one covariate $x_j$ to the linear predictor.
 
-Multivariate basis families exist, but rapidly encounter the _curse of dimensionality_.  
+To move beyond additivity, multivariate basis families exist, but rapidly encounter the _curse of dimensionality_.  
 
 == Models for the conditional mean
 
-One tractable approach is to construct a kernel matrix $K_(i j) = "ker"(x_i, x_j)$ using a _kernel function_ such as 
+One tractable approach to allowing non-additivity is to construct a kernel matrix $K_(i j) = "ker"(x_i, x_j)$ using a _kernel function_ such as 
 
 $
 "ker"(x_i, x_j) = exp(-lambda^(-2)norm(x_i-x_j)^2).
@@ -492,7 +518,7 @@ The variance function captures any _heteroscedasticity_ in the population under 
 
 == Models for the conditional mean
 
-What are the implications of heteroscedasticity, especially when it is not properly modeled (which is hard to do)?
+What are the implications of heteroscedasticity, especially when it is not properly modeled?
 
 In a GLM, misspecification of the variance model usually does not bias $hat(beta)$, but it does have two implications: 
 
@@ -650,7 +676,7 @@ The standard error for $hat(beta)_j$ is $frac("VIF"_j^(1/2) dot sigma, (sigma_(x
 
 Suppose we regress birth weight on sex, maternal age, and birth order using the NCHS data for 1971.  The standard error for maternal age in a model fit with OLS is $0.10$ grams / year. 
 
-The $R^2$ for regressing maternal age on sex and birthorder is 0.36, and $"VIF"^(1/2)$ for maternal age is $1.25$.  
+The $R^2$ for regressing maternal age on sex and birth order is 0.36, and $"VIF"^(1/2)$ for maternal age is $1.25$.  
 
 The residual standard deviation is 559.5 grams and the dispersion of maternal age is 5.4 years.  
 
