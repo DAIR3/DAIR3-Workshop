@@ -35,6 +35,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QFont
 
+import _bootstrap  # noqa: F401  -- inserts <root>/classes and <root>/apps into sys.path
 from md_widget import MarkdownTextEdit
 from md_loader import load_persona
 from file_upload_worker import FileUploadWorker, format_usage
@@ -261,8 +262,10 @@ class SingleAgentGUI(QWidget):
         self.text_area.append("---")
 
     def _discover_md_files(self):
-        here = os.path.dirname(os.path.abspath(__file__))
-        files = sorted(os.path.basename(p) for p in glob.glob(os.path.join(here, "*.md")))
+        # Persona .md files live in <project_root>/agents/
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        agents_dir = os.path.join(root, "agents")
+        files = sorted(os.path.basename(p) for p in glob.glob(os.path.join(agents_dir, "*.md")))
         return [f for f in files if f != "common.md"]
 
     def apply_font_size(self, size):

@@ -54,9 +54,14 @@ def _here():
     return os.path.dirname(os.path.abspath(__file__))
 
 
+def _project_root():
+    # This module lives in <root>/classes/, so the project root is one up.
+    return os.path.dirname(_here())
+
+
 def load_catalog(path=None):
-    """Load and return providers.json as a dict. Looks alongside this file."""
-    path = path or os.path.join(_here(), "providers.json")
+    """Load and return providers.json as a dict. Resolves to <root>/providers.json by default."""
+    path = path or os.path.join(_project_root(), "providers.json")
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 

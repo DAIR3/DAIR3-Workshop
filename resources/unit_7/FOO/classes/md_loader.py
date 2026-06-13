@@ -16,11 +16,23 @@ License: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0
 import os
 
 
+def _agents_dir():
+    # This module lives in <root>/classes/, so personas are at <root>/agents/.
+    here = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(os.path.dirname(here), "agents")
+
+
 def read_md_file(path):
     if not path:
         return ""
     if not os.path.isfile(path):
-        raise FileNotFoundError(f"Markdown file not found: {path}")
+        # Fall back to <root>/agents/<basename> so callers can pass bare
+        # filenames like "common.md" or "general.md" without knowing the layout.
+        fallback = os.path.join(_agents_dir(), os.path.basename(path))
+        if os.path.isfile(fallback):
+            path = fallback
+        else:
+            raise FileNotFoundError(f"Markdown file not found: {path}")
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
 

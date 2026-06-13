@@ -412,8 +412,13 @@ def _here():
     return os.path.dirname(os.path.abspath(__file__))
 
 
+def _project_root():
+    # This module lives in <root>/classes/, so the project root is one up.
+    return os.path.dirname(_here())
+
+
 def _agent_root(agent_name):
-    return os.path.join(_here(), "knowledge", agent_name)
+    return os.path.join(_project_root(), "knowledge", agent_name)
 
 
 def ensure_knowledge_dir(agent_name):

@@ -1,0 +1,20 @@
+# Runtime dependencies for the FOO workshop (apps/ + classes/).
+# Audited 2026-06-13 by walking every import in surviving code.
+# Prototype files in prototypes/ may pull additional packages on their own.
+
+# GUI toolkit (every script in apps/ uses Qt widgets).
+PyQt5>=5.15
+
+# Vendor SDKs. Each is optional at runtime -- if the matching env var is
+# unset, that provider's models simply disappear from the dropdowns. Listed
+# together because users typically want at least one.
+anthropic>=0.71        # cls_anthropic.py -> Claude models
+openai>=2.5            # cls_openai.py     -> GPT models
+google-genai>=2.1      # cls_google.py     -> Gemini models (imports as `from google import genai`)
+requests>=2.31         # cls_ollama.py     -> talks to a local Ollama daemon over HTTP
+
+# RAG support (cls_rag.py).
+numpy>=1.26            # embedding vector ops
+
+# PDF rendering for drag-and-drop (file_loader.py / cls_file_router.py).
+PyMuPDF>=1.24          # imports as `fitz`

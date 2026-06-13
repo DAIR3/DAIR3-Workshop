@@ -22,6 +22,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import QThread, pyqtSignal, QEvent, Qt, QUrl, QTimer
 from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QFont
 
+import _bootstrap  # noqa: F401  -- inserts <root>/classes and <root>/apps into sys.path
 from cls_foo import MultiAgentOrchestrator
 from md_widget import MarkdownTextEdit
 from md_loader import load_persona
@@ -503,8 +504,10 @@ class AgentTab(QWidget):
         print(f"[tab:{self.name}] init_ui end", flush=True)
 
     def _discover_md_files(self):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        files = sorted(os.path.basename(p) for p in glob.glob(os.path.join(script_dir, "*.md")))
+        # Persona .md files live in <project_root>/agents/
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        agents_dir = os.path.join(root, "agents")
+        files = sorted(os.path.basename(p) for p in glob.glob(os.path.join(agents_dir, "*.md")))
         return [f for f in files if f != "common.md"]
 
     def on_role_changed(self, new_role):

@@ -15,6 +15,7 @@ University of Texas at San Antonio.
 License: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 """
 import argparse
+import _bootstrap  # noqa: F401  -- inserts <root>/classes and <root>/apps into sys.path
 from single_agent_gui import launch
 
 

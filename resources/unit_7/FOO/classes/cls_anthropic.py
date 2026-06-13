@@ -29,6 +29,24 @@ def _extract_anthropic_usage(response):
     return {"input": inp, "output": out, "total": (inp + out) if (inp is not None and out is not None) else None}
 
 
+def _extract_text(response):
+    """Concatenate all text blocks from an Anthropic Messages response.
+
+    Why: Claude 4.x with extended thinking can return one or more ThinkingBlocks
+    before any TextBlock, so the old `response.content[0].text` raised
+    AttributeError. A response that hit stop_reason='max_tokens' before producing
+    any text yields content=[] and raised IndexError. Walking content and
+    concatenating every block that exposes `.text` handles both.
+
+    Returns ("", stop_reason) if no text block was found, so callers can build
+    a useful error message instead of crashing.
+    """
+    blocks = getattr(response, "content", None) or []
+    pieces = [b.text for b in blocks if getattr(b, "text", None)]
+    stop_reason = getattr(response, "stop_reason", None)
+    return ("\n".join(pieces), stop_reason)
+
+
 # Anthropic deprecated the temperature parameter on Opus 4.7+. Older Sonnet/Haiku
 # still accept it. Returns {'temperature': value} only for models that allow it.
 _TEMPERATURE_DEPRECATED_PREFIXES = ("claude-opus-4-7",)
@@ -73,8 +91,10 @@ class ClaudeWorker(QThread):
                 messages=clean_history,
                 **_temperature_kwarg(self.model, 0.99),
             )
-            content = response.content[0].text
-            
+            content, stop_reason = _extract_text(response)
+            if not content:
+                content = f"(no text content; stop_reason={stop_reason})"
+
             # Add response with timestamp to the original history
             timestamp = datetime.now().isoformat()
             self.history.append({
@@ -170,7 +190,9 @@ class AnthropicAgent:
                 messages=clean_history,
                 **_temperature_kwarg(self.model, 0.99),
             )
-            content = response.content[0].text
+            content, stop_reason = _extract_text(response)
+            if not content:
+                content = f"(no text content; stop_reason={stop_reason})"
 
             # DO NOT add anything to history here - orchestrator handles this
             # Just update latest_response for copy functionality
@@ -356,13 +378,15 @@ class AnthropicAgent:
                 messages=clean_history,
                 **_temperature_kwarg(self.model, 0.99),
             )
-            content = response.content[0].text
+            content, stop_reason = _extract_text(response)
+            if not content:
+                content = f"(no text content; stop_reason={stop_reason})"
             self.latest_response = content
             self._last_usage = _extract_anthropic_usage(response)
             return content
         except Exception as e:
             return f"Error: {e}"
-        
+
     def get_integrity_display_text(self):
         """Get text to display integrity issues in GUI"""
         if not hasattr(self, 'integrity_valid') or self.integrity_valid:
